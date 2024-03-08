@@ -101,34 +101,34 @@
   .rest-group {
     display: flex;
     justify-content: center;
-    margin: 0 1.5%;
     margin-top: 10px;
+    width: 100%;
   }
 
   .rest-group button {
-    margin: 0 5%;
+    margin: 0 10px;
   }
 
   /* 네이버 로그인 버튼 */
   .naver-login {
-    background:url(../image/naver.png) no-repeat center center;;
-    background-size: contain;
-    padding: 20px 15px;
+    background: url(../image/naver.png) no-repeat center center;
+    background-size: 100% 100%;
+    padding: 20px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%;
+    width: 50%;
   }
 
   /* 카카오 로그인 버튼 */
   .kakao-login {
-    background:url(../image/kakao.png)no-repeat center center;
-    background-size: contain;
-    padding: 20px 15px;
+    background: url(../image/kakao.png)no-repeat center center;
+    background-size: 100% 100%;
+    padding: 20px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%;
+    width: 50%;
   }
 
 
