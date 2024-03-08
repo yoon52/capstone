@@ -61,7 +61,24 @@
   }
 
   .all-group button {
-    margin: 0 1%;
+    margin: 0;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .all-group button:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    height: 50%;
+    width: 1px;
+    background-color: #00000050;
+    left: 0;
+    top: 25%;
   }
 
   /* 회원가입 버튼 */
@@ -76,10 +93,6 @@
     height: min-content;
   }
 
-  .signup-button:hover {
-    background-color: #00000050;
-  }
-
   /* 아이디 찾기 버튼 */
   .find-id {
     background-color: #ffffff;
@@ -92,10 +105,6 @@
     height: min-content;
   }
 
-  .find-id:hover {
-    background-color: #00000050;
-  }
-
   /* 비밀번호 찾기 버튼 */
   .find-pw {
     background-color: #ffffff;
@@ -106,10 +115,6 @@
     cursor: pointer;
     width: 100%;
     height: min-content;
-  }
-
-  .find-pw:hover {
-    background-color: #00000050;
   }
 
   /* rest 로그인 버튼 */
