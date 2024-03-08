@@ -83,6 +83,7 @@ function Login() {
     <div className="login-container">
       <h1>L O G I N</h1>
       <form onSubmit={handleSubmit}>
+
         {/* 사용자 ID 입력 필드 */}
         <div className="form-group">
           <input
@@ -109,9 +110,7 @@ function Login() {
 
         {/* 로그인 실패 메시지 */}
         {!loginSuccess && (
-          <p style={{ color: 'red', textAlign: 'center' }}>
-            아이디 또는 비밀번호가 올바르지 않습니다.
-          </p>
+          <p style={{ color: 'red', textAlign: 'center' }}>아이디 또는 비밀번호가 올바르지 않습니다.</p>
         )}
 
         {/* 로그인 버튼 */}
@@ -129,10 +128,10 @@ function Login() {
           <button type="button" src={naver} alt="naver" className="naver-login" onClick={handleNaverLogin}></button>
           <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleNaverLogin}></button>
         </div>
+        
       </form>
     </div>
   );
 }
 
-// Login 컴포넌트를 외부에서 사용할 수 있도록 export
 export default Login;

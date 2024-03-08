@@ -1,9 +1,7 @@
-// Signup.jsx
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/main.css';
-import SignupForm from './SignupForm.jsx'; // SignupForm 컴포넌트 import
+import SignupForm from './SignupForm.jsx';
 
 function Signup() {
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -22,14 +20,14 @@ function Signup() {
   };
 
   return (
-    <div className="signup-container"> {/* CSS 클래스 추가 */}
-      {signupSuccess && <p className="success-message">회원가입 성공</p>} {/* CSS 클래스 추가 */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>} {/* CSS 클래스 추가 */}
+    <div className="signup-container">
+      {signupSuccess && <p className="success-message">회원가입 성공</p>}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
       <SignupForm
         onSignupSuccess={handleSignupSuccess}
         onSignupError={handleSignupError}
       />
-      <p>이미 계정이 있으신가요? <Link to="/Login">로그인</Link></p>
+      <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
     </div>
   );
 }
