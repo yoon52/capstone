@@ -70,12 +70,14 @@ function Login() {
 
   // 아이디 찾기 버튼 클릭 시 호출되는 함수
   const handleFindId = () => {
-    console.log('아이디 찾기 로직을 구현하세요.');
+    // 아이디 찾기 페이지로 이동
+    navigate('/FindIdFormPage');
   };
 
   // 비밀번호 찾기 버튼 클릭 시 호출되는 함수
   const handleFindPassword = () => {
-    console.log('비밀번호 찾기 로직을 구현하세요.');
+    // 비밀번호 찾기 페이지로 이동
+    navigate('/FindPasswordPage');
   };
 
   // 로그인 폼을 렌더링하는 JSX
