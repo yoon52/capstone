@@ -32,7 +32,7 @@ function Login() {
     e.preventDefault();
     try {
       // 백엔드 서버로 로그인 요청 전송
-      const response = await fetch('http://localhost:4000/login', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -45,7 +45,7 @@ function Login() {
         const data = await response.json();
         sessionStorage.setItem('userId', data.id);
         setLoginSuccess(true);
-        navigate('/main');
+        navigate('/Main/*');
       } else {
         // 요청 처리 실패 시, 로그인 성공 상태를 false로 설정
         console.error('로그인 실패:', response.status);
@@ -60,8 +60,13 @@ function Login() {
 
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
-    window.location.href = 'http://localhost:3000/NaverLogin';
-  };
+    window.location.href = 'NaverLogin';
+};
+
+const handleKakaoLogin = () => {
+    window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=0bee6abe1a644025c9faedffda0ddd04&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&response_type=code&ka=sdk%2F1.43.2%20os%2Fjavascript%20sdk_type%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttps%253A%252F%252FSEUNGH00N.github.io&origin=https%3A%2F%2FSEUNGH00N.github.io';
+};
+
 
   // 회원가입 버튼 클릭 시 호출되는 함수
   const handleSignup = () => {
@@ -70,14 +75,12 @@ function Login() {
 
   // 아이디 찾기 버튼 클릭 시 호출되는 함수
   const handleFindId = () => {
-    // 아이디 찾기 페이지로 이동
-    navigate('/FindIdFormPage');
+    console.log('아이디 찾기 로직을 구현하세요.');
   };
 
   // 비밀번호 찾기 버튼 클릭 시 호출되는 함수
   const handleFindPassword = () => {
-    // 비밀번호 찾기 페이지로 이동
-    navigate('/FindPasswordPage');
+    console.log('비밀번호 찾기 로직을 구현하세요.');
   };
 
   // 로그인 폼을 렌더링하는 JSX
@@ -128,7 +131,7 @@ function Login() {
         {/* Rest 로그인 버튼 */}
         <div className="rest-group">
           <button type="button" src={naver} alt="naver" className="naver-login" onClick={handleNaverLogin}></button>
-          <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleNaverLogin}></button>
+          <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>
         </div>
         
       </form>
