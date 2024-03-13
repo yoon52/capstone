@@ -50,13 +50,13 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
         {/* 사용자 ID 입력 필드 */}
         <div className="form-group">
           <input
-            className="form-group"
             type="text"
             name="id"
             value={formData.id}
             onChange={handleChange}
             placeholder="아이디"
             required
+
           />
         </div>
 
