@@ -32,7 +32,7 @@ function Login() {
     e.preventDefault();
     try {
       // 백엔드 서버로 로그인 요청 전송
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/login', {
+      const response = await fetch('http://localhost:4000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
