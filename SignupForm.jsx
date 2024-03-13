@@ -4,13 +4,14 @@ import '../../styles/main.css';
 function SignupForm({ onSignupSuccess, onSignupError }) {
   const [formData, setFormData] = useState({
     id: '',
+    name: '',
     password: '',
     confirmPassword: '',
     email: '',
-    department: '',
-    grade: '',
-    name: ''
+    department: '', // 학과 추가
+    grade: '' // 학년 추가
   });
+  const [idAvailability, setIdAvailability] = useState(null); // 아이디 사용 가능 여부 상태 추가
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,8 +21,30 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
     }));
   };
 
+  const handleCheckAvailability = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/checkUser?id=${formData.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setIdAvailability(data.available);
+      } else {
+        setIdAvailability(null);
+        onSignupError('아이디 중복 확인 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setIdAvailability(null);
+      onSignupError('서버와의 통신 중 오류가 발생했습니다.');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // 아이디 중복 확인을 하지 않은 상태에서는 가입을 진행하지 않음
+    if (idAvailability === null || idAvailability === false) {
+      onSignupError('아이디 중복 확인을 먼저 진행해주세요.');
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:4000/signup', {
@@ -71,6 +94,13 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
             required
           />
         </div>
+
+        {/* 아이디 중복 확인 버튼 추가 */}
+        <button type="button" onClick={handleCheckAvailability}>중복 확인</button>
+        {/* 아이디 사용 가능 여부에 따른 메시지 표시 */}
+        {idAvailability === true && <span style={{ color: 'green' }}>사용 가능한 아이디입니다!</span>}
+        {idAvailability === false && <span style={{ color: 'red' }}>이미 존재하는 아이디입니다!</span>}
+      
 
         {/* 비밀번호 입력 필드 */}
         <div className="form-group">
