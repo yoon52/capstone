@@ -54,13 +54,11 @@ function ProductManagement() {
   return (
     <div className="product-management-container">
       <h2>상 품 관 리</h2>
-      <ul>
+      <ul className="management-list">
         {products.map(product => (
-          <li key={product.id}>
-            <span onClick={() => navigateToProductDetail(product.id)} style={{ cursor: 'pointer' }}>
-              {product.name}
-            </span>
-            <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+          <li key={product.id} className="management-item">
+            <span className="management-text">{() => navigateToProductDetail(product.id)}{product.name}</span>
+            <button className="delete-button" onClick={() => handleDeleteProduct(product.id)}>삭제</button>
           </li>
         ))}
       </ul>

@@ -56,14 +56,12 @@ function SearchKeywordPage() {
   return (
     <div className="search-keyword-container">
       <h2>검 색 기 록</h2>
-      <ul className="keyword-list">
         {searchKeywords.map((keyword) => (
           <li key={keyword.id} className="keyword-item">
             <span className="keyword-text">{keyword.search_term}</span>
             <button className="delete-button" onClick={() => deleteKeyword(keyword.id)}>삭제</button>
           </li>
         ))}
-      </ul>
     </div>
   );
 }
