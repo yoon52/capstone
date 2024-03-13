@@ -8,7 +8,8 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
     confirmPassword: '',
     email: '',
     department: '',
-    grade: ''
+    grade: '',
+    name: ''
   });
 
   const handleChange = (e) => {
@@ -47,6 +48,18 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
       <h1>회 원 가 입</h1>
       <form onSubmit={handleSubmit}>
 
+        {/* 사용자 이름 입력 필드 */}
+        <div className="form-group">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="이름"
+            required
+          />
+        </div>
+
         {/* 사용자 ID 입력 필드 */}
         <div className="form-group">
           <input
@@ -56,7 +69,6 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
             onChange={handleChange}
             placeholder="아이디"
             required
-
           />
         </div>
 
@@ -129,7 +141,6 @@ function SignupForm({ onSignupSuccess, onSignupError }) {
 
       </form>
     </div>
-
   );
 }
 
