@@ -15,7 +15,6 @@ function Main() {
   const [sortType, setSortType] = useState('recommend');
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -93,19 +92,29 @@ function Main() {
   };
 
   const handleKeywordManagement = () => {
-    navigate('/search-keyword');
+    // 검색어 관리 버튼을 눌렀을 때 수행할 동작 정의
   };
 
   const handleProductManagement = () => {
-    navigate('/ProductManagement');
+    // 상품 관리 버튼을 눌렀을 때 수행할 동작 정의
   };
 
+  const handleShowMyInfoPage = () => {
+    navigate('/myinfo');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('userId');
+    navigate('/login');
+  };
 
   return (
     <div className="main-container">
       <div className="navigation-buttons">
         <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
         <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
+        <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
+        <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
       </div>
 
       <SearchInput
@@ -124,7 +133,6 @@ function Main() {
         <Route path="/productDetail/:productId" element={<ProductDetail />} />
         <Route path="/ProductManagement" element={<ProductManagement />} />
       </Routes>
-
     </div>
   );
 
