@@ -1,4 +1,6 @@
+//IdFind.jsx
 import React, { useState } from 'react';
+import '../../styles/main.css';
 
 function IdFind() {
   // 입력값 상태 관리
@@ -11,8 +13,9 @@ function IdFind() {
   const [id, setId] = useState('');
   // 결과 메시지 상태 관리
   const [message, setMessage] = useState('');
-  // 로그인하기 및 비밀번호 찾기 버튼 표시 여부 상태 관리
-  const [showButtons, setShowButtons] = useState(false);
+
+  const [showModal, setShowModal] = useState(false); // 모달 상태
+
 
   // 입력값 변경 핸들러
   const handleChange = (e) => {
@@ -41,26 +44,27 @@ function IdFind() {
         const data = await response.json();
         setId(data.id);
         setMessage(`아이디는 ${data.id} 입니다.`);
-        // 아이디를 찾은 경우에만 로그인하기 및 비밀번호 찾기 버튼 표시
-        setShowButtons(true);
+        setShowModal(true); // 모달 열기
+
       } else {
         setMessage('아이디를 찾을 수 없습니다.');
-        // 아이디를 찾지 못한 경우에는 버튼 숨김
-        setShowButtons(false);
       }
     } catch (error) {
       console.error('아이디 찾기 오류:', error);
       setMessage('아이디 찾기 중 오류가 발생했습니다.');
-      // 오류 발생 시에도 버튼 숨김
-      setShowButtons(false);
     }
   };
 
+  const closeModal = () => {
+    setShowModal(false); // 모달 닫기
+  };
+
+
   return (
-    <div>
+    <div className="id-find-container">
       <h2>아이디 찾기</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="email">이메일:</label>
           <input
             type="email"
@@ -71,23 +75,22 @@ function IdFind() {
             required
           />
         </div>
-        <div>
-          <label htmlFor="department"> 학과: </label>
+
+        {/* 학과/학년 선택 셀렉트 */}
+        <div className="select-group">
           <select
             name="department"
             value={formData.department}
             onChange={handleChange}
             required
           >
-            <option value=""> 학과를 선택하세요. </option>
+            <option value="">학과를 선택하세요</option>
             <option value="computer_science">컴퓨터 공학과</option>
             <option value="software_engineering">소프트웨어 공학과</option>
             <option value="design">디자인학과</option>
             <option value="business-administration">경영학과</option>
           </select>
-        </div>
-        <div>
-          <label htmlFor="grade">학년:</label>
+
           <select
             name="grade"
             value={formData.grade}
@@ -101,19 +104,23 @@ function IdFind() {
             <option value="4">4학년</option>
           </select>
         </div>
-        <button type="submit">아이디 찾기</button>
+
+        <button type="submit" className="signup" >아이디 찾기</button>
       </form>
-      {id && <p>찾은 아이디: {id}</p>}
-      {message && <p>{message}</p>}
-      {/* 로그인하기 및 비밀번호 찾기 버튼 */}
-      {showButtons && (
-        <div>
-          <button onClick={() => window.location.href = '/login'}>로그인하기</button>
-          <button onClick={() => window.location.href = '/pw-find'}>비밀번호 찾기</button>
+
+      {/* 모달 */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={closeModal}>&times;</span>
+            <p>찾은 아이디: {id}</p>
+            <p>{message}</p>
+          </div>
         </div>
       )}
     </div>
   );
 }
+
 
 export default IdFind;
