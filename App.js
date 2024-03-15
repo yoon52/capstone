@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from '../components/auth/Login'; // 상대 경로 수정
 import IdFind from '../components/auth/IdFind'; // 상대 경로 수정
+import PasswordResetForm from '../components/auth/PasswordResetForm'; // 상대 경로 수정
 import NaverLogin from '../components/auth/NaverLogin';
 import NaverCallback from '../components/auth/NaverCallback';
 import KakaoLogin from '../components/auth/KakaoLogin';
@@ -22,7 +23,7 @@ function App() {
         <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} /> {/* Route 컴포넌트 수정 */}
           <Route path="/id-find" element={<IdFind />} /> {/* Route 컴포넌트 수정 */}
-          
+          <Route path="/password-find" element={<PasswordResetForm />} /> {/* Route 컴포넌트 수정 */}
           <Route path="/signup" element={<Signup />} /> {/* Route 컴포넌트 수정 */}
           <Route path="/Naverlogin" element={<NaverLogin />} />
           <Route path="/NaverCallback" element={<NaverCallback />} />
