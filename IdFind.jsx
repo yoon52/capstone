@@ -61,10 +61,10 @@ function IdFind() {
 
 
   return (
-    <div>
+    <div className="id-find-container">
       <h2>아이디 찾기</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="email">이메일:</label>
           <input
             type="email"
@@ -75,30 +75,39 @@ function IdFind() {
             required
           />
         </div>
-        <div>
-          <label htmlFor="department">학과:</label>
-          <input
-            type="text"
-            id="department"
+
+        {/* 학과/학년 선택 셀렉트 */}
+        <div className="select-group">
+          <select
             name="department"
             value={formData.department}
             onChange={handleChange}
             required
-          />
-        </div>
-        <div>
-          <label htmlFor="grade">학년:</label>
-          <input
-            type="text"
-            id="grade"
+          >
+            <option value="">학과를 선택하세요</option>
+            <option value="computer_science">컴퓨터 공학과</option>
+            <option value="software_engineering">소프트웨어 공학과</option>
+            <option value="design">디자인학과</option>
+            <option value="business-administration">경영학과</option>
+          </select>
+
+          <select
             name="grade"
             value={formData.grade}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">학년을 선택하세요</option>
+            <option value="1">1학년</option>
+            <option value="2">2학년</option>
+            <option value="3">3학년</option>
+            <option value="4">4학년</option>
+          </select>
         </div>
-        <button type="submit">아이디 찾기</button>
+
+        <button type="submit" className="signup" >아이디 찾기</button>
       </form>
+
       {/* 모달 */}
       {showModal && (
         <div className="modal">
@@ -112,5 +121,6 @@ function IdFind() {
     </div>
   );
 }
+
 
 export default IdFind;
