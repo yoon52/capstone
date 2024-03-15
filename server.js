@@ -2,22 +2,43 @@ const { app, pool, PORT } = require('./db');
 const bcrypt = require('bcrypt');
 
 // 사용자 등록 엔드포인트
-app.post('/signup', async (req, res) => {
+app.post('/Signup', async (req, res) => {
     const { id, password, email, department, grade, name } = req.body;
 
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 사용자 추가 쿼리 실행
+    const addUserQuery = `INSERT INTO users (id, password, email, department, grade, name) VALUES (?, ?, ?, ?, ?, ?)`;
     try {
-        // 비밀번호 해싱
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // 사용자 추가 쿼리 실행
-        const addUserQuery = `INSERT INTO users (id, password, email, department, grade, name) VALUES (?, ?, ?, ?, ?, ?)`;
         await pool.execute(addUserQuery, [id, hashedPassword, email, department, grade, name]);
-
         // 사용자 등록 성공 응답
         res.status(201).json({ message: '사용자 등록 성공' });
     } catch (error) {
         console.error('사용자 등록 오류:', error);
         res.status(500).json({ error: '사용자 등록에 실패했습니다.' });
+    }
+});
+
+// 중복 확인 엔드포인트
+app.get('/checkUser', async (req, res) => {
+    const userId = req.query.id; // 클라이언트로부터 요청된 아이디를 가져옵니다.
+
+    try {
+        // 사용자 조회 쿼리 실행
+        const findUserQuery = `SELECT * FROM users WHERE id = ?`;
+        const [rows] = await pool.execute(findUserQuery, [userId]); // 사용자 ID를 쿼리 매개변수로 전달합니다.
+
+        if (rows.length > 0) {
+            // 사용자가 이미 존재할 경우
+            res.status(200).json({ available: false });
+        } else {
+            // 사용자가 존재하지 않을 경우
+            res.status(200).json({ available: true });
+        }
+    } catch (error) {
+        console.error('사용자 조회 오류:', error);
+        res.status(500).json({ error: '사용자 조회 중 오류가 발생했습니다.' });
     }
 });
 
@@ -49,6 +70,31 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error('로그인 오류:', error);
         res.status(500).json({ error: '로그인에 실패했습니다.' });
+    }
+});
+
+// 아이디 찾기 엔드포인트
+app.post('/find-id', async (req, res) => {
+    try {
+        const { email, department, grade } = req.body;
+
+        // MySQL 쿼리 실행
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute(
+            'SELECT id FROM users WHERE email = ? AND department = ? AND grade = ?',
+            [email, department, grade]
+        );
+        connection.release();
+
+        // 결과가 있는 경우
+        if (rows.length > 0) {
+            res.status(200).json({ id: rows[0].id });
+        } else {
+            res.status(404).json({ error: '아이디를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('아이디 찾기 오류:', error);
+        res.status(500).json({ error: '서버 오류' });
     }
 });
 
@@ -315,8 +361,39 @@ app.delete('/searchKeywords/delete/:id', async (req, res) => {
     }
 });
 
+// 비밀번호 해싱 함수
+const hashPassword = async (password) => {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+};
 
+// 비밀번호 재설정 엔드포인트
+app.post('/reset-password', async (req, res) => {
+    const { email } = req.body;
 
+    try {
+        // 임시 비밀번호 생성 (예시로 랜덤 문자열 생성)
+        const temporaryPassword = Math.random().toString(36).slice(-8);
+
+        // 비밀번호 해싱
+        const hashedPassword = await hashPassword(temporaryPassword);
+
+        // 데이터베이스에 새로운 비밀번호 저장
+        const [result] = await pool.execute('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
+
+        // 데이터베이스에 새로운 비밀번호가 업데이트되었는지 확인
+        if (result.affectedRows > 0) {
+            // 임시 비밀번호와 함께 성공 메시지 응답 전송
+            res.status(200).json({ message: `임시 비밀번호는 ${temporaryPassword} 입니다. 로그인 후에 비밀번호를 변경해주세요.` });
+        } else {
+            res.status(404).json({ error: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('비밀번호 재설정 오류:', error);
+        res.status(500).json({ error: '서버 오류로 인해 비밀번호를 재설정할 수 없습니다.' });
+    }
+});
 
 // 서버 시작
 function startServer() {

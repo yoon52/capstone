@@ -4,10 +4,10 @@
   input[type="password"],
   input[type="email"] {
     width: calc(100% - 20px);
-    padding: 9px;
+    padding: 15px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    font-size: 0.9rem;
+    font-size: 1rem;
     box-sizing: border-box;
   }
 
@@ -16,8 +16,59 @@
     margin-bottom: 20px;
   }
 
-  .form-group label {
-    margin-right: 10px;
+  .select-group {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    margin-top: 20px;
+  }
+
+  .select-group input,
+  .select-group select {
+    width: 230px;
+    height: 45px;
+    font-size: 15px;
+    text-align: left;
+    text-indent: 10px;
+    color: gray;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    width: 300px;
+    max-width: 90%;
+    height: auto;
+  }
+
+  .modal-close {
+    padding: 8px 16px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .modal-close:hover {
+    background-color: #000000aa;
   }
 
   /*--------------------------------------------------*/
@@ -26,15 +77,25 @@
 
   .login-container {
     position: absolute;
-    top: 50%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -70%);
-    width: 400px;
-    height: auto;
+    width: 500px;
+    height: 620px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     text-align: center;
+  }
+
+  #login-logo {
+    width: 500px;
+    height: 150px;
+  }
+
+  .login-header {
+    font-size: 40px;
+    margin-bottom: 30px;
   }
 
   /* 로그인 버튼 */
@@ -46,8 +107,10 @@
     border-radius: 5px;
     cursor: pointer;
     width: 95%;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 17px;
+    transition: background-color 0.3s ease;
   }
 
   .login-button:hover {
@@ -59,18 +122,19 @@
     display: flex;
     justify-content: center;
     margin: 0 1.5%;
-    margin-top: 10px;
+    margin-top: 5px;
   }
 
   .all-group button {
     margin: 0;
-    padding: 10px 20px;
+    padding: 15px 20px;
     background-color: #ffffff;
     color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     position: relative;
+    font-size: 17px;
   }
 
   .all-group button:not(:first-child)::before {
@@ -83,31 +147,9 @@
     top: 25%;
   }
 
-  /* 회원가입 버튼 */
-  .signup-button {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 10px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    height: min-content;
-  }
-
-  /* 아이디 찾기 버튼 */
-  .find-id {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 10px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    height: min-content;
-  }
-
-  /* 비밀번호 찾기 버튼 */
+  /* 회원가입및 찾기 버튼 */
+  .Signup-button,
+  .find-id,
   .find-pw {
     background-color: #ffffff;
     color: #000000;
@@ -124,7 +166,7 @@
     display: flex;
     justify-content: center;
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     width: 100%;
   }
 
@@ -136,11 +178,16 @@
   .naver-login {
     background: url(../image/naver.png) no-repeat center center;
     background-size: 100% 100%;
-    padding: 20px 10px;
+    padding: 25px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     width: 50%;
+    transition: filter 0.3s ease;
+  }
+
+  .naver-login:hover {
+    filter: brightness(0.9)
   }
 
   /* 카카오 로그인 버튼 */
@@ -152,64 +199,235 @@
     border-radius: 5px;
     cursor: pointer;
     width: 50%;
+    transition: filter 0.3s ease;
+  }
+
+  .kakao-login:hover {
+    filter: brightness(0.9)
+  }
+
+  /* 로그인 오류 메세지 */
+  .login-failure-message {
+    color: black;
+    text-align: center;
+    margin-top: -5px;
+    margin-bottom: -15.5px;
   }
 
   /*--------------------------------------------------*/
 
   /* Signup.css */
 
-  /* 메세지 */
-  .success-message {
-    color: green;
-    margin-top: 5px;
-  }
-
-  .error-message {
-    color: red;
-    margin-top: 5px;
-  }
-
-  .signup-container {
+  .Signup-container {
     position: absolute;
-    top: 50%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -70%);
-    width: 400px;
+    width: 500px;
+    height: 740px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     text-align: center;
   }
 
-  /* 학과/학년 select */
-  .select-group {
+  #Signup-logo {
+    margin-top: 0px;
+    width: 500px;
+    height: 100px;
+  }
+
+  .Signup-header {
+    font-size: 35px;
+    margin-bottom: 30px;
+  }
+
+  .id-group {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    height: 100%;
-    margin-top: 20px;
+    align-items: center;
   }
 
-  .select-group input,
-  .select-group select {
-    width: 180px;
-    height: 30px;
+  .id-form {
+    flex: 1;
   }
 
+  .id-form input {
+    width: 95%;
+  }
+
+  .id-group button {
+    margin-left: 10px;
+  }
+
+  .check {
+    background-color: #000000;
+    color: #fff;
+    height: 50px;
+    width: 75px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .check:hover {
+    background-color: #000000aa;
+  }
 
   /* 가입하기 버튼 */
-  .signup {
+  .Signup {
+    background-color: #000000;
+    color: #fff;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 95%;
+    margin-top: 35px;
+    margin-bottom: 10px;
+    font-size: 17px;
+    transition: background-color 0.3s ease;
+  }
+
+  .Signup:hover {
+    background-color: #000000aa;
+  }
+
+  /*--------------------------------------------------*/
+
+  /* IdFind.css */
+
+  .id-find-container {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 500px;
+    height: 470px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  #idfind-logo {
+    margin-top: 0px;
+    width: 500px;
+    height: 150px;
+  }
+
+  .idfind-header {
+    font-size: 35px;
+    margin-bottom: 30px;
+  }
+
+  /* 아이디 찾기 버튼 */
+  .idfind {
+    background-color: #000000;
+    color: #fff;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 95%;
+    margin-top: 35px;
+    font-size: 17px;
+    transition: background-color 0.3s ease;
+  }
+
+  .idfind:hover {
+    background-color: #000000aa;
+  }
+
+  /* 아이디 모달 */
+
+  .found-id {
+    font-size: 20px;
+  }
+
+  .idfind-modal {
+    margin: 0 10px;
+  }
+
+  .idfind-modal {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+  }
+
+  .idfind-modal button {
+    margin: 0 10px;
+    margin-top: 30px;
+  }
+
+  .idfind-login {
     background-color: #000000;
     color: #fff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 95%;
-    margin-top: 20px;
+    width: 50%;
+    transition: background-color 0.3s ease;
   }
 
-  .signup:hover {
+  .idfind-fwfind {
+    background-color: #000000;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 50px;
+    width: 50%;
+    transition: background-color 0.3s ease;
+  }
+
+  /*--------------------------------------------------*/
+
+  /* PwFind.css */
+
+  .pwfind-container {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 500px;
+    height: 470px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  #pwfind-logo {
+    margin-top: 0px;
+    width: 500px;
+    height: 150px;
+  }
+
+  .pwfind-header {
+    font-size: 35px;
+    margin-bottom: 30px;
+  }
+
+  /* 비밀번호 찾기 버튼 */
+  .pwfind {
+    background-color: #000000;
+    color: #fff;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 95%;
+    margin-top: 35px;
+    font-size: 17px;
+    transition: background-color 0.3s ease;
+  }
+
+  .pwfind:hover {
     background-color: #000000aa;
   }
 
@@ -344,7 +562,7 @@
 
   .search-keyword-container {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -70%);
     width: 700px;
@@ -355,18 +573,7 @@
     text-align: center;
   }
 
-  /* 검색기록 타이틀 */
-  .search-keyword-title {
-    font-size: 25px;
-    margin-bottom: 20px;
-  }
-
-  /* 검색 리스트 */
-  .keyword-list {
-    list-style-type: none;
-    padding: 0;
-  }
-
+  /* 검색 기록 */
   .keyword-item {
     display: flex;
     align-items: center;
@@ -395,7 +602,7 @@
 
   .product-management-container {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -70%);
     width: 700px;
@@ -404,4 +611,27 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     text-align: center;
+  }
+
+  /* 내 상품 */
+  .management-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #ccc;
+
+    /* 삭제 버튼 */
+    .delete-button {
+      background-color: #ff6666;
+      color: white;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-button:hover {
+      background-color: #ff6666aa;
+    }
   }
