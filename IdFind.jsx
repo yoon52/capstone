@@ -109,7 +109,7 @@ function IdFind() {
         <div className="modal">
           <div className="modal-content">
             <p className="not-found">아이디를 찾을 수 없습니다.</p>
-            <button className="modal-close" onClick={handleCloseNotFoundModal}>닫기</button>
+            <button className="modal-close" onClick={handleCloseNotFoundModal}>확인</button>
           </div>
         </div>
       )}

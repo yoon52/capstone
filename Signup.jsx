@@ -4,7 +4,7 @@ import '../../styles/main.css';
 import logo from '../../image/logo.png';
 
 function Signup() {
-  const [SignupSuccess, setSignupSuccess] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     id: '',
@@ -37,24 +37,27 @@ function Signup() {
         setErrorMessage(data.available ? '사용 가능한 아이디입니다!' : '이미 존재하는 아이디입니다!');
       } else {
         setIdAvailability(null);
-        handleSignupError('아이디 중복 확인 중 오류가 발생했습니다.');
+        setErrorMessage('아이디 중복 확인 중 오류가 발생했습니다.');
+        setIsModalOpen(true); // Open modal on error
       }
     } catch (error) {
       console.error('Error:', error);
       setIdAvailability(null);
-      handleSignupError('서버와의 통신 중 오류가 발생했습니다.');
+      setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setIsModalOpen(true); // Open modal on error
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (idAvailability === null || idAvailability === false) {
-      handleSignupError('아이디 중복 확인을 먼저 진행해주세요.');
+      setErrorMessage('아이디 중복 확인을 먼저 진행해주세요.');
+      setIsModalOpen(true); // Open modal for error
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:4000/Signup', {
+      const response = await fetch('http://localhost:4000/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -65,11 +68,13 @@ function Signup() {
         handleSignupSuccess();
       } else {
         const errorData = await response.json();
-        handleSignupError(errorData.error);
+        setErrorMessage(errorData.error);
+        setIsModalOpen(true); // Open modal on error
       }
     } catch (error) {
       console.error('Error:', error);
-      handleSignupError('서버와의 통신 중 오류가 발생했습니다.');
+      setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setIsModalOpen(true); // Open modal on error
     }
   };
 
@@ -77,11 +82,6 @@ function Signup() {
     setSignupSuccess(true);
     setErrorMessage('');
     navigate('/login');
-  };
-
-  const handleSignupError = (error) => {
-    setSignupSuccess(false);
-    setErrorMessage(error);
   };
 
   const handleModalClose = () => {
@@ -99,8 +99,7 @@ function Signup() {
           </div>
         </div>
       )}
-      {SignupSuccess && <p className="success-message">회원가입 성공</p>}
-      {errorMessage && !isModalOpen && <p className="error-message">{errorMessage}</p>}
+      {signupSuccess && <p className="success-message">회원가입 성공</p>}
       <img src={logo} id='Signup-logo' alt="로고" />
       <h1 className="Signup-header">회 원 가 입</h1>
       <form onSubmit={handleSubmit}>

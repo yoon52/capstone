@@ -64,7 +64,7 @@ function PwFind() {
             <p className="found-pw">{message}</p>
             <div className="pwfind-modal">
               {message === '가입하지 않은 이메일입니다.' ? (
-                <button className="modal-close" onClick={closeModal}>닫기</button>
+                <button className="modal-close" onClick={closeModal}>확인</button>
               ) : (
                 <button className="found-id" onClick={navigateToLogin}>로그인 화면으로 이동</button>
               )}
