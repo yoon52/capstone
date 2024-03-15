@@ -1,17 +1,82 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/main.css';
-import SignupForm from './SignupForm.jsx';
+import logo from '../../image/logo.png';
 
 function Signup() {
-  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [SignupSuccess, setSignupSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [formData, setFormData] = useState({
+    id: '',
+    name: '',
+    password: '',
+    confirmPassword: '',
+    email: '',
+    department: '',
+    grade: ''
+  });
+  const [idAvailability, setIdAvailability] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleCheckAvailability = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/checkUser?id=${formData.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setIdAvailability(data.available);
+        setIsModalOpen(true);
+        setErrorMessage(data.available ? '사용 가능한 아이디입니다!' : '이미 존재하는 아이디입니다!');
+      } else {
+        setIdAvailability(null);
+        handleSignupError('아이디 중복 확인 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setIdAvailability(null);
+      handleSignupError('서버와의 통신 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (idAvailability === null || idAvailability === false) {
+      handleSignupError('아이디 중복 확인을 먼저 진행해주세요.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:4000/Signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        handleSignupSuccess();
+      } else {
+        const errorData = await response.json();
+        handleSignupError(errorData.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      handleSignupError('서버와의 통신 중 오류가 발생했습니다.');
+    }
+  };
 
   const handleSignupSuccess = () => {
     setSignupSuccess(true);
     setErrorMessage('');
-    navigate('/login'); // 회원가입 성공 시 로그인 페이지로 이동
+    navigate('/login');
   };
 
   const handleSignupError = (error) => {
@@ -19,14 +84,110 @@ function Signup() {
     setErrorMessage(error);
   };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setErrorMessage('');
+  };
+
   return (
-    <div className="signup-container">
-      {signupSuccess && <p className="success-message">회원가입 성공</p>}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <SignupForm
-        onSignupSuccess={handleSignupSuccess}
-        onSignupError={handleSignupError}
-      />
+    <div className="Signup-container">
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <p>{errorMessage}</p>
+            <button className="modal-close" onClick={handleModalClose}>확인</button>
+          </div>
+        </div>
+      )}
+      {SignupSuccess && <p className="success-message">회원가입 성공</p>}
+      {errorMessage && !isModalOpen && <p className="error-message">{errorMessage}</p>}
+      <img src={logo} id='Signup-logo' alt="로고" />
+      <h1 className="Signup-header">회 원 가 입</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="이름"
+            required
+          />
+        </div>
+        <div className="form-group id-group">
+          <div className="id-form">
+            <input
+              type="text"
+              name="id"
+              value={formData.id}
+              onChange={handleChange}
+              placeholder="아이디"
+              required
+            />
+          </div>
+          <button type="button" className="check" onClick={handleCheckAvailability}>중복 확인</button>
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="비밀번호"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="비밀번호 확인"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="이메일"
+            required
+          />
+        </div>
+        <div className="select-group">
+          <select
+            name="department"
+            value={formData.department}
+            onChange={handleChange}
+            style={{ color: formData.department ? 'black' : 'gray' }}
+            required
+          >
+            <option value="">학과를 선택하세요</option>
+            <option value="computer_science">컴퓨터 공학과</option>
+            <option value="software_engineering">소프트웨어 공학과</option>
+            <option value="design">디자인학과</option>
+            <option value="business-administration">경영학과</option>
+          </select>
+
+          <select
+            name="grade"
+            value={formData.grade}
+            onChange={handleChange}
+            style={{ color: formData.grade ? 'black' : 'gray' }}
+            required
+          >
+            <option value="">학년을 선택하세요</option>
+            <option value="1">1학년</option>
+            <option value="2">2학년</option>
+            <option value="3">3학년</option>
+            <option value="4">4학년</option>
+          </select>
+        </div>
+        <button type="submit" className="Signup">가입하기</button>
+      </form>
       <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
     </div>
   );
