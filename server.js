@@ -98,6 +98,33 @@ app.post('/find-id', async (req, res) => {
     }
 });
 
+// 비밀번호 재설정 엔드포인트
+app.post('/reset-password', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // 임시 비밀번호 생성 (예시로 랜덤 문자열 생성)
+        const temporaryPassword = Math.random().toString(36).slice(-8);
+
+        // 비밀번호 해싱
+        const hashedPassword = await hashPassword(temporaryPassword);
+
+        // 데이터베이스에 새로운 비밀번호 저장
+        const [result] = await pool.execute('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
+
+        // 데이터베이스에 새로운 비밀번호가 업데이트되었는지 확인
+        if (result.affectedRows > 0) {
+            // 임시 비밀번호와 함께 성공 메시지 응답 전송
+            res.status(200).json({ message: `임시 비밀번호는 ${temporaryPassword} 입니다. 로그인 후에 비밀번호를 변경해주세요.` });
+        } else {
+            res.status(404).json({ error: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('비밀번호 재설정 오류:', error);
+        res.status(500).json({ error: '서버 오류로 인해 비밀번호를 재설정할 수 없습니다.' });
+    }
+});
+
 // 상품 검색 및 검색어 저장 엔드포인트
 app.get('/products', async (req, res) => {
     const searchTerm = req.query.search;
@@ -367,33 +394,6 @@ const hashPassword = async (password) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     return hashedPassword;
 };
-
-// 비밀번호 재설정 엔드포인트
-app.post('/reset-password', async (req, res) => {
-    const { email } = req.body;
-
-    try {
-        // 임시 비밀번호 생성 (예시로 랜덤 문자열 생성)
-        const temporaryPassword = Math.random().toString(36).slice(-8);
-
-        // 비밀번호 해싱
-        const hashedPassword = await hashPassword(temporaryPassword);
-
-        // 데이터베이스에 새로운 비밀번호 저장
-        const [result] = await pool.execute('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
-
-        // 데이터베이스에 새로운 비밀번호가 업데이트되었는지 확인
-        if (result.affectedRows > 0) {
-            // 임시 비밀번호와 함께 성공 메시지 응답 전송
-            res.status(200).json({ message: `임시 비밀번호는 ${temporaryPassword} 입니다. 로그인 후에 비밀번호를 변경해주세요.` });
-        } else {
-            res.status(404).json({ error: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' });
-        }
-    } catch (error) {
-        console.error('비밀번호 재설정 오류:', error);
-        res.status(500).json({ error: '서버 오류로 인해 비밀번호를 재설정할 수 없습니다.' });
-    }
-});
 
 // 서버 시작
 function startServer() {
