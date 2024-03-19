@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/main.css';
-import logo from '../../image/logo.png';
+import logo from '../../image/logo-text.png';
 
 function PwFind() {
   const [email, setEmail] = useState('');

@@ -8,13 +8,11 @@ import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
 
 function Main() {
-  const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [savedSearchTerm, setSavedSearchTerm] = useState('');
   const [sortType, setSortType] = useState('recommend');
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,7 +30,6 @@ function Main() {
         });
         if (response.ok) {
           const data = await response.json();
-          setProducts(data);
           setFilteredProducts(data);
         } else {
           console.error('상품 목록 가져오기 오류:', response.status);
@@ -100,12 +97,22 @@ function Main() {
     navigate('/ProductManagement');
   };
 
+  const handleShowMyInfoPage = () => {
+    navigate('/myinfo');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('userId');
+    navigate('/login');
+  };
 
   return (
     <div className="main-container">
       <div className="navigation-buttons">
         <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
         <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
+        <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
+        <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
       </div>
 
       <SearchInput
@@ -124,10 +131,8 @@ function Main() {
         <Route path="/productDetail/:productId" element={<ProductDetail />} />
         <Route path="/ProductManagement" element={<ProductManagement />} />
       </Routes>
-
     </div>
   );
-
 }
 
 export default Main;

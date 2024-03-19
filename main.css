@@ -71,7 +71,7 @@
     background-color: #000000aa;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* Login.css */
 
@@ -89,7 +89,7 @@
   }
 
   #login-logo {
-    width: 500px;
+    width: 150px;
     height: 150px;
   }
 
@@ -214,7 +214,7 @@
     margin-bottom: -15.5px;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* Signup.css */
 
@@ -224,7 +224,7 @@
     left: 50%;
     transform: translate(-50%, -70%);
     width: 500px;
-    height: 740px;
+    height: 770px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -233,8 +233,8 @@
 
   #Signup-logo {
     margin-top: 0px;
-    width: 500px;
-    height: 100px;
+    width: 450px;
+    height: 130px;
   }
 
   .Signup-header {
@@ -295,7 +295,7 @@
     background-color: #000000aa;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* IdFind.css */
 
@@ -385,7 +385,7 @@
     transition: background-color 0.3s ease;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* PwFind.css */
 
@@ -431,7 +431,7 @@
     background-color: #000000aa;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* Main.css */
 
@@ -470,12 +470,41 @@
     border: none;
     background-color: #000000;
     color: #fff;
+    margin-right: 10px;
   }
 
   .product-management-button:hover {
     background-color: #000000aa;
   }
 
+  /* 내 정보 버튼 */
+  .my-info-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    background-color: #000000;
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  .my-info-button:hover {
+    background-color: #000000aa;
+  }
+
+  /* 로그아웃 버튼 */
+  .logout-button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    background-color: #000000;
+    color: #fff;
+  }
+
+  .logout-button:hover {
+    background-color: #000000aa;
+  }
 
   .search-input-container {
     flex: 1;
@@ -494,7 +523,7 @@
 
   /* 검색버튼 */
   .search-product-button {
-    padding: 10px 30px;
+    padding: 15px 30px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
@@ -539,7 +568,7 @@
     background-color: #000000aa;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* AddProducts.css */
 
@@ -556,7 +585,7 @@
     text-align: center;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* search-keyword.css */
 
@@ -596,7 +625,7 @@
     background-color: #ff6666aa;
   }
 
-  /*--------------------------------------------------*/
+  /*--------------------------------------------------------------------------------*/
 
   /* ProductManagement.css */
 

@@ -395,6 +395,102 @@ const hashPassword = async (password) => {
     return hashedPassword;
 };
 
+app.post('/myinfo', async (req, res) => {
+    const { userId, password } = req.body;
+
+    try {
+        // 사용자 조회 쿼리 실행
+        const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+        if (rows.length > 0) {
+            // 사용자가 존재할 경우 비밀번호 확인
+            const user = rows[0];
+            const passwordMatch = await bcrypt.compare(password, user.password);
+
+            if (passwordMatch) {
+                // 비밀번호가 일치할 경우 사용자 정보 응답
+                res.status(200).json({
+                    id: user.id,
+                    name: user.name,
+                    grade: user.grade,
+                    department: user.department,
+                    email: user.email
+                });
+            } else {
+                // 비밀번호가 일치하지 않을 경우 에러 응답
+                res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
+            }
+        } else {
+            // 사용자가 존재하지 않을 경우 에러 응답
+            res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('내 정보 확인 오류:', error);
+        res.status(500).json({ error: '내 정보를 가져오는 중 오류가 발생했습니다.' });
+    }
+});
+
+// 회원 탈퇴 엔드포인트
+app.post('/deleteaccount', async (req, res) => {
+    const { userId, password } = req.body;
+
+    try {
+        // 사용자 조회 쿼리 실행
+        const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+        if (rows.length > 0) {
+            // 사용자가 존재할 경우 비밀번호 확인
+            const user = rows[0];
+            const passwordMatch = await bcrypt.compare(password, user.password);
+
+            if (passwordMatch) {
+                // 비밀번호가 일치할 경우 사용자 삭제
+                await pool.execute('DELETE FROM users WHERE id = ?', [userId]);
+                res.status(200).json({ message: '회원 탈퇴가 완료되었습니다.' });
+            } else {
+                // 비밀번호가 일치하지 않을 경우 에러 응답
+                res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
+            }
+        } else {
+            // 사용자가 존재하지 않을 경우 에러 응답
+            res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('회원 탈퇴 오류:', error);
+        res.status(500).json({ error: '회원 탈퇴 중 오류가 발생했습니다.' });
+    }
+});
+
+// 사용자 정보 수정 엔드포인트
+app.post('/edituserinfo', async (req, res) => {
+    const { userId, editedUserInfo } = req.body;
+
+    try {
+        // 사용자 조회 쿼리 실행
+        const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+        if (rows.length > 0) {
+            // 사용자가 존재할 경우 사용자 정보 업데이트
+            const user = rows[0];
+            const updatedUserInfo = { ...user, ...editedUserInfo };
+
+            // 사용자 정보 업데이트 쿼리 실행
+            await pool.execute(
+                'UPDATE users SET name = ?, grade = ?, department = ?, email = ? WHERE id = ?',
+                [updatedUserInfo.name, updatedUserInfo.grade, updatedUserInfo.department, updatedUserInfo.email, userId]
+            );
+
+            res.status(200).json({ message: '사용자 정보가 성공적으로 수정되었습니다.' });
+        } else {
+            // 사용자가 존재하지 않을 경우 에러 응답
+            res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('사용자 정보 수정 오류:', error);
+        res.status(500).json({ error: '사용자 정보를 수정하는 중 오류가 발생했습니다.' });
+    }
+});
+
 // 서버 시작
 function startServer() {
     app.listen(PORT, () => {
