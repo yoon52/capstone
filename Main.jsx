@@ -25,6 +25,8 @@ function Main() {
           url = 'https://ec2caps.liroocapstone.shop:4000/products/latest';
         } else if (sortType === 'recommend') {
           url = 'https://ec2caps.liroocapstone.shop:4000/products/searchByRecent';
+        } else if (sortType === 'views') { // 새로 추가한 조건
+          url = 'https://ec2caps.liroocapstone.shop:4000/products/views'; // 조회수로 정렬된 제품 목록을 가져오는 엔드포인트
         }
         const response = await fetch(url, {
           headers: {
@@ -119,9 +121,7 @@ function Main() {
         handleSearchProduct={handleSearchProduct}
       />
       <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-      {savedSearchTerm && (
-        <p className="saved-search-term">저장된 검색어: {savedSearchTerm}</p>
-      )}
+      
       <ProductList filteredProducts={filteredProducts} />
       <button onClick={handleAddProduct} className="add-product-button">
         상품 등록

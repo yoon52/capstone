@@ -11,6 +11,7 @@ function SortSelect({ sortType, handleSortChange }) {
         {/* 추천순과 최신순 옵션 제공 */}
         <option value="recommend">추천순</option>
         <option value="latest">최신순</option>
+        <option value="views">조회수순</option>
       </select>
     </div>
   );

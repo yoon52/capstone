@@ -47,6 +47,28 @@ function ProductManagement() {
     }
   };
 
+  const handleMarkAsSold = async (productId) => {
+    try {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/sold/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': sessionStorage.getItem('userId')
+        }
+      });
+      if (response.ok) {
+        const updatedProduct = await response.json();
+        setProducts(products.map(product =>
+          product.id === productId ? updatedProduct : product
+        ));
+      } else {
+        console.error('상품 판매 완료 처리 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('상품 판매 완료 처리 오류:', error);
+    }
+  };
+
   const navigateToProductDetail = (productId) => {
     navigate(`/productDetail/${productId}`);
   };
@@ -61,6 +83,7 @@ function ProductManagement() {
               {product.name}
             </span>
             <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+            <button onClick={() => handleMarkAsSold(product.id)}>판매완료</button>
           </li>
         ))}
       </ul>

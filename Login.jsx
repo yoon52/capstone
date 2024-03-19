@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../styles/main.css';
 import naver from '../../image/naver.png';
 import kakao from '../../image/kakao.png';
-import '../../styles/main.css';
+import logo from '../../image/logo.png';
 
 // Login 컴포넌트 정의
 function Login() {
-
   // formData 상태 관리(state) 초기화
   const [formData, setFormData] = useState({
     id: '',
@@ -61,35 +61,34 @@ function Login() {
 
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
-    window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2Fec2caps.liroocapstone.shop%2FMain%2F&state=?';
-};
-
-  const handleKakaoLogin = () => {
-    window.location.href = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=0bee6abe1a644025c9faedffda0ddd04&redirect_uri=https%3A%2F%2Fec2caps.liroocapstone.shop%2FMain%2F';
+    window.location.href = 'NaverLogin';
   };
 
+  const handleKakaoLogin = () => {
+    window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=0bee6abe1a644025c9faedffda0ddd04&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&response_type=code&ka=sdk%2F1.43.2%20os%2Fjavascript%20sdk_type%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttps%253A%252F%252FSEUNGH00N.github.io&origin=https%3A%2F%2FSEUNGH00N.github.io';
+  };
 
 
   // 회원가입 버튼 클릭 시 호출되는 함수
   const handleSignup = () => {
-    navigate('/signup');
+    navigate('/Signup');
   };
 
   // 아이디 찾기 버튼 클릭 시 호출되는 함수
   const handleFindId = () => {
-    navigate('/id-find');
-};
+    navigate('/IdFind');
+  };
 
-// 비밀번호 찾기 버튼 클릭 시 호출되는 함수
+  // 비밀번호 찾기 버튼 클릭 시 호출되는 함수
   const handleFindPassword = () => {
-    navigate('/password-find');
-};
-
+    navigate('/PwFind');
+  };
 
   // 로그인 폼을 렌더링하는 JSX
   return (
     <div className="login-container">
-      <h1>L O G I N</h1>
+      <img src={logo} id='login-logo' alt="로고" />
+      <h1 className="login-header">L O G I N</h1>
       <form onSubmit={handleSubmit}>
 
         {/* 사용자 ID 입력 필드 */}
@@ -118,15 +117,16 @@ function Login() {
 
         {/* 로그인 실패 메시지 */}
         {!loginSuccess && (
-          <p style={{ color: 'red', textAlign: 'center' }}>아이디 또는 비밀번호가 올바르지 않습니다.</p>
+          <p className="login-failure-message">아이디 또는 비밀번호가 올바르지 않습니다.</p>
         )}
+
 
         {/* 로그인 버튼 */}
         <button type="submit" className="login-button">로그인</button>
 
         {/* 회원가입/아이디/비밀번호 찾기 버튼 */}
         <div className="all-group">
-          <button type="button" className="signup-button" onClick={handleSignup}>회원가입</button>
+          <button type="button" className="Signup-button" onClick={handleSignup}>회원가입</button>
           <button type="button" className="find-id" onClick={handleFindId}>아이디 찾기</button>
           <button type="button" className="find-pw" onClick={handleFindPassword}>비밀번호 찾기</button>
         </div>
@@ -136,7 +136,7 @@ function Login() {
           <button type="button" src={naver} alt="naver" className="naver-login" onClick={handleNaverLogin}></button>
           <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>
         </div>
-        
+
       </form>
     </div>
   );

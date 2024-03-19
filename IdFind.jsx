@@ -1,23 +1,17 @@
-//IdFind.jsx
 import React, { useState } from 'react';
 import '../../styles/main.css';
+import logo from '../../image/logo.png';
 
 function IdFind() {
-  // 입력값 상태 관리
   const [formData, setFormData] = useState({
     email: '',
     department: '',
     grade: ''
   });
-  // 아이디 상태 관리
   const [id, setId] = useState('');
-  // 결과 메시지 상태 관리
-  const [message, setMessage] = useState('');
+  const [showNotFoundModal, setShowNotFoundModal] = useState(false);
+  const [showFoundModal, setShowFoundModal] = useState(false);
 
-  const [showModal, setShowModal] = useState(false); // 모달 상태
-
-
-  // 입력값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -30,8 +24,7 @@ function IdFind() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 입력값을 서버로 전송하여 아이디 찾기 요청
-      const response = await fetch('http://localhost:4000/find-id', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/find-id', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,39 +32,42 @@ function IdFind() {
         body: JSON.stringify(formData)
       });
 
-      // 응답을 확인하고 결과 메시지 및 아이디 업데이트
       if (response.ok) {
         const data = await response.json();
         setId(data.id);
-        setMessage(`아이디는 ${data.id} 입니다.`);
-        setShowModal(true); // 모달 열기
-
+        setShowFoundModal(true);
       } else {
-        setMessage('아이디를 찾을 수 없습니다.');
+        setShowNotFoundModal(true);
       }
     } catch (error) {
       console.error('아이디 찾기 오류:', error);
-      setMessage('아이디 찾기 중 오류가 발생했습니다.');
     }
   };
 
-  const closeModal = () => {
-    setShowModal(false); // 모달 닫기
+  const handleCloseNotFoundModal = () => {
+    setShowNotFoundModal(false);
   };
 
+  const navigateToLogin = () => {
+    window.location.href = '/Login';
+  };
+  const navigateToPwFind = () => {
+    window.location.href = '/PwFind';
+  };
 
   return (
     <div className="id-find-container">
-      <h2>아이디 찾기</h2>
+      <img src={logo} id='idfind-logo' alt="로고" />
+      <h1 className="idfind-header">아이디 찾기</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">이메일:</label>
           <input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
+            placeholder="이메일을 입력하세요"
             required
           />
         </div>
@@ -82,6 +78,7 @@ function IdFind() {
             name="department"
             value={formData.department}
             onChange={handleChange}
+            style={{ color: formData.department ? 'black' : 'gray' }}
             required
           >
             <option value="">학과를 선택하세요</option>
@@ -95,6 +92,7 @@ function IdFind() {
             name="grade"
             value={formData.grade}
             onChange={handleChange}
+            style={{ color: formData.grade ? 'black' : 'gray' }}
             required
           >
             <option value="">학년을 선택하세요</option>
@@ -104,23 +102,31 @@ function IdFind() {
             <option value="4">4학년</option>
           </select>
         </div>
-
-        <button type="submit" className="signup" >아이디 찾기</button>
+        <button type="submit" className="idfind">아이디 찾기</button>
       </form>
 
-      {/* 모달 */}
-      {showModal && (
+      {showNotFoundModal && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={closeModal}>&times;</span>
-            <p>찾은 아이디: {id}</p>
-            <p>{message}</p>
+            <p className="not-found">아이디를 찾을 수 없습니다.</p>
+            <button className="modal-close" onClick={handleCloseNotFoundModal}>확인</button>
+          </div>
+        </div>
+      )}
+
+      {showFoundModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p className="found-id">찾은 아이디: {id}</p>
+            <div className="idfind-modal">
+              <button className="idfind-login" onClick={navigateToLogin}>로그인 하기</button>
+              <button className="idfind-fwfind" onClick={navigateToPwFind}>비밀번호 찾기</button>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
 }
-
 
 export default IdFind;

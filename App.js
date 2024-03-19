@@ -22,8 +22,8 @@ function App() {
         <Routes>
         <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} /> {/* Route 컴포넌트 수정 */}
-          <Route path="/id-find" element={<IdFind />} /> {/* Route 컴포넌트 수정 */}
-          <Route path="/password-find" element={<PasswordResetForm />} /> {/* Route 컴포넌트 수정 */}
+          <Route path="/IdFind" element={<IdFind />} /> {/* Route 컴포넌트 수정 */}
+          <Route path="/PwFind" element={<PasswordResetForm />} /> {/* Route 컴포넌트 수정 */}
           <Route path="/signup" element={<Signup />} /> {/* Route 컴포넌트 수정 */}
           <Route path="/Naverlogin" element={<NaverLogin />} />
           <Route path="/NaverCallback" element={<NaverCallback />} />
