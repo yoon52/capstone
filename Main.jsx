@@ -8,9 +8,8 @@ import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
 
 function Main() {
-  const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [savedSearchTerm, setSavedSearchTerm] = useState('');
   const [sortType, setSortType] = useState('recommend');
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ function Main() {
         });
         if (response.ok) {
           const data = await response.json();
-          setProducts(data);
           setFilteredProducts(data);
         } else {
           console.error('상품 목록 가져오기 오류:', response.status);
@@ -92,11 +90,11 @@ function Main() {
   };
 
   const handleKeywordManagement = () => {
-    // 검색어 관리 버튼을 눌렀을 때 수행할 동작 정의
+    navigate('/search-keyword');
   };
 
   const handleProductManagement = () => {
-    // 상품 관리 버튼을 눌렀을 때 수행할 동작 정의
+    navigate('/ProductManagement');
   };
 
   const handleShowMyInfoPage = () => {
@@ -135,7 +133,6 @@ function Main() {
       </Routes>
     </div>
   );
-
 }
 
-export default Main;
+export default Main;  

@@ -1,12 +1,12 @@
+// MyInfo.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserEdit from './UserEdit'; // UserEdit 컴포넌트를 불러옴
 
 function MyInfo() {
   const [password, setPassword] = useState('');
   const [userInfo, setUserInfo] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [editingField, setEditingField] = useState(null);
+  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false); // 비밀번호 확인 상태 추가
   const navigate = useNavigate();
 
   const handleConfirm = async () => {
@@ -21,7 +21,7 @@ function MyInfo() {
       if (response.ok) {
         const data = await response.json();
         setUserInfo(data);
-        setShowModal(true);
+        setIsPasswordConfirmed(true); // 비밀번호 확인되면 상태 변경
       } else {
         alert('비밀번호가 일치하지 않습니다.');
       }
@@ -31,133 +31,28 @@ function MyInfo() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (!confirmDelete) {
-      const confirm = window.confirm('회원을 탈퇴하시겠습니까?');
-      if (!confirm) return;
-      setConfirmDelete(true);
-    } else {
-      try {
-        const response = await fetch('http://localhost:4000/deleteaccount', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ userId: sessionStorage.getItem('userId'), password })
-        });
-        if (response.ok) {
-          alert('회원 탈퇴되었습니다.');
-          sessionStorage.removeItem('userId');
-          navigate('/');
-        } else {
-          alert('비밀번호가 일치하지 않습니다.');
-        }
-      } catch (error) {
-        console.error('회원 탈퇴 오류:', error);
-        alert('회원 탈퇴 중 오류가 발생했습니다.');
-      }
-    }
-  };
-
-  const handleSaveChanges = async (fieldName, newValue) => {
-    try {
-      const response = await fetch('http://localhost:4000/edituserinfo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: sessionStorage.getItem('userId'), editedUserInfo: { [fieldName]: newValue } })
-      });
-      if (response.ok) {
-        alert('정보가 성공적으로 변경되었습니다.');
-        handleConfirm();
-      } else {
-        alert('정보 변경에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('정보 변경 오류:', error);
-      alert('정보를 변경하는 중 오류가 발생했습니다.');
-    }
+  const handleChangePassword = () => {
+    // 비밀번호 변경 페이지로 이동
+    navigate('/change-password');
   };
 
   return (
     <div>
-      <h1>내 정보 확인</h1>
-      <label>비밀번호: </label>
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleConfirm}>확인</button>
-
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>내 정보</h2>
-            <p>ID: {userInfo.id}</p>
-            <p>이름: {editingField === 'name' ? (
-              <>
-                <input
-                  type="text"
-                  value={userInfo.name}
-                  onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-                />
-                <button onClick={() => handleSaveChanges('name', userInfo.name)}>확인</button>
-              </>
-            ) : (
-              <>
-                {userInfo.name}
-                <button onClick={() => setEditingField('name')}>수정</button>
-              </>
-            )}</p>
-            <p>학년: {editingField === 'grade' ? (
-              <>
-                <input
-                  type="text"
-                  value={userInfo.grade}
-                  onChange={(e) => setUserInfo({ ...userInfo, grade: e.target.value })}
-                />
-                <button onClick={() => handleSaveChanges('grade', userInfo.grade)}>확인</button>
-              </>
-            ) : (
-              <>
-                {userInfo.grade}
-                <button onClick={() => setEditingField('grade')}>수정</button>
-              </>
-            )}</p>
-            <p>학과: {editingField === 'department' ? (
-              <>
-                <input
-                  type="text"
-                  value={userInfo.department}
-                  onChange={(e) => setUserInfo({ ...userInfo, department: e.target.value })}
-                />
-                <button onClick={() => handleSaveChanges('department', userInfo.department)}>확인</button>
-              </>
-            ) : (
-              <>
-                {userInfo.department}
-                <button onClick={() => setEditingField('department')}>수정</button>
-              </>
-            )}</p>
-            <p>이메일: {editingField === 'email' ? (
-              <>
-                <input
-                  type="text"
-                  value={userInfo.email}
-                  onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
-                />
-                <button onClick={() => handleSaveChanges('email', userInfo.email)}>확인</button>
-              </>
-            ) : (
-              <>
-                {userInfo.email}
-                <button onClick={() => setEditingField('email')}>수정</button>
-              </>
-            )}</p>
-            <button onClick={() => setShowModal(false)}>닫기</button>
-            <button onClick={handleDeleteAccount}>
-              {confirmDelete ? '확인' : '회원 탈퇴'}
-            </button>
-          </div>
-        </div>
+      <h1>내 정보</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <button onClick={() => navigate('/main')}>홈페이지</button>
+        <button onClick={handleChangePassword}>비밀번호 변경</button>
+      </div>
+      {!isPasswordConfirmed && (
+        <>
+          <h5>고객님의 개인정보 보호를 위해 본인확인을 진행합니다.</h5>
+          <h5>비밀번호를 입력해주세요: </h5>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button onClick={handleConfirm}>확인</button>
+        </>
+      )}
+      {isPasswordConfirmed && userInfo && (
+        <UserEdit userInfo={userInfo} />
       )}
     </div>
   );

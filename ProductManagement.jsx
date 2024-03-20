@@ -1,15 +1,15 @@
-// ProductManagement.jsx
-
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:4000/productsmanage?userId=${userId}', {
+      const response = await fetch(`http://localhost:4000/productsmanage`, {
         headers: {
           'user_id': sessionStorage.getItem('userId')
         }
@@ -47,6 +47,33 @@ function ProductManagement() {
     }
   };
 
+  const handleEditProduct = (product) => {
+    setSelectedProduct(product);
+    setEditingProduct({ ...product });
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/productsmanage/${editingProduct.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': sessionStorage.getItem('userId')
+        },
+        body: JSON.stringify(editingProduct)
+      });
+      if (response.ok) {
+        setProducts(products.map(product => (product.id === editingProduct.id ? editingProduct : product)));
+        setSelectedProduct(null);
+        setEditingProduct(null);
+      } else {
+        console.error('상품 수정 실패:', response.status);
+      }
+    } catch (error) {
+      console.error('상품 수정 실패:', error);
+    }
+  };
+
   const navigateToProductDetail = (productId) => {
     navigate(`/productDetail/${productId}`);
   };
@@ -57,8 +84,33 @@ function ProductManagement() {
       <ul className="management-list">
         {products.map(product => (
           <li key={product.id} className="management-item">
-            <span className="management-text">{() => navigateToProductDetail(product.id)}{product.name}</span>
-            <button className="delete-button" onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+            {selectedProduct === product ? (
+              <>
+                <input
+                  type="text"
+                  value={editingProduct.name}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                />
+                <input
+                  type="text"
+                  value={editingProduct.description}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                />
+                <input
+                  type="text"
+                  value={editingProduct.price}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                />
+                <button onClick={handleSaveEdit}>확인</button>
+                <button onClick={() => setSelectedProduct(null)}>취소</button>
+                <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+              </>
+            ) : (
+              <>
+                <span className="management-text" onClick={() => navigateToProductDetail(product.id)}>{product.name}</span>
+                <button onClick={() => handleEditProduct(product)}>수정</button>
+              </>
+            )}
           </li>
         ))}
       </ul>

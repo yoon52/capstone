@@ -10,6 +10,11 @@ if (password !== req.body.confirmPassword) {
   return res.status(400).json({ error: '비밀번호와 비밀번호 재입력이 일치하지 않습니다.' });
 }
 
+// 정규식을 사용하여 비밀번호가 영문, 숫자, 특수문자를 조합하여 10~16자로 이루어져 있는지 확인
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{10,16}$/;
+if (!passwordRegex.test(password)) {
+    return res.status(400).json({ error: '비밀번호는 영문, 숫자, 특수문자를 조합하여 10~16자로 입력해주세요.' });
+}
     // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -201,6 +206,55 @@ app.delete('/productsmanage/:productId', async (req, res) => {
     } catch (error) {
         console.error('상품 삭제 오류:', error);
         return res.status(500).json({ error: '상품 삭제 중 오류가 발생했습니다.' });
+    }
+});
+
+// 상품 관리 엔드포인트
+app.get('/productManagement', async (req, res) => {
+    const userId = req.headers.user_id; // 사용자 ID는 요청 헤더에서 가져옵니다.
+
+    // 사용자 ID가 없는 경우
+    if (!userId) {
+        return res.status(401).json({ error: '사용자 인증이 필요합니다.' });
+    }
+
+    try {
+        // 해당 사용자가 등록한 상품 목록 조회 쿼리
+        const [rows] = await pool.query('SELECT * FROM products WHERE user_id = ?', [userId]);
+        return res.status(200).json(rows);
+    } catch (error) {
+        console.error('상품 목록 가져오기 오류:', error);
+        return res.status(500).json({ error: '상품 목록을 가져오는 중 오류가 발생했습니다.' });
+    }
+});
+
+// 상품 수정 엔드포인트
+app.put('/productsmanage/:productId', async (req, res) => {
+    const productId = req.params.productId;
+    const userId = req.headers.user_id;
+    const { name, description, price } = req.body;
+
+    // 사용자 ID가 없는 경우
+    if (!userId) {
+        return res.status(401).json({ error: '사용자 인증이 필요합니다.' });
+    }
+
+    try {
+        // 상품과 사용자의 일치 여부 확인 쿼리
+        const [rows] = await pool.query('SELECT * FROM products WHERE id = ? AND user_id = ?', [productId, userId]);
+
+        // 상품이 존재하지 않는 경우 또는 권한이 없는 경우
+        if (rows.length === 0) {
+            return res.status(404).json({ error: '해당 상품을 찾을 수 없거나 수정할 권한이 없습니다.' });
+        }
+
+        // 상품 수정 쿼리
+        await pool.query('UPDATE products SET name = ?, description = ?, price = ? WHERE id = ?', [name, description, price, productId]);
+
+        return res.status(200).json({ message: '상품이 성공적으로 수정되었습니다.' });
+    } catch (error) {
+        console.error('상품 수정 오류:', error);
+        return res.status(500).json({ error: '상품 수정 중 오류가 발생했습니다.' });
     }
 });
 
@@ -494,6 +548,72 @@ app.post('/edituserinfo', async (req, res) => {
       console.error('사용자 정보 수정 오류:', error);
       res.status(500).json({ error: '사용자 정보를 수정하는 중 오류가 발생했습니다.' });
   }
+});
+
+
+// POST update views
+app.post('/updateViews/:productId', async (req, res) => {
+    try {
+      const productId = req.params.productId;
+  
+      // Update views count
+      await pool.execute('UPDATE products SET views = views + 1 WHERE id = ?', [productId]);
+  
+      res.json({ message: 'Views updated successfully' });
+    } catch (error) {
+      console.error('Error updating views:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
+  app.get('/products/views', async (req, res) => {
+    try {
+      // 조회수로 정렬된 제품 목록을 가져옴
+      const [rows] = await pool.execute('SELECT * FROM products ORDER BY views DESC');
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching products sorted by views:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  // 비밀번호 변경 엔드포인트
+app.post('/changepassword', async (req, res) => {
+    const { userId, currentPassword, newPassword } = req.body;
+
+    if (!userId || !currentPassword || !newPassword) {
+        return res.status(400).json({ error: '모든 필드를 입력해주세요.' });
+      }
+
+    try {
+        // 사용자 조회 쿼리 실행
+        const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+        if (rows.length > 0) {
+            // 사용자가 존재할 경우 현재 비밀번호 확인
+            const user = rows[0];
+            const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+            if (passwordMatch) {
+                // 비밀번호가 일치할 경우 새로운 비밀번호 해싱
+                const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+                // 새로운 비밀번호로 사용자 정보 업데이트
+                await pool.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
+
+                res.status(200).json({ message: '비밀번호가 성공적으로 변경되었습니다.' });
+            } else {
+                // 현재 비밀번호가 일치하지 않을 경우 에러 응답
+                res.status(401).json({ error: '현재 비밀번호가 일치하지 않습니다.' });
+            }
+        } else {
+            // 사용자가 존재하지 않을 경우 에러 응답
+            res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+        }
+    } catch (error) {
+        console.error('비밀번호 변경 오류:', error);
+        res.status(500).json({ error: '비밀번호를 변경하는 중 오류가 발생했습니다.' });
+    }
 });
 
 
