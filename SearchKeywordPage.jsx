@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/main.css';
 
 function SearchKeywordPage() {
@@ -6,25 +6,25 @@ function SearchKeywordPage() {
   const [userId, setUserId] = useState('');
 
   // 현재 로그인된 사용자의 ID를 가져오는 함수
-  const fetchUserId = () => {
+  const fetchUserId = useCallback(() => {
     const userId = sessionStorage.getItem('userId');
     setUserId(userId);
-  };
+  }, []);
 
   // 검색어 목록을 서버로부터 가져오는 함수
-  const fetchSearchKeywords = async () => {
+  const fetchSearchKeywords = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:4000/searchKeywords/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setSearchKeywords(data);
       } else {
-        console.error('Failed to fetch search keywords');
+        console.error('검색어를 가져오는 데 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error fetching search keywords:', error);
+      console.error('검색어를 가져오는 중 오류가 발생했습니다:', error);
     }
-  };
+  }, [userId]);
 
   // 검색어 삭제 함수
   const deleteKeyword = async (keywordId) => {
@@ -35,33 +35,33 @@ function SearchKeywordPage() {
       if (response.ok) {
         fetchSearchKeywords(); // 삭제 후 목록을 다시 가져옴
       } else {
-        console.error('Failed to delete keyword');
+        console.error('검색어 삭제에 실패했습니다.');
       }
     } catch (error) {
-      console.error('Error deleting keyword:', error);
+      console.error('검색어를 삭제하는 중 오류가 발생했습니다:', error);
     }
   };
 
   // 컴포넌트가 마운트되면 사용자 ID와 검색어 목록을 가져옴
   useEffect(() => {
     fetchUserId();
-  }, []);
+  }, [fetchUserId]);
 
   useEffect(() => {
     if (userId !== '') {
       fetchSearchKeywords();
     }
-  }, [userId]);
+  }, [userId, fetchSearchKeywords]);
 
   return (
     <div className="search-keyword-container">
-      <h2>검 색 기 록</h2>
-        {searchKeywords.map((keyword) => (
-          <li key={keyword.id} className="keyword-item">
-            <span className="keyword-text">{keyword.search_term}</span>
-            <button className="delete-button" onClick={() => deleteKeyword(keyword.id)}>삭제</button>
-          </li>
-        ))}
+      <h2>검색 기록</h2>
+      {searchKeywords.map((keyword) => (
+        <li key={keyword.id} className="keyword-item">
+          <span className="keyword-text">{keyword.search_term}</span>
+          <button className="delete-button" onClick={() => deleteKeyword(keyword.id)}>삭제</button>
+        </li>
+      ))}
     </div>
   );
 }

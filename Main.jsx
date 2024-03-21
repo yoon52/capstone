@@ -6,6 +6,7 @@ import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
+import logo from '../../image/logo.png';
 
 function Main() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -107,30 +108,34 @@ function Main() {
   };
 
   return (
-    <div className="main-container">
-      <div className="navigation-buttons">
-        <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
-        <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
-        <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
-        <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
-      </div>
-
+    <div><img src={logo} id='main-logo' alt="로고" />
       <SearchInput
+        className="search-input-container"
         searchTerm={searchTerm}
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleSearchProduct={handleSearchProduct}
       />
+      <div className="main-container">
+        <div className="navigation-buttons">
+          <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
+          <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
+          <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
+          <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
+        </div>
 
-      <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-      {savedSearchTerm && (
-        <p className="saved-search-term">저장된 검색어 : {savedSearchTerm}</p>
-      )}
-      <ProductList filteredProducts={filteredProducts} />
-      <button type="button" className="add-product-button" onClick={handleAddProduct} >상품 등록</button>
-      <Routes>
-        <Route path="/productDetail/:productId" element={<ProductDetail />} />
-        <Route path="/ProductManagement" element={<ProductManagement />} />
-      </Routes>
+
+
+        <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
+        {savedSearchTerm && (
+          <p className="saved-search-term">저장된 검색어 : {savedSearchTerm}</p>
+        )}
+        <ProductList filteredProducts={filteredProducts} />
+        <button type="button" className="add-product-button" onClick={handleAddProduct} >상품 등록</button>
+        <Routes>
+          <Route path="/productDetail/:productId" element={<ProductDetail />} />
+          <Route path="/ProductManagement" element={<ProductManagement />} />
+        </Routes>
+      </div>
     </div>
   );
 }

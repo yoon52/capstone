@@ -1,21 +1,14 @@
 // NaverLogin.jsx
 
-import React, { useEffect } from 'react';
+import React from 'react';
 
 function NaverLogin() {
-  useEffect(() => {
-    let naverIdLogin = new window.naver.LoginWithNaverId({
-        clientId: 'r59ZbtMFYtVGcCmLsGj5',
-      callbackUrl: 'http://localhost:3000/NaverCallback/',
-      isPopup: false,
-      loginButton: { color: 'green', type: 2, height: 40 }
-    });
-
-    naverIdLogin.init();
-  }, []);
+  const handleNaverLogin = () => {
+    window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&state=?';
+  };
 
   return (
-    <div id="naverIdLogin"></div>
+    <button onClick={handleNaverLogin}>네이버 로그인</button>
   );
 }
 

@@ -61,7 +61,7 @@ function Login() {
 
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
-    window.location.href = 'NaverLogin';
+    window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&state=?';
   };
 
   const handleKakaoLogin = () => {
@@ -76,69 +76,59 @@ function Login() {
 
   // 아이디 찾기 버튼 클릭 시 호출되는 함수
   const handleFindId = () => {
-    navigate('/IdFind');
+    navigate('/FindId');
   };
 
   // 비밀번호 찾기 버튼 클릭 시 호출되는 함수
   const handleFindPassword = () => {
-    navigate('/PwFind');
+    navigate('/FindPw');
   };
 
   // 로그인 폼을 렌더링하는 JSX
   return (
-    <div className="login-container">
-      <img src={logo} id='login-logo' alt="로고" />
-      <h1 className="login-header">L O G I N</h1>
-      <form onSubmit={handleSubmit}>
-
-        {/* 사용자 ID 입력 필드 */}
-        <div className="form-group">
-          <input
-            type="text"
-            name="id"
-            value={formData.id}
-            onChange={handleChange}
-            placeholder="아이디"
-            required
-          />
-        </div>
-
-        {/* 비밀번호 입력 필드 */}
-        <div className="form-group">
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="비밀번호"
-            required
-          />
-        </div>
-
-        {/* 로그인 실패 메시지 */}
-        {!loginSuccess && (
-          <p className="login-failure-message">아이디 또는 비밀번호가 올바르지 않습니다.</p>
-        )}
-
-
-        {/* 로그인 버튼 */}
-        <button type="submit" className="login-button">로그인</button>
-
-        {/* 회원가입/아이디/비밀번호 찾기 버튼 */}
-        <div className="all-group">
-          <button type="button" className="Signup-button" onClick={handleSignup}>회원가입</button>
-          <button type="button" className="find-id" onClick={handleFindId}>아이디 찾기</button>
-          <button type="button" className="find-pw" onClick={handleFindPassword}>비밀번호 찾기</button>
-        </div>
-
-        {/* Rest 로그인 버튼 */}
-        <div className="rest-group">
-          <button type="button" src={naver} alt="naver" className="naver-login" onClick={handleNaverLogin}></button>
-          <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>
-        </div>
-
-      </form>
-    </div>
+    <><img src={logo} id='login-logo' alt="로고" />
+      <div className="login-container">
+        <h1 className="login-header">L O G I N</h1>
+        <form onSubmit={handleSubmit}>
+          {/* 사용자 ID 입력 필드 */}
+          <div className="form-group">
+            <input
+              type="text"
+              name="id"
+              value={formData.id}
+              onChange={handleChange}
+              placeholder="학번"
+              required />
+          </div>
+          {/* 비밀번호 입력 필드 */}
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="비밀번호"
+              required />
+          </div>
+          {/* 로그인 실패 메시지 */}
+          {!loginSuccess && (
+            <p className="login-failure-message">아이디 또는 비밀번호가 올바르지 않습니다.</p>
+          )}
+          {/* 로그인 버튼 */}
+          <button type="submit" className="login-button">로그인</button>
+          {/* 회원가입/아이디/비밀번호 찾기 버튼 */}
+          <div className="all-group">
+            <button type="button" className="Signup-button" onClick={handleSignup}>회원가입</button>
+            <button type="button" className="find-id" onClick={handleFindId}>아이디 찾기</button>
+            <button type="button" className="find-pw" onClick={handleFindPassword}>비밀번호 찾기</button>
+          </div>
+          {/* Rest 로그인 버튼 */}
+          <div className="rest-group">
+            <button type="button" src={naver} alt="naver" className="naver-login" onClick={handleNaverLogin}></button>
+            <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>
+          </div>
+        </form>
+      </div></>
   );
 }
 
