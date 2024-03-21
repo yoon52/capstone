@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../styles/main.css';
+import logo from '../../image/logo.png';
+
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -79,8 +82,9 @@ function ProductManagement() {
   };
 
   return (
+    <div><img src={logo} id='logo' alt="로고" />
+    <h1 className="product-management-header">상품 관리</h1>
     <div className="product-management-container">
-      <h2>상 품 관 리</h2>
       <ul className="management-list">
         {products.map(product => (
           <li key={product.id} className="management-item">
@@ -114,6 +118,7 @@ function ProductManagement() {
           </li>
         ))}
       </ul>
+    </div>
     </div>
   );
 }

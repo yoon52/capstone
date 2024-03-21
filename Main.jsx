@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import SearchInput from './SearchInput';
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
@@ -44,7 +43,7 @@ function Main() {
   }, [sortType]);
 
   const handleAddProduct = () => {
-    navigate('/addProducts');
+    navigate('/AddProducts');
   };
 
   const handleSearchProduct = async () => {
@@ -91,7 +90,7 @@ function Main() {
   };
 
   const handleKeywordManagement = () => {
-    navigate('/search-keyword');
+    navigate('/SearchKeyword');
   };
 
   const handleProductManagement = () => {
@@ -99,7 +98,7 @@ function Main() {
   };
 
   const handleShowMyInfoPage = () => {
-    navigate('/myinfo');
+    navigate('/MyInfo');
   };
 
   const handleLogout = () => {
@@ -108,34 +107,36 @@ function Main() {
   };
 
   return (
-    <div><img src={logo} id='main-logo' alt="로고" />
-      <SearchInput
-        className="search-input-container"
-        searchTerm={searchTerm}
-        handleChangeSearchTerm={handleChangeSearchTerm}
-        handleSearchProduct={handleSearchProduct}
-      />
-      <div className="main-container">
+    <div>
+        <img src={logo} id='logo' alt="로고" />
         <div className="navigation-buttons">
           <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
           <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
           <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
           <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
-        </div>
-
-
-
+      </div>
+      <div className="search-container">
+        <input
+          type="search"
+          placeholder="검색어를 입력하세요"
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+          className="search-input" />
+        <button onClick={handleSearchProduct} className="search-product-button">검색</button>
+      </div>
+      <div className="main-container">
         <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
         {savedSearchTerm && (
           <p className="saved-search-term">저장된 검색어 : {savedSearchTerm}</p>
         )}
         <ProductList filteredProducts={filteredProducts} />
-        <button type="button" className="add-product-button" onClick={handleAddProduct} >상품 등록</button>
+
         <Routes>
           <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
         </Routes>
       </div>
+      <button type="button" className="add-button" onClick={handleAddProduct} >상품 등록</button>
     </div>
   );
 }

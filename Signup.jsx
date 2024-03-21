@@ -91,7 +91,7 @@ function Signup() {
 
   return (
     <div>
-      <img src={logo} id='signup-logo' alt="로고" />
+      <img src={logo} id='logo' alt="로고" />
       <h1 className="Signup-header">회원가입</h1>
       <div className="Signup-container">
         {isModalOpen && (

@@ -33,7 +33,7 @@ function MyInfo() {
 
   const handleChangePassword = () => {
     // 비밀번호 변경 페이지로 이동
-    navigate('/change-password');
+    navigate('/ChangePw');
   };
 
   return (

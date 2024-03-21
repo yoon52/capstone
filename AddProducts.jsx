@@ -1,6 +1,8 @@
+// AddProducts.jsx
 import React, { useState } from 'react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/main.css';
+import logo from '../../image/logo.png';
 
 function AddProducts() {
   const userId = sessionStorage.getItem('userId');
@@ -14,7 +16,7 @@ function AddProducts() {
 
     // 상품 추가 요청
     try {
-      const response = await fetch('http://localhost:4000/addProduct', {
+      const response = await fetch('http://localhost:4000/AddProduct', {
         method: 'POST',
         headers: {
           'user_id': sessionStorage.getItem('userId'),
@@ -42,20 +44,22 @@ function AddProducts() {
   };
 
   return (
-    <div className="add-products-container">
-      <h2>상품 추가</h2>
-      <form onSubmit={handleAddProduct}>
-        <div className="form-group">
-          <input type="text" placeholder="상품명" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
-        </div>
-        <div className="form-group">
-          <input type="text" placeholder="설명" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </div>
-        <div className="form-group">
-          <input type="text" placeholder="가격" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-        </div>
-        <button type="submit" className="add-product-button">추가</button>
-      </form>
+    <div><img src={logo} id='logo' alt="로고" />
+      <div className="add-products-container">
+        <h2>상품 추가</h2>
+        <form onSubmit={handleAddProduct}>
+          <div className="form-group">
+            <input type="text" placeholder="상품명" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <input type="text" placeholder="설명" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <input type="text" placeholder="가격" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
+          </div>
+          <button type="submit" className="add-product-button">추가</button>
+        </form>
+      </div>
     </div>
   );
 }

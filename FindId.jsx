@@ -56,7 +56,7 @@ function FindId() {
   };
 
   return (
-    <div><img src={logo} id='findid-logo' alt="로고" />
+    <div><img src={logo} id='logo' alt="로고" />
       <h1 className="findid-header">아이디 찾기</h1>
       <div className="findid-container">
         <form onSubmit={handleSubmit}>

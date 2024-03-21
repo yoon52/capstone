@@ -26,7 +26,7 @@ function ChangePw({ email, tempPassword }) {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/change-password', {
+      const response = await fetch('http://localhost:4000/-ChangePw', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
