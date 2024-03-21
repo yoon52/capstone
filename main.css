@@ -1,19 +1,46 @@
   /* 전체.css */
 
+  /* 로고 */
+  #logo {
+    width: 200px;
+    height: 120px;
+    margin-left: 25px;
+    margin-top: 10px;
+  }
+
+  #login-logo {
+    width: 240px;
+    height: 150px;
+    margin: auto;
+    display: block;
+    margin-top: 50px;
+  }
+
+  /* 입력 창 */
   input[type="text"],
   input[type="password"],
   input[type="email"] {
     width: calc(100% - 20px);
     padding: 15px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #B0C4DE;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  /* 검색어 창 */
+  input[type="search"] {
+    width: calc(100% - 20px);
+    padding: 15px;
+    border-radius: 5px;
+    border: 3px solid #103260;
     font-size: 1rem;
     box-sizing: border-box;
   }
 
   .form-group {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
   }
 
   .select-group {
@@ -32,6 +59,8 @@
     text-align: left;
     text-indent: 10px;
     color: gray;
+    border-radius: 5px;
+    border: 1px solid #B0C4DE;
   }
 
   .modal {
@@ -51,48 +80,47 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
-    width: 60%;
+    width: 300px;
     max-width: 90%;
     height: auto;
   }
 
   .modal-close {
-    padding: 8px 16px;
-    background-color: #000000;
-    color: white;
+    background-color: #103260;
+    color: #fff;
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
+    transition: filter 0.3s ease;
   }
 
   .modal-close:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /*--------------------------------------------------------------------------------*/
 
   /* Login.css */
 
+
+
+  /* 로그인 컨테이너 */
   .login-container {
+    background-color: #ffffff;
     position: absolute;
-    top: 65%;
+    top: 68%;
     left: 50%;
     transform: translate(-50%, -70%);
-    width: 60%;
-    height: 70%;
+    width: 500px;
+    height: 480px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
     text-align: center;
   }
 
-  #login-logo {
-    width: 45%;
-    height: 25%;
-  }
-
+  /* 로그인 헤더 */
   .login-header {
     font-size: 40px;
     margin-bottom: 30px;
@@ -100,21 +128,21 @@
 
   /* 로그인 버튼 */
   .login-button {
-    background-color: #000000;
+    background-color: #103260;
     color: #fff;
     padding: 15px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     width: 95%;
-    margin-top: 30px;
+    margin-top: 10px;
     margin-bottom: 10px;
     font-size: 17px;
-    transition: background-color 0.3s ease;
+    transition: filter 0.3s ease;
   }
 
   .login-button:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /* 회원가입 및 찾기 버튼 그룹 */
@@ -141,13 +169,13 @@
     content: "";
     position: absolute;
     height: 50%;
-    width: 1px;
-    background-color: #000000aa;
+    width: 2px;
+    background-color: #2f4f4f50;
     left: 0;
     top: 25%;
   }
 
-  /* 회원가입및 찾기 버튼 */
+  /* 회원가입 및 찾기 버튼 */
   .Signup-button,
   .find-id,
   .find-pw {
@@ -210,43 +238,43 @@
   .login-failure-message {
     color: black;
     text-align: center;
-    margin-top: -5px;
-    margin-bottom: -15.5px;
+    margin-top: -20px;
+    margin-bottom: -2px;
   }
 
   /*--------------------------------------------------------------------------------*/
 
   /* Signup.css */
 
-  .Signup-container {
-    position: absolute;
-    top: 65%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 65%;
-    height: 85%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  /* 회원가입 헤더 */
+  .Signup-header {
+    font-size: 40px;
+    margin-top: -70px;
     text-align: center;
   }
 
-  #Signup-logo {
-    margin-top: 0px;
-    width: 70%;
-    height: 15%;
+  /* 회원가입 컨테이너 */
+  .Signup-container {
+    background-color: #ffffff;
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 500px;
+    height: 630px;
+    padding: 10px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
+    text-align: center;
   }
 
-  .Signup-header {
-    font-size: 35px;
-    margin-bottom: 30px;
-  }
-
+  /* 입력창 중복확인 그룹 */
   .id-group {
     display: flex;
     align-items: center;
   }
 
+  /* 아이디 입력 창 */
   .id-form {
     flex: 1;
   }
@@ -259,26 +287,27 @@
     margin-left: 10px;
   }
 
+  /* 중복 확인 버튼 */
   .check {
-    background-color: #000000;
+    background-color: #103260;
     color: #fff;
     height: 50px;
-    width: 15%;
+    width: 75px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 13px;
     margin-right: 10px;
-    transition: background-color 0.3s ease;
+    transition: filter 0.3s ease;
   }
 
   .check:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /* 가입하기 버튼 */
   .Signup {
-    background-color: #000000;
+    background-color: #103260;
     color: #fff;
     padding: 15px 20px;
     border: none;
@@ -288,251 +317,285 @@
     margin-top: 35px;
     margin-bottom: 10px;
     font-size: 17px;
-    transition: background-color 0.3s ease;
+    transition: filter 0.3s ease;
   }
 
   .Signup:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /*--------------------------------------------------------------------------------*/
 
-  /* IdFind.css */
+  /* FindId.css */
 
-  .id-find-container {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 60%;
-    height: 55%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  /* 아이디 찾기 헤더 */
+  .findid-header {
+    font-size: 40px;
+    margin-top: 20px;
     text-align: center;
   }
 
-  #idfind-logo {
-    margin-top: 0px;
-    width: 80%;
-    height: 30%;
-  }
-
-  .idfind-header {
-    font-size: 35px;
-    margin-bottom: 30px;
-  }
-
-  /* 아이디 찾기 버튼 */
-  .idfind {
-    background-color: #000000;
-    color: #fff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 95%;
-    margin-top: 35px;
-    font-size: 17px;
-    transition: background-color 0.3s ease;
-  }
-
-  .idfind:hover {
-    background-color: #000000aa;
-  }
-
-  /* 아이디 모달 */
-
-  .found-id {
-    font-size: 20px;
-  }
-
-  .idfind-modal {
-    margin: 0 10px;
-  }
-
-  .idfind-modal {
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
-  }
-
-  .idfind-modal button {
-    margin: 0 10px;
-    margin-top: 30px;
-  }
-
-  .idfind-login {
-    background-color: #000000;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 50%;
-    transition: background-color 0.3s ease;
-  }
-
-  .idfind-fwfind {
-    background-color: #000000;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    height: 50px;
-    width: 50%;
-    transition: background-color 0.3s ease;
-  }
-
-  /*--------------------------------------------------------------------------------*/
-
-  /* PwFind.css */
-
-  .pwfind-container {
+  /* 아이디 찾기 컨테이너 */
+  .findid-container {
+    background-color: #ffffff;
     position: absolute;
     top: 55%;
     left: 50%;
     transform: translate(-50%, -70%);
     width: 500px;
-    height: 470px;
+    height: 280px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 15px;
     text-align: center;
   }
 
-  #pwfind-logo {
-    margin-top: 0px;
-    width: 80%;
-    height: 30%;
-  }
-
-  .pwfind-header {
-    font-size: 35px;
-    margin-bottom: 30px;
-  }
-
-  /* 비밀번호 찾기 버튼 */
-  .pwfind {
-    background-color: #000000;
+  /* 아이디 찾기 버튼 */
+  .findid {
+    background-color: #103260;
     color: #fff;
     padding: 15px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     width: 95%;
-    margin-top: 35px;
+    margin-top: 55px;
     font-size: 17px;
-    transition: background-color 0.3s ease;
+    transition: filter 0.3s ease;
   }
 
-  .pwfind:hover {
-    background-color: #000000aa;
+  .findid:hover {
+    filter: brightness(0.9)
+  }
+
+  /* 아이디 모달 */
+  .found-id {
+    font-size: 20px;
+  }
+
+  .findid-modal {
+    display: flex;
+    justify-content: center;
+  }
+
+  .findid-modal button {
+    margin: 0 10px;
+    margin-top: 30px;
+  }
+
+  /* 로그인 하기 버튼 */
+  .findid-login {
+    background-color: #103260;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+  }
+
+  .findid-login:hover {
+    filter: brightness(0.9)
+  }
+
+  /* 비밀번호 찾기 버튼 */
+  .findid-fwfind {
+    background-color: #103260;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+  }
+
+  .findid-fwfind:hover {
+    filter: brightness(0.9)
+  }
+
+  /*--------------------------------------------------------------------------------*/
+
+  /* FindPw.css */
+
+  /* 비밀번호 찾기 헤더 */
+  .findpw-header {
+    font-size: 40px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  /* 비밀번호 찾기 컨테이너 */
+  .findpw-container {
+    background-color: #ffffff;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 500px;
+    height: 200px;
+    padding: 10px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  /* 비밀번호 찾기 버튼 */
+  .findpw {
+    background-color: #103260;
+    color: #fff;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 95%;
+    margin-top: 20px;
+    font-size: 17px;
+    transition: filter 0.3s ease;
+  }
+
+  .findpw:hover {
+    filter: brightness(0.9)
+  }
+
+  /* 로그인 하기 버튼 */
+  .findpw-login {
+    background-color: #103260;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+  }
+
+  .findpw-login:hover {
+    filter: brightness(0.9)
   }
 
   /*--------------------------------------------------------------------------------*/
 
   /* Main.css */
 
-  .main-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 90%;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  /* 버튼 그룹 */
+  .navigation-buttons {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 1300px;
+    margin-top: -200px;
   }
+
 
   /* 검색어 관리 버튼 */
   .management-button {
+    background-color: #103260;
     padding: 10px 10px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #000000;
     color: #fff;
     margin-right: 10px;
+    transition: filter 0.3s ease;
   }
 
   .management-button:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /* 상품관리 버튼 */
   .product-management-button {
+    background-color: #103260;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #000000;
     color: #fff;
     margin-right: 10px;
+    transition: filter 0.3s ease;
   }
 
   .product-management-button:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /* 내 정보 버튼 */
   .my-info-button {
+    background-color: #103260;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #000000;
     color: #fff;
     margin-right: 10px;
+    transition: filter 0.3s ease;
   }
 
   .my-info-button:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
   /* 로그아웃 버튼 */
   .logout-button {
+    background-color: #103260;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #000000;
     color: #fff;
+    margin-right: 10px;
+    transition: filter 0.3s ease;
   }
 
   .logout-button:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
   }
 
-  .search-input-container {
+  /* 검색창 컨테이너 */
+  .search-container {
+    padding: 5px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: -70px;
+  }
+
+  /* 입력창 */
+  .search-input {
     flex: 1;
     display: flex;
     align-items: center;
     margin-right: 10px;
   }
 
-  /* 검색창 */
-  .search-container {
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-    grid-column: span 8;
-  }
-
   /* 검색버튼 */
   .search-product-button {
-    padding: 15px 30px;
+    padding: 18px 30px;
+    background-color: #103260;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #000000;
     color: #fff;
+    transition: filter 0.3s ease;
   }
 
   .search-product-button:hover {
-    background-color: #000000aa;
+    filter: brightness(0.9)
+  }
+
+  /* 메인 컨테이너 */
+  .main-container {
+    background-color: #ffffff;
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 1000px;
+    height: 700px;
+    padding: 10px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
+    text-align: center;
   }
 
   /* 정렬 select */
@@ -546,7 +609,7 @@
 
   .sort-container input,
   .sort-container select {
-    width: 10%;
+    width: 70px;
     height: 30px;
   }
 
@@ -555,49 +618,81 @@
   }
 
   /* 상품 등록 버튼 */
-  .add-product-button {
-    padding: 10px 20px;
+  .add-button {
+    position: fixed;
+    background-color: #103260;
+    top: 95%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    padding: 20px 40px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    background-color: #000000;
     color: #fff;
-    margin-top: 10px;
   }
 
-  .add-product-button:hover {
-    background-color: #000000aa;
+  .add-button:hover {
+    filter: brightness(0.9)
   }
 
   /*--------------------------------------------------------------------------------*/
 
   /* AddProducts.css */
 
+
   .add-products-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -70%);
-    width: 80%;
+    width: 700px;
     height: auto;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
     text-align: center;
+  }
+
+  .add-product-button {
+    background-color: #103260;
+    color: #fff;
+    height: 50px;
+    width: 75px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+    transition: filter 0.3s ease;
+  }
+
+  .add-product-button:hover {
+    filter: brightness(0.9)
   }
 
   /*--------------------------------------------------------------------------------*/
 
+  /* SearchKeyword.css */
+
+  /* 검색기록 헤더 */
+  .search-keyword-header {
+    font-size: 40px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* 검색기록 컨테이너 */
   .search-keyword-container {
     position: absolute;
-    top: 50%;
+    top: 75%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 90%;
+    transform: translate(-50%, -70%);
+    width: 700px;
+    height: 600px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
     text-align: center;
     overflow-y: auto;
   }
@@ -630,19 +725,26 @@
 
   /* ProductManagement.css */
 
+  .product-management-header {
+    font-size: 40px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* 검색기록 컨테이너 */
   .product-management-container {
     position: absolute;
-    top: 50%;
+    top: 70%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 90%;
+    transform: translate(-50%, -70%);
+    width: 700px;
+    height: 500px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
     text-align: center;
     overflow-y: auto;
-    
+
   }
 
   /* 내 상품 */
@@ -652,18 +754,4 @@
     justify-content: space-between;
     padding: 15px 0;
     border-bottom: 1px solid #ccc;
-  }
-
-  /* 삭제 버튼 */
-  .management-item .delete-button {
-    background-color: #ff6666;
-    color: white;
-    border: none;
-    padding: 9px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .management-item .delete-button:hover {
-    background-color: #ff6666aa;
   }
