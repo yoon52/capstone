@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/main.css';
@@ -91,104 +90,106 @@ function Signup() {
   };
 
   return (
-    <div className="Signup-container">
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <p>{errorMessage}</p>
-            <button className="modal-close" onClick={handleModalClose}>확인</button>
+    <div>
+      <img src={logo} id='logo' alt="로고" />
+      <h1 className="Signup-header">회원가입</h1>
+      <div className="Signup-container">
+        {isModalOpen && (
+          <div className="modal">
+            <div className="modal-content">
+              <p>{errorMessage}</p>
+              <button className="modal-close" onClick={handleModalClose}>확인</button>
+            </div>
           </div>
-        </div>
-      )}
-      {signupSuccess && <p className="success-message">회원가입 성공</p>}
-      <img src={logo} id='Signup-logo' alt="로고" />
-      <h1 className="Signup-header">회 원 가 입</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="이름"
-            required
-          />
-        </div>
-        <div className="form-group id-group">
-          <div className="id-form">
+        )}
+        {signupSuccess && <p className="success-message">회원가입 성공</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
             <input
               type="text"
-              name="id"
-              value={formData.id}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              placeholder="아이디"
+              placeholder="이름"
               required
             />
           </div>
-          <button type="button" className="check" onClick={handleCheckAvailability}>중복 확인</button>
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="비밀번호"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="비밀번호 확인"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="이메일"
-            required
-          />
-        </div>
-        <div className="select-group">
-          <select
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            style={{ color: formData.department ? 'black' : 'gray' }}
-            required
-          >
-            <option value="">학과를 선택하세요</option>
-            <option value="computer_science">컴퓨터 공학과</option>
-            <option value="software_engineering">소프트웨어 공학과</option>
-            <option value="design">디자인학과</option>
-            <option value="business-administration">경영학과</option>
-          </select>
+          <div className="form-group id-group">
+            <div className="id-form">
+              <input
+                type="text"
+                name="id"
+                value={formData.id}
+                onChange={handleChange}
+                placeholder="학번"
+                required
+              />
+            </div>
+            <button type="button" className="check" onClick={handleCheckAvailability}>중복 확인</button>
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="비밀번호"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="비밀번호 확인"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="이메일"
+              required
+            />
+          </div>
+          <div className="select-group">
+            <select
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              style={{ color: formData.department ? 'black' : 'gray' }}
+              required
+            >
+              <option value="">학과를 선택하세요</option>
+              <option value="computer_science">컴퓨터 공학과</option>
+              <option value="software_engineering">소프트웨어 공학과</option>
+              <option value="design">디자인학과</option>
+              <option value="business-administration">경영학과</option>
+            </select>
 
-          <select
-            name="grade"
-            value={formData.grade}
-            onChange={handleChange}
-            style={{ color: formData.grade ? 'black' : 'gray' }}
-            required
-          >
-            <option value="">학년을 선택하세요</option>
-            <option value="1">1학년</option>
-            <option value="2">2학년</option>
-            <option value="3">3학년</option>
-            <option value="4">4학년</option>
-          </select>
-        </div>
-        <button type="submit" className="Signup">가입하기</button>
-      </form>
-      <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
+            <select
+              name="grade"
+              value={formData.grade}
+              onChange={handleChange}
+              style={{ color: formData.grade ? 'black' : 'gray' }}
+              required
+            >
+              <option value="">학년을 선택하세요</option>
+              <option value="1">1학년</option>
+              <option value="2">2학년</option>
+              <option value="3">3학년</option>
+              <option value="4">4학년</option>
+            </select>
+          </div>
+          <button type="submit" className="signup-button">가입하기</button>
+        </form>
+        <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
+      </div>
     </div>
   );
 }

@@ -1,18 +1,15 @@
-// Main.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import SearchInput from './SearchInput';
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
-import ProductManagement from './ProductManagement'; // Import ProductManagement component with the correct path
+import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
+import logo from '../../image/logo.png';
 
 function Main() {
-  const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [savedSearchTerm, setSavedSearchTerm] = useState('');
   const [sortType, setSortType] = useState('recommend');
   const navigate = useNavigate();
@@ -25,8 +22,6 @@ function Main() {
           url = 'https://ec2caps.liroocapstone.shop:4000/products/latest';
         } else if (sortType === 'recommend') {
           url = 'https://ec2caps.liroocapstone.shop:4000/products/searchByRecent';
-        } else if (sortType === 'views') { // 새로 추가한 조건
-          url = 'https://ec2caps.liroocapstone.shop:4000/products/views'; // 조회수로 정렬된 제품 목록을 가져오는 엔드포인트
         }
         const response = await fetch(url, {
           headers: {
@@ -35,7 +30,6 @@ function Main() {
         });
         if (response.ok) {
           const data = await response.json();
-          setProducts(data);
           setFilteredProducts(data);
         } else {
           console.error('상품 목록 가져오기 오류:', response.status);
@@ -49,7 +43,7 @@ function Main() {
   }, [sortType]);
 
   const handleAddProduct = () => {
-    navigate('/addProducts'); 
+    navigate('/AddProducts');
   };
 
   const handleSearchProduct = async () => {
@@ -96,44 +90,53 @@ function Main() {
   };
 
   const handleKeywordManagement = () => {
-    navigate('/search-keyword');
+    navigate('/SearchKeyword');
   };
-  
+
   const handleProductManagement = () => {
     navigate('/ProductManagement');
   };
 
+  const handleShowMyInfoPage = () => {
+    navigate('/MyInfo');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('userId');
+    navigate('/login');
+  };
 
   return (
-    <div className="main-container">
-      <div className="navigation-buttons">
-        <button onClick={handleKeywordManagement} className="management-button">
-          검색어 관리
-        </button>
-        <button onClick={handleProductManagement} className="product-management-button">
-          상품 관리
-        </button>
-        
+    <div>
+        <img src={logo} id='logo' alt="로고" />
+        <div className="navigation-buttons">
+          <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
+          <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
+          <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
+          <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
       </div>
-      <SearchInput
-        searchTerm={searchTerm}
-        handleChangeSearchTerm={handleChangeSearchTerm}
-        handleSearchProduct={handleSearchProduct}
-      />
-      <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-      
-      <ProductList filteredProducts={filteredProducts} />
-      <button onClick={handleAddProduct} className="add-product-button">
-        상품 등록
-      </button>
-      <Routes>
-        <Route path="/productDetail/:productId" element={<ProductDetail />} />
-        <Route path="/ProductManagement" element={<ProductManagement />} /> {/* Add this route */}
-      </Routes>
+      <div className="search-container">
+        <input
+          type="search"
+          placeholder="검색어를 입력하세요"
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+          className="search-input" />
+        <button onClick={handleSearchProduct} className="search-product-button">검색</button>
+      </div>
+      <div className="main-container">
+        <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
+        
+        <ProductList filteredProducts={filteredProducts} />
 
+        <Routes>
+          <Route path="/productDetail/:productId" element={<ProductDetail />} />
+          <Route path="/ProductManagement" element={<ProductManagement />} />
+        </Routes>
+      </div>
+      <button type="button" className="add-button" onClick={handleAddProduct} >상품 등록</button>
     </div>
   );
-
 }
 
 export default Main;
