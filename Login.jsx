@@ -118,7 +118,7 @@ function Login() {
           <button type="submit" className="login-button">로그인</button>
           {/* 회원가입/아이디/비밀번호 찾기 버튼 */}
           <div className="all-group">
-            <button type="button" className="Signup-button" onClick={handleSignup}>회원가입</button>
+            <button type="button" className="signup" onClick={handleSignup}>회원가입</button>
             <button type="button" className="find-id" onClick={handleFindId}>아이디 찾기</button>
             <button type="button" className="find-pw" onClick={handleFindPassword}>비밀번호 찾기</button>
           </div>

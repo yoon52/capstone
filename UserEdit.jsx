@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 
-// react-modal의 App element를 설정
 Modal.setAppElement('#root');
 
 function UserEdit({ userInfo }) {
@@ -67,6 +66,10 @@ function UserEdit({ userInfo }) {
     }
   };
 
+  const handleChangePassword = () => {
+    navigate('/ChangePw');
+  };
+
   return (
     <div>
       <h2>회원 정보 수정</h2>
@@ -85,8 +88,8 @@ function UserEdit({ userInfo }) {
       </p>
       <button onClick={handleDeleteAccount}>회원 탈퇴</button>
       <button onClick={handleSave}>저장</button>
+      <button onClick={handleChangePassword}>비밀번호 변경</button>
 
-      {/* 모달 */}
       <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
         <h2>비밀번호 입력</h2>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />

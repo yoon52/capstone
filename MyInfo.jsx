@@ -1,7 +1,9 @@
 // MyInfo.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserEdit from './UserEdit.jsx'; // UserEdit 컴포넌트를 불러옴
+import '../../styles/main.css';
+import UserEdit from './UserEdit.jsx';
+import logo from '../../image/logo.png';
 
 function MyInfo() {
   const [password, setPassword] = useState('');
@@ -31,29 +33,21 @@ function MyInfo() {
     }
   };
 
-  const handleChangePassword = () => {
-    // 비밀번호 변경 페이지로 이동
-    navigate('/ChangePw');
-  };
-
   return (
-    <div>
-      <h1>내 정보</h1>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button onClick={() => navigate('/main')}>홈페이지</button>
-        <button onClick={handleChangePassword}>비밀번호 변경</button>
+    <div><img src={logo} id='logo' alt="로고" />
+      <h1 className="myinfo-header">내 정보</h1>
+      <div className="myinfo-container">
+        {!isPasswordConfirmed && (
+          <>
+            <h3 className="input-password">비밀번호를 입력해주세요</h3>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <button className="myinfo-button" onClick={handleConfirm}>확인</button>
+          </>
+        )}
+        {isPasswordConfirmed && userInfo && (
+          <UserEdit userInfo={userInfo} />
+        )}
       </div>
-      {!isPasswordConfirmed && (
-        <>
-          <h5>고객님의 개인정보 보호를 위해 본인확인을 진행합니다.</h5>
-          <h5>비밀번호를 입력해주세요: </h5>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button onClick={handleConfirm}>확인</button>
-        </>
-      )}
-      {isPasswordConfirmed && userInfo && (
-        <UserEdit userInfo={userInfo} />
-      )}
     </div>
   );
 }

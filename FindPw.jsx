@@ -60,7 +60,7 @@ function FindPw() {
             required
           />
           </div>
-          <button type="submit" className="findpw">비밀번호 찾기</button>
+          <button type="submit" className="findpw-button">비밀번호 찾기</button>
         </form>
 
         {showModal && (

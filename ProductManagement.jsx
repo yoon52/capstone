@@ -83,42 +83,42 @@ function ProductManagement() {
 
   return (
     <div><img src={logo} id='logo' alt="로고" />
-    <h1 className="product-management-header">상품 관리</h1>
-    <div className="product-management-container">
-      <ul className="management-list">
-        {products.map(product => (
-          <li key={product.id} className="management-item">
-            {selectedProduct === product ? (
-              <>
-                <input
-                  type="text"
-                  value={editingProduct.name}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editingProduct.description}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editingProduct.price}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                />
-                <button onClick={handleSaveEdit}>확인</button>
-                <button onClick={() => setSelectedProduct(null)}>취소</button>
-                <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
-              </>
-            ) : (
-              <>
-                <span className="management-text" onClick={() => navigateToProductDetail(product.id)}>{product.name}</span>
-                <button onClick={() => handleEditProduct(product)}>수정</button>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+      <h1 className="product-management-header">상품 관리</h1>
+      <div className="product-management-container">
+        <ul className="management-list">
+          {products.map(product => (
+            <li key={product.id} className="management-item">
+              {selectedProduct === product ? (
+                <>
+                  <input
+                    type="text"
+                    value={editingProduct.name}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    value={editingProduct.description}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                  />
+                  <button className="product-save" onClick={handleSaveEdit}>확인</button>
+                  <button className="product-cancel" onClick={() => setSelectedProduct(null)}>취소</button>
+                  <button className="product-delete" onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+                </>
+              ) : (
+                <>
+                  <span className="management-text" onClick={() => navigateToProductDetail(product.id)}>{product.name}</span>
+                  <button className="product-edit" onClick={() => handleEditProduct(product)}>수정</button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

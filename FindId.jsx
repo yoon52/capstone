@@ -102,7 +102,7 @@ function FindId() {
               <option value="4">4학년</option>
             </select>
           </div>
-          <button type="submit" className="findid">아이디 찾기</button>
+          <button type="submit" className="findid-button">아이디 찾기</button>
         </form>
 
         {showNotFoundModal && (

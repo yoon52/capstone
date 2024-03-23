@@ -186,7 +186,7 @@ function Signup() {
               <option value="4">4학년</option>
             </select>
           </div>
-          <button type="submit" className="Signup">가입하기</button>
+          <button type="submit" className="signup-button">가입하기</button>
         </form>
         <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
       </div>

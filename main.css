@@ -103,8 +103,6 @@
 
   /* Login.css */
 
-
-
   /* 로그인 컨테이너 */
   .login-container {
     background-color: #ffffff;
@@ -176,7 +174,7 @@
   }
 
   /* 회원가입 및 찾기 버튼 */
-  .Signup-button,
+  .signup,
   .find-id,
   .find-pw {
     background-color: #ffffff;
@@ -306,7 +304,7 @@
   }
 
   /* 가입하기 버튼 */
-  .Signup {
+  .signup-button {
     background-color: #103260;
     color: #fff;
     padding: 15px 20px;
@@ -320,7 +318,7 @@
     transition: filter 0.3s ease;
   }
 
-  .Signup:hover {
+  .signup-button:hover {
     filter: brightness(0.9)
   }
 
@@ -351,7 +349,7 @@
   }
 
   /* 아이디 찾기 버튼 */
-  .findid {
+  .findid-button {
     background-color: #103260;
     color: #fff;
     padding: 15px 20px;
@@ -364,7 +362,7 @@
     transition: filter 0.3s ease;
   }
 
-  .findid:hover {
+  .findid-button:hover {
     filter: brightness(0.9)
   }
 
@@ -440,7 +438,7 @@
   }
 
   /* 비밀번호 찾기 버튼 */
-  .findpw {
+  .findpw-button {
     background-color: #103260;
     color: #fff;
     padding: 15px 20px;
@@ -453,7 +451,7 @@
     transition: filter 0.3s ease;
   }
 
-  .findpw:hover {
+  .findpw-button:hover {
     filter: brightness(0.9)
   }
 
@@ -483,7 +481,6 @@
     margin-left: 1300px;
     margin-top: -200px;
   }
-
 
   /* 검색어 관리 버튼 */
   .management-button {
@@ -625,7 +622,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 999;
-    padding: 20px 40px;
+    padding: 15px 20px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
@@ -640,7 +637,7 @@
 
   /* AddProducts.css */
 
-
+  /* 상품 추가 컨테이너 */
   .add-products-container {
     position: absolute;
     top: 50%;
@@ -654,16 +651,16 @@
     text-align: center;
   }
 
+  /* 상품 추가 버튼 */
   .add-product-button {
     background-color: #103260;
     color: #fff;
-    height: 50px;
+    height: 40px;
     width: 75px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 13px;
-    margin-right: 10px;
     transition: filter 0.3s ease;
   }
 
@@ -725,26 +722,26 @@
 
   /* ProductManagement.css */
 
+  /* 상품관리 헤더 */
   .product-management-header {
     font-size: 40px;
     margin-top: 10px;
     text-align: center;
   }
 
-  /* 검색기록 컨테이너 */
+  /* 상품관리 컨테이너 */
   .product-management-container {
     position: absolute;
-    top: 70%;
+    top: 75%;
     left: 50%;
     transform: translate(-50%, -70%);
     width: 700px;
-    height: 500px;
+    height: 600px;
     padding: 10px;
     border: 2px solid #2f4f4f50;
     border-radius: 10px;
     text-align: center;
     overflow-y: auto;
-
   }
 
   /* 내 상품 */
@@ -754,4 +751,63 @@
     justify-content: space-between;
     padding: 15px 0;
     border-bottom: 1px solid #ccc;
+  }
+
+  /* 수정 버튼 */
+  .product-edit {
+    background-color: #2F4F4F;
+    color: white;
+    border: none;
+    padding: 9px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  /*--------------------------------------------------------------------------------*/
+
+  /* ProductManagement.css */
+
+  /* 내정보 헤더 */
+  .myinfo-header {
+    font-size: 40px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* 내정보 컨테이너 */
+  .myinfo-container {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 700px;
+    height: 600px;
+    padding: 10px;
+    border: 2px solid #2f4f4f50;
+    border-radius: 10px;
+    text-align: center;
+    overflow-y: auto;
+  }
+
+  /*  비밀번호를 입력해주세요 */
+  .input-password {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  .myinfo-button {
+    background-color: #103260;
+    color: #fff;
+    height: 40px;
+    width: 75px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: filter 0.3s ease;
+    margin-top: 30px;
+  }
+
+  .myinfo-button:hover {
+    filter: brightness(0.9)
   }
