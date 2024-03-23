@@ -1,4 +1,5 @@
 const { app, pool, PORT } = require('./db');
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 
 // 사용자 등록 엔드포인트
