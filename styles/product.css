@@ -1,0 +1,236 @@
+/* main.css */
+
+/* 로고 이미지 스타일 */
+#logo {
+    width: 100px; /* 로고 이미지의 너비 */
+    height: 100px; /* 로고 이미지의 높이 */
+  }
+  
+  /* 추가 상품 컨테이너 스타일 */
+  .add-products-container {
+    margin: 0 auto; /* 가운데 정렬 */
+    width: 50%; /* 컨테이너의 너비 */
+    padding: 20px; /* 안쪽 여백 */
+  }
+  
+  /* 폼 그룹 스타일 */
+  .form-group {
+    margin-bottom: 15px; /* 하단 여백 */
+  }
+  
+  /* 입력 필드 스타일 */
+  input[type="text"],
+  input[type="file"] {
+    width: 100%; /* 입력 필드의 너비 */
+    padding: 10px; /* 안쪽 여백 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 테두리 모서리의 굴곡 */
+  }
+  
+  /* 추가 버튼 스타일 */
+  .add-product-button {
+    background-color: #007bff; /* 배경색 */
+    color: #fff; /* 텍스트 색상 */
+    padding: 10px 20px; /* 안쪽 여백 */
+    border: none; /* 테두리 없음 */
+    border-radius: 5px; /* 모서리 굴곡 */
+    cursor: pointer; /* 커서 타입 */
+  }
+  
+  /* 추가 버튼 호버 스타일 */
+  .add-product-button:hover {
+    background-color: #0056b3; /* 호버 시 배경색 변경 */
+  }
+
+  /* productdetail.css */
+
+/* 상품 상세 정보 컨테이너 스타일 */
+.product-detail {
+    max-width: 600px; /* 최대 너비 */
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 20px; /* 안쪽 여백 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 테두리 모서리의 굴곡 */
+  }
+  
+  /* 상품 이름 스타일 */
+  .product-name {
+    font-size: 24px; /* 글꼴 크기 */
+    margin-bottom: 10px; /* 하단 마진 */
+  }
+  
+  /* 상품 설명 스타일 */
+  .product-description {
+    margin-bottom: 20px; /* 하단 마진 */
+  }
+  
+  /* 상품 정보 스타일 */
+  .product-info {
+    display: flex; /* 플렉스 박스로 배치 */
+    flex-direction: column; /* 세로 방향으로 배치 */
+  }
+  
+  /* 상품 정보 아이템 스타일 */
+  .product-info p {
+    margin-bottom: 10px; /* 하단 마진 */
+  }
+  
+  /* 채팅하기 버튼 스타일 */
+  .chat-button {
+    width: 100%; /* 너비 지정 */
+    padding: 10px; /* 안쪽 여백 */
+    background-color: #007bff; /* 배경색 */
+    color: #fff; /* 텍스트 색상 */
+    border: none; /* 테두리 없음 */
+    border-radius: 5px; /* 모서리 굴곡 */
+    cursor: pointer; /* 커서 타입 */
+  }
+  
+  /* 모달 스타일 */
+  .ReactModal__Overlay {
+    position: fixed; /* 고정 위치 */
+    top: 0; /* 위쪽에 붙임 */
+    left: 0; /* 왼쪽에 붙임 */
+    right: 0; /* 오른쪽에 붙임 */
+    bottom: 0; /* 아래쪽에 붙임 */
+    background-color: rgba(0, 0, 0, 0.5); /* 배경색 (어두운 투명도) */
+    display: flex; /* 플렉스 박스로 배치 */
+    justify-content: center; /* 가로 정렬 */
+    align-items: center; /* 세로 정렬 */
+  }
+  
+  .ReactModal__Content {
+    position: relative; /* 상대 위치 */
+    max-width: 600px; /* 최대 너비 */
+    max-height: 80vh; /* 최대 높이 (화면 높이의 80%) */
+    margin: auto; /* 가운데 정렬 */
+    overflow-y: auto; /* 세로 스크롤 적용 */
+    padding: 20px; /* 안쪽 여백 */
+    background-color: #fff; /* 배경색 */
+    border-radius: 5px; /* 테두리 모서리의 굴곡 */
+  }
+  
+  /* 닫기 버튼 스타일 */
+  .close-button {
+    position: absolute; /* 절대 위치 */
+    top: 10px; /* 위쪽 여백 */
+    right: 10px; /* 오른쪽 여백 */
+    background: none; /* 배경 없음 */
+    border: none; /* 테두리 없음 */
+    cursor: pointer; /* 커서 타입 */
+  }
+  
+  /* productlist.css */
+
+/* 상품 목록 컨테이너 스타일 */
+.product-list-container {
+    margin-top: 20px; /* 상단 여백 */
+  }
+  
+  /* 상품 목록 래퍼 스타일 */
+  .product-list-wrapper {
+    display: flex; /* 플렉스 박스로 배치 */
+    justify-content: center; /* 가로 정렬 */
+  }
+  
+  /* 상품 그리드 스타일 */
+  .product-grid {
+    display: grid; /* 그리드로 배치 */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 자동 조정된 그리드 템플릿 */
+    gap: 20px; /* 그리드 사이의 간격 */
+  }
+  
+  /* 상품 항목 스타일 */
+  .product-item {
+    cursor: pointer; /* 커서 타입 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 모서리 굴곡 */
+    overflow: hidden; /* 내용이 넘치는 경우 숨김 처리 */
+  }
+  
+  /* 상품 이미지 컨테이너 스타일 */
+  .product-image-container {
+    height: 200px; /* 높이 지정 */
+    overflow: hidden; /* 내용이 넘치는 경우 숨김 처리 */
+  }
+  
+  /* 상품 이미지 스타일 */
+  .product-image {
+    width: 100%; /* 너비 지정 */
+    height: auto; /* 높이 자동 조정 */
+    transition: transform 0.3s ease; /* 변환 효과 */
+  }
+  
+  /* 상품 이미지 호버 효과 */
+  .product-item:hover .product-image {
+    transform: scale(1.1); /* 이미지 확대 */
+  }
+  
+  /* 상품 세부 정보 스타일 */
+  .product-details {
+    padding: 10px; /* 안쪽 여백 */
+  }
+  
+  /* 상품 이름 스타일 */
+  .product-name {
+    font-size: 18px; /* 글꼴 크기 */
+    margin-bottom: 5px; /* 하단 마진 */
+  }
+  
+  /* 상품 설명 스타일 */
+  .product-description {
+    margin-bottom: 5px; /* 하단 마진 */
+  }
+  
+  /* 상품 가격 스타일 */
+  .product-price {
+    font-weight: bold; /* 글꼴 굵기 */
+  }
+  /* productmanagement.css */
+
+.product-management-header {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .product-management-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+  }
+  
+  .management-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .management-item {
+    margin-bottom: 10px;
+  }
+  
+  .management-text {
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .product-save,
+  .product-cancel,
+  .product-delete,
+  .product-edit,
+  .product-sell {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .product-save:hover,
+  .product-cancel:hover,
+  .product-delete:hover,
+  .product-edit:hover,
+  .product-sell:hover {
+    background-color: #0056b3;
+  }
+  
