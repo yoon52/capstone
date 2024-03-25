@@ -1,0 +1,38 @@
+/* main.css */
+
+.search-keyword-header {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .search-keyword-container {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .keyword-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .keyword-text {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .delete-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #dc3545;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .delete-button:hover {
+    background-color: #c82333;
+  }
+  
