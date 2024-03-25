@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 
+import React, { useState } from 'react';
+import '../../styles/passwordchange.css';
 function PasswordChange() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');

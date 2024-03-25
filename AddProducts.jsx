@@ -1,7 +1,7 @@
 // AddProducts.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/main.css';
+import '../../styles/product.css';
 import logo from '../../image/logo.png';
 
 function AddProducts() {
@@ -9,6 +9,7 @@ function AddProducts() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [image, setImage] = useState(null); // 이미지 파일 상태 추가
   const navigate = useNavigate();
 
   const handleAddProduct = async (event) => {
@@ -16,13 +17,18 @@ function AddProducts() {
 
     // 상품 추가 요청
     try {
-      const response = await fetch('http://localhost:4000/AddProduct', {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('price', price);
+      formData.append('image', image); // 이미지 파일 추가
+
+      const response = await fetch('http://localhost:4000/addProduct', {
         method: 'POST',
         headers: {
-          'user_id': sessionStorage.getItem('userId'),
-          'Content-Type': 'application/json',
+          'user_id': userId,
         },
-        body: JSON.stringify({ userId, name, description, price }),
+        body: formData,
       });
 
       if (response.ok) {
@@ -30,6 +36,7 @@ function AddProducts() {
         setName('');
         setDescription('');
         setPrice('');
+        setImage(null); // 이미지 파일 초기화
         // 상품 추가 후 메인 페이지로 이동
         navigate('/Main');
         console.log('상품이 추가되었습니다.');
@@ -49,13 +56,16 @@ function AddProducts() {
         <h2>상품 추가</h2>
         <form onSubmit={handleAddProduct}>
           <div className="form-group">
-            <input type="text" placeholder="상품명" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input type="text" placeholder="상품명" value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
           <div className="form-group">
-            <input type="text" placeholder="설명" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+            <input type="text" placeholder="설명" value={description} onChange={(e) => setDescription(e.target.value)} required />
           </div>
           <div className="form-group">
-            <input type="text" placeholder="가격" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
+            <input type="text" placeholder="가격" value={price} onChange={(e) => setPrice(e.target.value)} required />
+          </div>
+          <div className="form-group">
+            <input type="file" onChange={(e) => setImage(e.target.files[0])} required /> {/* 이미지 파일 업로드 입력 필드 */}
           </div>
           <button type="submit" className="add-product-button">추가</button>
         </form>

@@ -1,7 +1,7 @@
 // MyInfo.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/main.css';
+import '../../styles/myinfo.css';
 import UserEdit from './UserEdit.jsx';
 import logo from '../../image/logo.png';
 

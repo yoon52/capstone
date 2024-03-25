@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/main.css';
+import '../../styles/login.css';
 import logo from '../../image/logo.png';
 
 function FindPw() {

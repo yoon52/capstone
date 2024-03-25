@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-
+import '../../styles/useredit.css';
 Modal.setAppElement('#root');
 
 function UserEdit({ userInfo }) {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/main.css';
+import '../../styles/product.css';
 import logo from '../../image/logo.png';
-
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -76,6 +75,27 @@ function ProductManagement() {
       console.error('상품 수정 실패:', error);
     }
   };
+  
+  const handleSellProduct = async (productId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/productsmanage/sold/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': sessionStorage.getItem('userId')
+        }
+      });
+      if (response.ok) {
+        setProducts(products.map(product => (product.id === productId ? { ...product, status: '판매완료' } : product))); // 상태 업데이트
+        // 알림 표시
+        alert('상품이 판매되었습니다.');
+      } else {
+        console.error('상품 판매완료 처리 실패:', response.status);
+      }
+    } catch (error) {
+      console.error('상품 판매완료 처리 실패:', error);
+    }
+  };
 
   const navigateToProductDetail = (productId) => {
     navigate(`/productDetail/${productId}`);
@@ -113,6 +133,7 @@ function ProductManagement() {
                 <>
                   <span className="management-text" onClick={() => navigateToProductDetail(product.id)}>{product.name}</span>
                   <button className="product-edit" onClick={() => handleEditProduct(product)}>수정</button>
+                  {product.status !== '판매완료' && <button className="product-sell" onClick={() => handleSellProduct(product.id)}>판매완료</button>}
                 </>
               )}
             </li>

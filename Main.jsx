@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
+import { FaUser, FaCog, FaSignOutAlt, FaPlus, FaSearch } from 'react-icons/fa';
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
+import '../../styles/product.css';
 import logo from '../../image/logo.png';
 
 function Main() {
@@ -22,6 +24,8 @@ function Main() {
           url = 'http://localhost:4000/products/latest';
         } else if (sortType === 'recommend') {
           url = 'http://localhost:4000/products/searchByRecent';
+        } else if (sortType === 'views') { // 추가: 조회수순 정렬
+          url = 'http://localhost:4000/products/views';
         }
         const response = await fetch(url, {
           headers: {
@@ -107,14 +111,16 @@ function Main() {
   };
 
   return (
-    <div>
-        <img src={logo} id='logo' alt="로고" />
-        <div className="navigation-buttons">
-          <button type="button" className="management-button" onClick={handleKeywordManagement}>검색어 관리</button>
-          <button type="button" className="product-management-button" onClick={handleProductManagement}>상품 관리</button>
-          <button type="button" className="my-info-button" onClick={handleShowMyInfoPage}>내 정보</button>
-          <button type="button" className="logout-button" onClick={handleLogout}>로그아웃</button>
-      </div>
+    <div className="container-main">
+      <header className="header-main">
+        <img src={logo} id='main-logo' alt="로고" />
+        <nav className="navigation">
+          <button type="button" className="nav-button" onClick={handleKeywordManagement}><FaCog /> 검색어 관리</button>
+          <button type="button" className="nav-button" onClick={handleProductManagement}><FaCog /> 상품 관리</button>
+          <button type="button" className="nav-button" onClick={handleShowMyInfoPage}><FaUser /> 내 정보</button>
+          <button type="button" className="nav-button" onClick={handleLogout}><FaSignOutAlt /> 로그아웃</button>
+        </nav>
+      </header>
       <div className="search-container">
         <input
           type="search"
@@ -122,21 +128,21 @@ function Main() {
           value={searchTerm}
           onChange={handleChangeSearchTerm}
           className="search-input" />
-        <button onClick={handleSearchProduct} className="search-product-button">검색</button>
+        <button onClick={handleSearchProduct} className="search-button"><FaSearch /></button>
       </div>
-      <div className="main-container">
+      <main className="main-container">
         <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-        {savedSearchTerm && (
-          <p className="saved-search-term">저장된 검색어 : {savedSearchTerm}</p>
-        )}
-        <ProductList filteredProducts={filteredProducts} />
-
+        <div className="wrapper-main">
+          <div className="main-grid">
+            <ProductList filteredProducts={filteredProducts} />
+          </div>
+        </div>
         <Routes>
           <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
         </Routes>
-      </div>
-      <button type="button" className="add-button" onClick={handleAddProduct} >상품 등록</button>
+      </main>
+      <button type="button" className="add-button" onClick={handleAddProduct} ><FaPlus /> 상품 등록</button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/main.css';
+import '../../styles/login.css';
 import naver from '../../image/naver.png';
 import kakao from '../../image/kakao.png';
 import logo from '../../image/logo.png';
@@ -41,24 +41,25 @@ function Login() {
         body: JSON.stringify(formData)
       });
 
-      // 요청 처리 성공 시, 사용자 ID 세션에 저장 및 메인 페이지로 이동
       if (response.ok) {
         const data = await response.json();
         sessionStorage.setItem('userId', data.id);
-        setLoginSuccess(true);
-        navigate('/Main/*');
+
+        // 여기서 관리자 여부 확인
+        if (data.isAdmin) {
+          navigate('/AdminPage'); // 관리자 페이지로 이동
+        } else {
+          navigate('/Main/*'); // 일반 사용자 페이지로 이동
+        }
       } else {
-        // 요청 처리 실패 시, 로그인 성공 상태를 false로 설정
         console.error('로그인 실패:', response.status);
         setLoginSuccess(false);
       }
     } catch (error) {
-      // 네트워크 오류 또는 기타 오류 발생 시 콘솔에 오류 로그 출력 및 상태 변경
       console.error('로그인 오류:', error);
       setLoginSuccess(false);
     }
   };
-
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
     window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&state=?';
@@ -86,7 +87,8 @@ function Login() {
 
   // 로그인 폼을 렌더링하는 JSX
   return (
-    <><img src={logo} id='login-logo' alt="로고" />
+    <div className="container-login">
+      <img src={logo} id='login-logo' alt="로고" />
       <div className="login-container">
         <h1 className="login-header">L O G I N</h1>
         <form onSubmit={handleSubmit}>
@@ -128,7 +130,8 @@ function Login() {
             <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>
           </div>
         </form>
-      </div></>
+      </div>
+    </div>
   );
 }
 
