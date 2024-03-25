@@ -84,3 +84,20 @@
   font-size: 24px; /* 폰트 크기 */
   cursor: pointer; /* 커서 타입 */
 }
+
+/* main.css */
+
+.sort-container {
+  margin-bottom: 20px;
+}
+
+.sort-container label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.sort-container select {
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+}

@@ -13,6 +13,13 @@
     display: block;
     margin-top: 50px;
   }
+  /* 메인 컨테이너 스타일 */
+.container-login {
+    max-width: 1200px; /* 최대 너비 */
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 20px; /* 안쪽 여백 */
+  }
+  
 
   /* 입력 창 */
   input[type="text"],
@@ -467,3 +474,6 @@
   .findpw-login:hover {
     filter: brightness(0.9)
   }
+
+
+  
