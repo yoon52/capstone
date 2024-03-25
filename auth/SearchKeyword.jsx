@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import '../../styles/main.css';
+import '../../styles/searchkeyword.css';
 import logo from '../../image/logo.png';
 
 function SearchKeyword() {

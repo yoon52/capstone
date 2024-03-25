@@ -24,6 +24,8 @@ function Main() {
           url = 'http://localhost:4000/products/latest';
         } else if (sortType === 'recommend') {
           url = 'http://localhost:4000/products/searchByRecent';
+        } else if (sortType === 'views') { // 추가: 조회수순 정렬
+          url = 'http://localhost:4000/products/views';
         }
         const response = await fetch(url, {
           headers: {

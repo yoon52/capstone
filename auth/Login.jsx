@@ -87,7 +87,8 @@ function Login() {
 
   // 로그인 폼을 렌더링하는 JSX
   return (
-    <><img src={logo} id='login-logo' alt="로고" />
+    <div className="container-login">
+    <img src={logo} id='logo' alt="로고" />
       <div className="login-container">
         <h1 className="login-header">L O G I N</h1>
         <form onSubmit={handleSubmit}>
@@ -129,7 +130,8 @@ function Login() {
             <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>
           </div>
         </form>
-      </div></>
+      </div>
+      </div>
   );
 }
 
