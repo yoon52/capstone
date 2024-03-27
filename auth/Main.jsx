@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { FaUser, FaCog, FaSignOutAlt, FaPlus, FaSearch } from 'react-icons/fa';
-import SortSelect from './SortSelect';
-import ProductList from './ProductList';
+
+import RecommendList from './RecommendList';
+import ViewsList from './ViewsList';
+import LatestList from './LatestList';
+import SearchResults from './SearchResults'; // 검색 결과를 보여주는 컴포넌트 임포트
+
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
@@ -16,6 +20,8 @@ function Main() {
   const [sortType, setSortType] = useState('recommend');
   const navigate = useNavigate();
 
+  const searchInputRef = useRef(null);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -24,7 +30,7 @@ function Main() {
           url = 'http://localhost:4000/products/latest';
         } else if (sortType === 'recommend') {
           url = 'http://localhost:4000/products/searchByRecent';
-        } else if (sortType === 'views') { // 추가: 조회수순 정렬
+        } else if (sortType === 'views') {
           url = 'http://localhost:4000/products/views';
         }
         const response = await fetch(url, {
@@ -63,6 +69,12 @@ function Main() {
       }
     } catch (error) {
       console.error('검색 오류:', error);
+    }
+  };
+
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchProduct();
     }
   };
 
@@ -122,26 +134,29 @@ function Main() {
         </nav>
       </header>
       <div className="search-container">
-        <input
+      <input
+          ref={searchInputRef}
           type="search"
           placeholder="검색어를 입력하세요"
           value={searchTerm}
           onChange={handleChangeSearchTerm}
+          onKeyDown={handleEnterKeyPress}
           className="search-input" />
         <button onClick={handleSearchProduct} className="search-button"><FaSearch /></button>
+
       </div>
-      <main className="main-container">
-        <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-        <div className="wrapper-main">
-          <div className="main-grid">
-            <ProductList filteredProducts={filteredProducts} />
-          </div>
-        </div>
+        <div className="main-container">
+        {/* 검색 결과 컴포넌트 */}
+        <SearchResults filteredProducts={filteredProducts} searchTerm={searchTerm} />
+        <RecommendList />
+        <ViewsList />
+        <LatestList />
+
         <Routes>
           <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
         </Routes>
-      </main>
+      </div>
       <button type="button" className="add-button" onClick={handleAddProduct} ><FaPlus /> 상품 등록</button>
     </div>
   );
