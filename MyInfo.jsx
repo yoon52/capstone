@@ -1,4 +1,3 @@
-// MyInfo.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/myinfo.css';
@@ -8,7 +7,7 @@ import logo from '../../image/logo.png';
 function MyInfo() {
   const [password, setPassword] = useState('');
   const [userInfo, setUserInfo] = useState(null);
-  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false); // 비밀번호 확인 상태 추가
+  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false);
   const navigate = useNavigate();
 
   const handleConfirm = async () => {
@@ -23,7 +22,7 @@ function MyInfo() {
       if (response.ok) {
         const data = await response.json();
         setUserInfo(data);
-        setIsPasswordConfirmed(true); // 비밀번호 확인되면 상태 변경
+        setIsPasswordConfirmed(true);
       } else {
         alert('비밀번호가 일치하지 않습니다.');
       }
@@ -33,14 +32,26 @@ function MyInfo() {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleConfirm();
+    }
+  };
+
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <img src={logo} id='logo' alt="로고" />
       <h1 className="myinfo-header">내 정보</h1>
       <div className="myinfo-container">
         {!isPasswordConfirmed && (
           <>
             <h3 className="input-password">비밀번호를 입력해주세요</h3>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress} // 앤터 키 이벤트 처리
+            />
             <button className="myinfo-button" onClick={handleConfirm}>확인</button>
           </>
         )}

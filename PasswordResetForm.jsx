@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/main.css';
 import logo from '../../image/logo.png';
 
-function FindPw() {
+function PwFind() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -44,42 +44,36 @@ function FindPw() {
   };
 
   return (
+    <div className="pwfind-container">
+      <img src={logo} id='pwfind-logo' alt="로고" />
+      <h1 className="pwfind-header">비밀번호 찾기</h1>
+      <form onSubmit={(e) => { e.preventDefault(); handleResetPassword(); }}>
+        <input
+          type="email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder="이메일"
+          required
+        />
+        <button type="submit" className="pwfind">비밀번호 찾기</button>
+      </form>
 
-    <div><img src={logo} id='logo' alt="로고" />
-      <h1 className="findpw-header">비밀번호 찾기</h1>
-      <div className="findpw-container">
-        <form onSubmit={(e) => { e.preventDefault(); handleResetPassword(); }}>
-        <div className="form-group">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="이메일을 입력하세요"
-            required
-          />
-          </div>
-          <button type="submit" className="findpw">비밀번호 찾기</button>
-        </form>
-
-        {showModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <p className="found-pw">{message}</p>
-              <div className="pwfind-modal">
-                {message === '가입하지 않은 이메일입니다.' ? (
-                  <button className="modal-close" onClick={closeModal}>확인</button>
-                ) : (
-                  <button className="findpw-login" onClick={navigateToLogin}>로그인 하기</button>
-                )}
-              </div>
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <p className="found-pw">{message}</p>
+            <div className="pwfind-modal">
+              {message === '가입하지 않은 이메일입니다.' ? (
+                <button className="modal-close" onClick={closeModal}>확인</button>
+              ) : (
+                <button className="found-id" onClick={navigateToLogin}>로그인 화면으로 이동</button>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default FindPw;
+export default PwFind;

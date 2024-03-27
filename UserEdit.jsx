@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import '../../styles/useredit.css';
+
 Modal.setAppElement('#root');
 
 function UserEdit({ userInfo }) {
@@ -28,6 +28,8 @@ function UserEdit({ userInfo }) {
       if (response.ok) {
         const data = await response.json();
         console.log(data.message);
+        alert('회원정보 수정이 완료됐습니다.');
+        navigate('/main');
       } else {
         console.error('사용자 정보 수정 실패');
       }

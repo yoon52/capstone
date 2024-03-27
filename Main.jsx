@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { FaUser, FaCog, FaSignOutAlt, FaPlus, FaSearch } from 'react-icons/fa';
-import SortSelect from './SortSelect';
-import ProductList from './ProductList';
+import ProductSortNew from './ProductSortNew';
+import ProductSortView from './ProductSortView';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
@@ -24,7 +24,7 @@ function Main() {
           url = 'http://localhost:4000/products/latest';
         } else if (sortType === 'recommend') {
           url = 'http://localhost:4000/products/searchByRecent';
-        } else if (sortType === 'views') { // 추가: 조회수순 정렬
+        } else if (sortType === 'views') {
           url = 'http://localhost:4000/products/views';
         }
         const response = await fetch(url, {
@@ -113,7 +113,7 @@ function Main() {
   return (
     <div className="container-main">
       <header className="header-main">
-        <img src={logo} id='main-logo' alt="로고" />
+        <img src={logo} id='logo' alt="로고" />
         <nav className="navigation">
           <button type="button" className="nav-button" onClick={handleKeywordManagement}><FaCog /> 검색어 관리</button>
           <button type="button" className="nav-button" onClick={handleProductManagement}><FaCog /> 상품 관리</button>
@@ -131,10 +131,10 @@ function Main() {
         <button onClick={handleSearchProduct} className="search-button"><FaSearch /></button>
       </div>
       <main className="main-container">
-        <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
         <div className="wrapper-main">
           <div className="main-grid">
-            <ProductList filteredProducts={filteredProducts} />
+            <ProductSortNew filteredProducts={filteredProducts} />
+            <ProductSortView filteredProducts={filteredProducts} />
           </div>
         </div>
         <Routes>
