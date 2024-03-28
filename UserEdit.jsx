@@ -7,7 +7,6 @@ Modal.setAppElement('#root');
 function UserEdit({ userInfo }) {
   const [editedUserInfo, setEditedUserInfo] = useState({ ...userInfo });
   const [password, setPassword] = useState('');
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -28,8 +27,6 @@ function UserEdit({ userInfo }) {
       if (response.ok) {
         const data = await response.json();
         console.log(data.message);
-        alert('회원정보 수정이 완료됐습니다.');
-        navigate('/main');
       } else {
         console.error('사용자 정보 수정 실패');
       }
@@ -39,9 +36,7 @@ function UserEdit({ userInfo }) {
   };
 
   const handleDeleteAccount = async () => {
-    if (!confirmDelete) {
-      setIsModalOpen(true);
-    }
+    setIsModalOpen(true);
   };
 
   const confirmDeleteAccount = async () => {
@@ -92,6 +87,7 @@ function UserEdit({ userInfo }) {
       <button onClick={handleSave}>저장</button>
       <button onClick={handleChangePassword}>비밀번호 변경</button>
 
+      {/* 모달 */}
       <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
         <h2>비밀번호 입력</h2>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
