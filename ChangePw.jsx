@@ -51,7 +51,7 @@ function ChangePw({ email, tempPassword }) {
       <div className="modal-content">
         <h1>비밀번호 재설정</h1>
         <label>임시 비밀번호:</label>
-        <input type="password" value={tempPassword} readOnly />
+        <input type="password" value={tempPassword} />
         <label>새 암호:</label>
         <input type="password" value={newPassword} onChange={handleNewPasswordChange} />
         <label>새 암호 재입력:</label>
