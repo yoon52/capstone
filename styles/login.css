@@ -316,10 +316,10 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 95%;
+    width: 80%;
     margin-top: 35px;
     margin-bottom: 10px;
-    font-size: 17px;
+    font-size: 15px;
     transition: filter 0.3s ease;
   }
 
@@ -476,4 +476,22 @@
   }
 
 
-  
+/* Signup.css */
+
+/* 학생증 미리보기 컨테이너 */
+.student-id-preview {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.student-id-preview h3 {
+  font-size: 20px;
+}
+
+.student-id-preview img {
+  max-width: 300px; /* 이미지의 최대 너비 설정 */
+  max-height: 300px; /* 이미지의 최대 높이 설정 */
+  margin-top: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

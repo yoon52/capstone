@@ -1,103 +1,171 @@
 /* main.css */
 
-/* 로고 이미지 스타일 */
-#logo {
-  width: 100px; /* 로고 이미지의 너비 */
-  height: 100px; /* 로고 이미지의 높이 */
-  margin: 20px auto; /* 가운데 정렬 및 상단 여백 */
-  display: block; /* 블록 요소로 표시 */
-}
-
-/* 메인 컨테이너 스타일 */
+/* Main container */
 .container-main {
-  max-width: 1200px; /* 최대 너비 */
-  margin: 0 auto; /* 가운데 정렬 */
-  padding: 20px; /* 안쪽 여백 */
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 화면 전체 높이 */
 }
 
-/* 메인 헤더 스타일 */
+/* Header */
+/* Header */
 .header-main {
-  display: flex; /* 플렉스 박스로 배치 */
-  align-items: center; /* 수직 정렬 */
-  justify-content: space-between; /* 요소 사이의 간격을 최대로 확보하여 요소를 배치 */
-  margin-bottom: 20px; /* 하단 마진 */
+  background-color: #ffffff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between; /* 요소들을 컨테이너 양쪽에 정렬 */
+  align-items: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 내비게이션 스타일 */
-.navigation {
-  display: flex; /* 플렉스 박스로 배치 */
-}
-
-/* 내비게이션 버튼 스타일 */
-.nav-button {
-  padding: 10px; /* 안쪽 여백 */
-  margin-right: 10px; /* 우측 마진 */
-  background-color: #007bff; /* 배경색 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 테두리 없음 */
-  border-radius: 5px; /* 모서리 굴곡 */
-  cursor: pointer; /* 커서 타입 */
-}
-
-/* 검색 컨테이너 스타일 */
-.search-container {
-  display: flex; /* 플렉스 박스로 배치 */
-  margin-bottom: 20px; /* 하단 마진 */
-}
-
-/* 검색 입력 필드 스타일 */
-.search-input {
-  flex: 1; /* 남은 공간 모두 차지 */
-  padding: 10px; /* 안쪽 여백 */
-  border: 1px solid #ccc; /* 테두리 */
-  border-radius: 5px; /* 모서리 굴곡 */
-}
-
-/* 검색 버튼 스타일 */
-.search-button {
-  padding: 10px; /* 안쪽 여백 */
-  margin-left: 10px; /* 좌측 마진 */
-  background-color: #007bff; /* 배경색 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 테두리 없음 */
-  border-radius: 5px; /* 모서리 굴곡 */
-  cursor: pointer; /* 커서 타입 */
-}
-
-/* 메인 컨테이너 스타일 */
-.main-container {
-  display: grid; /* 그리드로 배치 */
-  grid-template-columns: 1fr; /* 컬럼 1개 */
-  gap: 20px; /* 그리드 간격 */
-}
-
-/* 추가 버튼 스타일 */
-.add-button {
-  position: fixed; /* 고정 위치 */
-  bottom: 20px; /* 하단 여백 */
-  right: 20px; /* 우측 여백 */
-  padding: 10px; /* 안쪽 여백 */
-  background-color: #28a745; /* 배경색 */
-  color: #fff; /* 텍스트 색상 */
-  border: none; /* 테두리 없음 */
-  border-radius: 50%; /* 모서리를 둥글게 만듦 */
-  font-size: 24px; /* 폰트 크기 */
-  cursor: pointer; /* 커서 타입 */
+.header-content {
+  display: flex;
+  align-items: center;
 }
 
 /* main.css */
 
-.sort-container {
-  margin-bottom: 20px;
+/* Header buttons */
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto; /* Pushes buttons to the right */
 }
 
-.sort-container label {
-  font-weight: bold;
+.header-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #007bff; /* Change color on hover */
+}
+
+.header-button:hover {
+  color: #007bff; /* Change color on hover */
+}
+
+
+.nav-menu-toggle {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#logo {
+  width: 120px;
+  height: auto;
+  margin-right: 20px;
+}
+
+/* Search bar */
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 10px;
+  border: none;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  width: 300px;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #022a52;
+  width: 250px;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding-top: 60px;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.main_navigation {
+  padding: 20px;
+}
+
+.main-nav-button {
+  display: block;
+  background-color: #022a52;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: calc(100% - 40px);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.main-nav-button svg {
   margin-right: 10px;
 }
 
-.sort-container select {
-  padding: 5px;
-  font-size: 16px;
+.main-nav-button:hover {
+  background-color: #0056b3;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.close-menu-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Main content container */
+.main-container {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4;
   border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
 }
