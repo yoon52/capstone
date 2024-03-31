@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../../styles/login.css';
+import '../../styles/main.css';
 import logo from '../../image/logo.png';
 
 function Signup() {
@@ -13,18 +13,83 @@ function Signup() {
     confirmPassword: '',
     email: '',
     department: '',
-    grade: ''
+    grade: '',
+    studentIdImage: null  // New state to store the uploaded image
   });
   const [idAvailability, setIdAvailability] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    const { name, value, type } = e.target;
+
+    // If the input type is file, handle it separately
+    if (type === 'file') {
+      setFormData(prevState => ({
+        ...prevState,
+        studentIdImage: e.target.files[0]
+      }));
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    }
+  };
+
+  // 함수를 사용하여 이미지 파일 이름을 생성합니다.
+  const getImageFileName = (userId, file) => {
+    // 파일 확장자를 가져옵니다.
+    const extension = file.name.split('.').pop();
+    // 파일 이름을 사용자 ID와 확장자를 결합하여 반환합니다.
+    return `${userId}.${extension}`;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // 이미지 파일 이름을 생성합니다.
+    const imageFileName = getImageFileName(formData.id, formData.studentIdImage);
+
+    // 이미지를 포함한 FormData 생성
+    const formDataWithImage = new FormData();
+    formDataWithImage.append('id', formData.id);
+    formDataWithImage.append('name', formData.name);
+    formDataWithImage.append('password', formData.password);
+    formDataWithImage.append('confirmPassword', formData.confirmPassword);
+    formDataWithImage.append('email', formData.email);
+    formDataWithImage.append('department', formData.department);
+    formDataWithImage.append('grade', formData.grade);
+    formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName); // 이미지 추가 및 파일 이름 설정
+
+    try {
+      const response = await fetch('http://localhost:4000/signup', {
+        method: 'POST',
+        body: formDataWithImage // FormData 전송
+      });
+      if (response.ok) {
+        handleSignupSuccess();
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.error);
+        setIsModalOpen(true); // 에러 발생 시 모달 열기
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setIsModalOpen(true); // 에러 발생 시 모달 열기
+    }
+  };
+
+  const handleSignupSuccess = () => {
+    setSignupSuccess(true);
+    setErrorMessage('');
+    navigate('/login');
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setErrorMessage('');
   };
 
   const handleCheckAvailability = async () => {
@@ -47,48 +112,6 @@ function Signup() {
       setIsModalOpen(true); // Open modal on error
     }
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (idAvailability === null || idAvailability === false) {
-      setErrorMessage('아이디 중복 확인을 먼저 진행해주세요.');
-      setIsModalOpen(true); // Open modal for error
-      return;
-    }
-
-    try {
-      const response = await fetch('http://localhost:4000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        handleSignupSuccess();
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.error);
-        setIsModalOpen(true); // Open modal on error
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
-      setIsModalOpen(true); // Open modal on error
-    }
-  };
-
-  const handleSignupSuccess = () => {
-    setSignupSuccess(true);
-    setErrorMessage('');
-    navigate('/login');
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setErrorMessage('');
-  };
-
   return (
     <div>
       <img src={logo} id='logo' alt="로고" />
@@ -186,12 +209,24 @@ function Signup() {
               <option value="4">4학년</option>
             </select>
           </div>
+
+          <div className="form-group">
+            <input
+              type="file"
+              name="studentIdImage"
+              onChange={handleChange}
+              accept="image/*"
+              required
+            />
+          </div>
+
           <button type="submit" className="signup-button">가입하기</button>
         </form>
         <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
       </div>
     </div>
   );
+
 }
 
 export default Signup;

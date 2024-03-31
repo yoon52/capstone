@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../../styles/changepw.css';
+import '../../styles/main.css';
+import '../../styles/login.css';
 
 function ChangePw({ email, tempPassword }) {
   const [newPassword, setNewPassword] = useState('');

@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { FaUser, FaCog, FaSignOutAlt, FaPlus, FaSearch } from 'react-icons/fa';
-import ProductSortNew from './ProductSortNew';
-import ProductSortView from './ProductSortView';
+
+import RecommendList from './RecommendList';
+import ViewsList from './ViewsList';
+import LatestList from './LatestList';
+import SearchResults from './SearchResults'; // 검색 결과를 보여주는 컴포넌트 임포트
+
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import '../../styles/main.css';
@@ -15,6 +19,8 @@ function Main() {
   const [savedSearchTerm, setSavedSearchTerm] = useState('');
   const [sortType, setSortType] = useState('recommend');
   const navigate = useNavigate();
+
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -66,6 +72,12 @@ function Main() {
     }
   };
 
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchProduct();
+    }
+  };
+
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
@@ -113,7 +125,7 @@ function Main() {
   return (
     <div className="container-main">
       <header className="header-main">
-        <img src={logo} id='logo' alt="로고" />
+        <img src={logo} id='main-logo' alt="로고" />
         <nav className="navigation">
           <button type="button" className="nav-button" onClick={handleKeywordManagement}><FaCog /> 검색어 관리</button>
           <button type="button" className="nav-button" onClick={handleProductManagement}><FaCog /> 상품 관리</button>
@@ -122,27 +134,30 @@ function Main() {
         </nav>
       </header>
       <div className="search-container">
-        <input
+      <input
+          ref={searchInputRef}
           type="search"
           placeholder="검색어를 입력하세요"
           value={searchTerm}
           onChange={handleChangeSearchTerm}
+          onKeyDown={handleEnterKeyPress}
           className="search-input" />
         <button onClick={handleSearchProduct} className="search-button"><FaSearch /></button>
+
       </div>
-      <main className="main-container">
-        <div className="wrapper-main">
-          <div className="main-grid">
-            <ProductSortNew filteredProducts={filteredProducts} />
-            <ProductSortView filteredProducts={filteredProducts} />
-          </div>
-        </div>
+        <div className="main-container">
+        {/* 검색 결과 컴포넌트 */}
+        <SearchResults filteredProducts={filteredProducts} searchTerm={searchTerm} />
+        <RecommendList />
+        <ViewsList />
+        <LatestList />
+
         <Routes>
           <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
         </Routes>
-      </main>
-      <button type="button" className="add-button" onClick={handleAddProduct} ><FaPlus /> 상품 등록</button>
+      </div>
+      <button type="button" className="add-button" onClick={handleAddProduct} >상품 등록</button>
     </div>
   );
 }

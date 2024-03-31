@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 
+
 Modal.setAppElement('#root');
 
 function UserEdit({ userInfo }) {
@@ -23,10 +24,11 @@ function UserEdit({ userInfo }) {
         },
         body: JSON.stringify({ userId: userInfo.id, editedUserInfo })
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message);
+        alert(data.message); // 수정이 완료되었습니다. 메시지 표시
+        navigate('/'); // Main 페이지로 이동
       } else {
         console.error('사용자 정보 수정 실패');
       }
@@ -34,7 +36,6 @@ function UserEdit({ userInfo }) {
       console.error('사용자 정보 수정 오류:', error);
     }
   };
-
   const handleDeleteAccount = async () => {
     setIsModalOpen(true);
   };
@@ -52,7 +53,7 @@ function UserEdit({ userInfo }) {
       if (response.ok) {
         alert('회원 탈퇴되었습니다.');
         sessionStorage.removeItem('userId');
-        navigate('/');
+        navigate('/Login'); // main.jsx로 이동
       } else {
         const data = await response.json();
         alert(data.error);
@@ -74,12 +75,35 @@ function UserEdit({ userInfo }) {
       <p>
         이름: <input type="text" value={editedUserInfo.name} onChange={(e) => handleChange('name', e.target.value)} />
       </p>
-      <p>
-        학년: <input type="text" value={editedUserInfo.grade} onChange={(e) => handleChange('grade', e.target.value)} />
-      </p>
-      <p>
-        학과: <input type="text" value={editedUserInfo.department} onChange={(e) => handleChange('department', e.target.value)} />
-      </p>
+      <div className="select-group">
+            <select
+              name="department"
+              value={editedUserInfo.department}
+              onChange={(e) => handleChange('department', e.target.value)}
+              style={{ color: editedUserInfo.department ? 'black' : 'gray' }}
+              required
+            >
+              <option value="">학과를 선택하세요</option>
+              <option value="computer_science">컴퓨터 공학과</option>
+              <option value="software_engineering">소프트웨어 공학과</option>
+              <option value="design">디자인학과</option>
+              <option value="business-administration">경영학과</option>
+            </select>
+  
+            <select
+              name="grade"
+              value={editedUserInfo.grade}
+              onChange={(e) => handleChange('grade', e.target.value)}
+              style={{ color: editedUserInfo.grade ? 'black' : 'gray' }}
+              required
+            >
+              <option value="">학년을 선택하세요</option>
+              <option value="1">1학년</option>
+              <option value="2">2학년</option>
+              <option value="3">3학년</option>
+              <option value="4">4학년</option>
+            </select>
+          </div>
       <p>
         이메일: <input type="text" value={editedUserInfo.email} onChange={(e) => handleChange('email', e.target.value)} />
       </p>
