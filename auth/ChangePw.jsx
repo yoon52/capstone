@@ -1,11 +1,17 @@
+// 클라이언트
 import React, { useState } from 'react';
 import '../../styles/changepw.css';
 
 function ChangePw({ email, tempPassword }) {
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [showModal, setShowModal] = useState(true);
+
+  const handleCurrentPasswordChange = (e) => {
+    setCurrentPassword(e.target.value);
+  };
 
   const handleNewPasswordChange = (e) => {
     setNewPassword(e.target.value);
@@ -20,24 +26,31 @@ function ChangePw({ email, tempPassword }) {
   };
 
   const handleSubmit = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setMessage('모든 필드를 입력해주세요.');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       setMessage('새 암호와 암호 재입력이 일치하지 않습니다.');
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:4000/-ChangePw', {
+      const response = await fetch('http://localhost:4000/changepassword', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, tempPassword, newPassword })
+        body: JSON.stringify({ email, currentPassword, newPassword })
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        setMessage('비밀번호가 성공적으로 변경되었습니다.');
+        setMessage(data.message);
       } else {
-        setMessage('비밀번호를 변경할 수 없습니다.');
+        setMessage(data.error);
       }
     } catch (error) {
       console.error('비밀번호 변경 오류:', error);
@@ -49,8 +62,8 @@ function ChangePw({ email, tempPassword }) {
     <div className="modal">
       <div className="modal-content">
         <h1>비밀번호 재설정</h1>
-        <label>임시 비밀번호:</label>
-        <input type="password" value={tempPassword} readOnly />
+        <label>현재 비밀번호:</label>
+        <input type="password" value={currentPassword} onChange={handleCurrentPasswordChange} />
         <label>새 암호:</label>
         <input type="password" value={newPassword} onChange={handleNewPasswordChange} />
         <label>새 암호 재입력:</label>

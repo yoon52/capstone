@@ -7,7 +7,7 @@ function RecommendList() {
   useEffect(() => {
     const fetchRecommendProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/products/searchByRecent', {
+        const response = await fetch('http://localhost:4000/products/recommendations', {
           headers: {
             'user_id': sessionStorage.getItem('userId')
           }
