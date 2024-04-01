@@ -29,37 +29,48 @@ function Login() {
   };
 
   // 로그인 폼 제출 시 수행되는 비동기 처리 함수
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      // 백엔드 서버로 로그인 요청 전송
-      const response = await fetch('http://localhost:4000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // 백엔드 서버로 로그인 요청 전송
+    const response = await fetch('http://localhost:4000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        sessionStorage.setItem('userId', data.id);
-
-        // 여기서 관리자 여부 확인
-        if (data.isAdmin) {
-          navigate('/AdminPage'); // 관리자 페이지로 이동
-        } else {
-          navigate('/Main/*'); // 일반 사용자 페이지로 이동
-        }
+    if (response.ok) {
+      const data = await response.json();
+      sessionStorage.setItem('userId', data.id);
+      
+      // 여기서 관리자 여부 확인
+      if (data.isAdmin) {
+        navigate('/AdminPage'); // 관리자 페이지로 이동
       } else {
-        console.error('로그인 실패:', response.status);
-        setLoginSuccess(false);
+        navigate('/Main/*'); // 일반 사용자 페이지로 이동
       }
-    } catch (error) {
-      console.error('로그인 오류:', error);
+    } else {
+      console.error('로그인 실패:', response.status);
       setLoginSuccess(false);
+      // 반려된 사용자일 경우
+      if (response.status === 403) {
+        // 반려 사유 가져오기
+        if (response.status === 403) {
+          // 반려 사유 가져오기
+          const responseData = await response.json();
+          const rejectionReason = responseData.rejection_reason || '관리자에게 문의하세요.';
+          alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);  
+        }
+      }
     }
-  };
+  } catch (error) {
+    console.error('로그인 오류:', error);
+    setLoginSuccess(false);
+  }
+};
+
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
     window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&state=?';
@@ -88,7 +99,7 @@ function Login() {
   // 로그인 폼을 렌더링하는 JSX
   return (
     <div className="container-login">
-      <img src={logo} id='login-logo' alt="로고" />
+    <img src={logo} id='login-logo' alt="로고" />
       <div className="login-container">
         <h1 className="login-header">L O G I N</h1>
         <form onSubmit={handleSubmit}>
@@ -131,7 +142,7 @@ function Login() {
           </div>
         </form>
       </div>
-    </div>
+      </div>
   );
 }
 
