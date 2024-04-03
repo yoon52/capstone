@@ -99,7 +99,7 @@ const handleSubmit = async (e) => {
   // 로그인 폼을 렌더링하는 JSX
   return (
     <div className="container-login">
-    <img src={logo} id='logo' alt="로고" />
+    <img src={logo} id='login-logo' alt="로고" />
       <div className="login-container">
         <h1 className="login-header">L O G I N</h1>
         <form onSubmit={handleSubmit}>

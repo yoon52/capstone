@@ -194,7 +194,7 @@ function Signup() {
               <option value="design">디자인학과</option>
               <option value="business-administration">경영학과</option>
             </select>
-  
+
             <select
               name="grade"
               value={formData.grade}
@@ -209,8 +209,7 @@ function Signup() {
               <option value="4">4학년</option>
             </select>
           </div>
-          
-          {/* Image upload field */}
+
           <div className="form-group">
             <input
               type="file"
@@ -220,14 +219,14 @@ function Signup() {
               required
             />
           </div>
-  
+
           <button type="submit" className="signup-button">가입하기</button>
         </form>
         <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
       </div>
     </div>
   );
-  
+
 }
 
 export default Signup;

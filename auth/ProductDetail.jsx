@@ -11,6 +11,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
+  const userId = sessionStorage.getItem('userId');
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -28,32 +29,43 @@ const ProductDetail = () => {
     };
 
     fetchProductDetail();
-  }, [productId]);
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem('productId', productId);
   }, [productId]);
 
-  const handleChatButtonClick = () => {
-    const newChatRoom = {
-      productId: productId,
-      messages: []
-    };
-    setChatRooms([...chatRooms, newChatRoom]);
-    setIsChatModalOpen(true);
+  const handleChatButtonClick = async () => {
+    try {
+      const response = await fetch(`http://localhost:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
+      if (response.ok) {
+        const existingChatRoom = await response.json();
+        if (existingChatRoom) {
+          setIsChatModalOpen(true);
+          return;
+        }
+      }
+
+      const createResponse = await fetch('http://localhost:4001/api/chat-rooms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId, userId })
+      });
+
+      if (!createResponse.ok) {
+        throw new Error('Failed to create chat room');
+      }
+
+      setIsChatModalOpen(true);
+    } catch (error) {
+      console.error('Error creating or retrieving chat room:', error);
+    }
   };
 
   const handleSendMessage = (roomId, message) => {
-    const updatedChatRooms = chatRooms.map((room) => {
-      if (room.productId === roomId) {
-        return {
-          ...room,
-          messages: [...room.messages, message]
-        };
-      }
-      return room;
-    });
-    setChatRooms(updatedChatRooms);
+    // 메시지 전송 로직 추가
   };
 
   if (!product) {
@@ -74,25 +86,24 @@ const ProductDetail = () => {
         <button onClick={handleChatButtonClick}>채팅하기</button>
       </div>
       <Modal
-  isOpen={isChatModalOpen}
-  onRequestClose={() => setIsChatModalOpen(false)}
-  style={{
-    content: {
-      top: '50%', // 모달의 상단을 화면의 중앙에 위치
-      left: '50%', // 모달의 좌측을 화면의 중앙에 위치
-      transform: 'translate(-50%, -50%)', // 모달을 가운데로 정렬
-      width: '70%', // 모달의 너비를 70%로 설정
-      height: '70%', // 모달의 높이를 70%로 설정
-      maxWidth: '800px', // 모달의 최대 너비
-      maxHeight: '600px', // 모달의 최대 높이
-      overflow: 'auto' // 스크롤이 필요한 경우 스크롤바 표시
-    }
-  }}
->
-  <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-  <button onClick={() => setIsChatModalOpen(false)}>닫기</button>
-</Modal>
-
+        isOpen={isChatModalOpen}
+        onRequestClose={() => setIsChatModalOpen(false)}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '70%',
+            height: '70%',
+            maxWidth: '800px',
+            maxHeight: '600px',
+            overflow: 'auto'
+          }
+        }}
+      >
+      <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
+        <button onClick={() => setIsChatModalOpen(false)}>닫기</button>
+      </Modal>
     </div>
   );
 };

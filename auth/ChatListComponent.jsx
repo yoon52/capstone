@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import '../../styles/chat.css';
-import ChatModal from './ChatModal'; // ChatModal 컴포넌트 추가
+import ChatModal from './ChatModal';
 
 const ChatListComponent = () => {
   const userId = sessionStorage.getItem('userId');
-  const productId = sessionStorage.getItem('productId');
-  const userType = sessionStorage.getItem('userType'); // 사용자 유형 정보 추가
+  const userType = sessionStorage.getItem('userType');
   const [chatRooms, setChatRooms] = useState([]);
-  const [selectedRoom, setSelectedRoom] = useState(null); // 선택된 채팅방 상태
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [selectedRoomProductId, setSelectedRoomProductId] = useState(null);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
   useEffect(() => {
     fetchChatRooms();
-  }, []);
+  }, [userId, userType]);
 
   const fetchChatRooms = async () => {
     try {
-      const response = await fetch('http://localhost:4001/chatRooms', {
+      const response = await fetch('http://localhost:4001/myChatRooms', {
         headers: {
           'user_id': userId,
-          'product_id': productId,
-          'user_type': userType // userType도 헤더에 포함
+          'user_type': userType
         }
       });
       if (!response.ok) {
@@ -33,31 +32,32 @@ const ChatListComponent = () => {
     }
   };
 
-  // 모달 열기 함수
-  const openModal = (chatRoom, productId) => {
-    setSelectedRoom({ chatRoom, productId, userType }); // userType 정보도 함께 전달
+  const openModal = (chatRoomId, productId) => {
+    setSelectedRoomId(chatRoomId);
+    setSelectedRoomProductId(productId);
+    setIsChatModalOpen(true); // 모달 열기
   };
   
-  // 모달 닫기 함수
   const closeModal = () => {
-    setSelectedRoom(null);
+    setSelectedRoomId(null);
+    setSelectedRoomProductId(null);
+    setIsChatModalOpen(false); // 모달 닫기
   };
 
   return (
     <div className="chat-list-container">
-      <h2>채팅방 목록</h2>
+      <h2>내 채팅방 목록</h2>
       <ul>
         {chatRooms.map((chatRoom) => (
-          <li key={chatRoom}>
-            {/* 클릭 시 모달 열기 */}
-            <button onClick={() => openModal(chatRoom, productId)}>채팅방 번호: {chatRoom}</button>
+          <li key={chatRoom.id}>
+            <button onClick={() => openModal(chatRoom.id, chatRoom.productId)}>채팅방 번호: {chatRoom.productId}</button>
           </li>
         ))}
       </ul>
-      {/* 모달 창 */}
-      {selectedRoom && (
-        <ChatModal chatRoom={selectedRoom.chatRoom} productId={selectedRoom.productId} receiver={selectedRoom.userType === 'seller' ? 'buyer' : 'seller'} closeModal={closeModal} />
+      {selectedRoomId && selectedRoomProductId && (
+        <ChatModal chatRoomId={selectedRoomId} productId={selectedRoomProductId} closeModal={closeModal} isOpen={isChatModalOpen} />
       )}
+      
     </div>
   );
 };
