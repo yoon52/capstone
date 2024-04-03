@@ -28,17 +28,23 @@ function AdminPage() {
       if (newStatus === 'rejected') {
         bodyData = { ...bodyData, rejectionReason };
       }
-
+  
       const response = await fetch(`http://localhost:4000/users/${userId}/approval`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyData)
-      });
+      });  
 
       const responseData = await response.json();
       fetchUsers();
+      // 반려 사유 입력 폼을 닫음
+      setIsRejectionFormOpen(false);
+      setRejectionReason('');
+      // 모달을 닫는 함수 호출
+      handleAdminModalClose();
+  
     } catch (error) {
       console.error('사용자 승인 상태 업데이트 오류:', error);
     }
@@ -50,7 +56,9 @@ function AdminPage() {
 
   const handleAdminModalClose = () => {
     setSelectedUser(null);
-    setVerificationResult(''); // 모달이 닫힐 때 유사도 정보 초기화
+    setVerificationResult('');
+    // 모달 닫기
+    setIsRejectionFormOpen(false);
   };
 
   const sendImageForOCR = async (userId, imageUrl) => {
@@ -82,9 +90,12 @@ function AdminPage() {
     setVerificationResult('');
   };
 
-  const handleRejectButton = () => {
-    setIsRejectionFormOpen(true);
+  const handleRejectButton = (userId) => {
+    setIsRejectionFormOpen(true); // 반려 사유 입력 폼을 열기
+    setSelectedUser({ id: userId }); // 선택된 사용자 정보 초기화
+    setVerificationResult(''); // 유사도 검증 결과 초기화
   };
+  
 
   const handleRejectionReasonChange = (event) => {
     setRejectionReason(event.target.value);
@@ -92,10 +103,14 @@ function AdminPage() {
 
   const handleRejectFormSubmit = (event) => {
     event.preventDefault();
+    if (!selectedUser) return; // 선택된 사용자가 없는 경우 처리
     handleUpdateApproval(selectedUser.id, 'rejected');
+    setSelectedUser(null); // 선택된 사용자 정보 초기화
     setIsRejectionFormOpen(false);
     setRejectionReason('');
   };
+    
+
   return (
     <div className="admin-container">
       <h1>회원 정보 관리</h1>
@@ -136,12 +151,8 @@ function AdminPage() {
         상세 정보 보기
       </button>
       <button onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>승인</button>
-      <button onClick={handleRejectButton}>반려</button>
+      <button onClick={() => handleRejectButton(selectedUser.id)}>반려</button>
       <button onClick={handleAdminModalClose}>닫기</button>
-    </div>
-  </div>
-)}
-
       
       {isRejectionFormOpen && (
         <form onSubmit={handleRejectFormSubmit}>
@@ -153,8 +164,11 @@ function AdminPage() {
         </form>
       )}
     </div>
+  </div>
+)}
+
+    </div>
   );
-  
 }
 
 export default AdminPage;

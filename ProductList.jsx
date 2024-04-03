@@ -20,12 +20,15 @@ function ProductList({ filteredProducts }) {
     <div className="product-list-container">
       <div className="product-list-wrapper">
         <div className="product-grid">
-          {filteredProducts.map(product => (
+          
+        {filteredProducts.map(product => (
             <div
               key={product.id}
               className="product-item"
-              onClick={() => handleProductClick(product.id)}
+              onClick={() => handleProductClick(product.id)} 
             >
+
+              
               <div className="product-image-container">
                 <img
                   src={`http://localhost:4000/uploads/${product.image}`}
@@ -38,6 +41,7 @@ function ProductList({ filteredProducts }) {
                 <p className="product-description">{product.description}</p>
                 <p className="product-price">Price: ${product.price}</p>
                 <p className="product-views">Views: {product.views}</p>
+                
               </div>
             </div>
           ))}
