@@ -51,7 +51,10 @@ function AddProducts() {
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="add-products-header">상품 추가</h1>
       <div className="add-products-container">
         <form onSubmit={handleAddProduct}>

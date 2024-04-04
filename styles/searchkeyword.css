@@ -15,7 +15,7 @@
   height: 600px;
   margin: 0 auto;
   padding: 20px;
-  border: 2px solid #2f4f4f50;
+  border: 2px solid #162b9150;
   border-radius: 5px;
   overflow-y: auto;
   margin-bottom: 20px;
@@ -33,7 +33,7 @@
 /* 삭제 버튼 */
 .delete-button {
   background-color: #ff6666;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 9px 15px;
   border-radius: 5px;

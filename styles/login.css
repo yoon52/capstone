@@ -54,7 +54,7 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -162,7 +162,7 @@ input[type="file"]::file-selector-button:hover {
   position: absolute;
   height: 50%;
   width: 2px;
-  background-color: #2f4f4f50;
+  background-color: #162b9150;
   left: 0;
   top: 25%;
 }

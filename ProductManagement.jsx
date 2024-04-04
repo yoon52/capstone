@@ -102,7 +102,10 @@ function ProductManagement() {
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="product-management-header">상품 관리</h1>
       <div className="product-management-container">
         <ul className="management-list">

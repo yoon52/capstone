@@ -45,7 +45,10 @@ function ChangePw() {
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="changepw-header">비밀번호 변경</h1>
       <div className="changepw-container">
         <div className="form-group">

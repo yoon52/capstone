@@ -21,7 +21,7 @@ function Main() {
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  
+
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -111,7 +111,9 @@ function Main() {
       <header className="header-main">
         <div className="header-content">
           <FaBars className="nav-menu-toggle" onClick={toggleNavMenu} />
-          <img src={logo} id='logo' alt="로고" />
+          <a href="/Main">
+            <img src={logo} id="logo" alt="로고" />
+          </a>
           <div className="search-container">
             <input
               ref={searchInputRef}
@@ -130,7 +132,7 @@ function Main() {
           </div>
         </div>
       </header>
-  
+
       <div className={`sidebar ${showNavMenu ? 'show' : ''}`}>
         <nav className="main_navigation">
           <button type="button" className="close-menu-btn" onClick={closeNavMenu}><FaTimes /></button>
@@ -156,7 +158,7 @@ function Main() {
           <p className="search-error">{searchError}</p>
         )}
       </div>
-  
+
       {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
     </div>
   );

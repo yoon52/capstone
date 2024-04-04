@@ -31,7 +31,10 @@ function MyInfo() {
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="myinfo-header">내 정보</h1>
       <div className="myinfo-container">
         {!isPasswordConfirmed && (

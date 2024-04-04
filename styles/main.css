@@ -46,19 +46,29 @@
 /* 검색창 */
 input[type="search"] {
   padding: 15px;
-  width: 400px;
+  width: 1000px;
   border-radius: 5px;
   border: 3px solid #103260;
   font-size: 16px;
   box-sizing: border-box;
   margin: auto;
+  margin-left: 100px;
+}
+
+.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search-input::-webkit-search-decoration {
+  display: none;
 }
 
 /* 헤더 버튼 */
 .header-buttons {
   display: flex;
   gap: 10px;
-  margin-left: 20px;
+  margin-left: 190px;
+  margin-right: 10px;
 }
 
 .header-button {
