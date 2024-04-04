@@ -21,7 +21,7 @@ function Main() {
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-
+  
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -120,6 +120,7 @@ function Main() {
               value={searchTerm}
               onChange={handleChangeSearchTerm}
               onKeyDown={handleEnterKeyPress}
+              className="search-input"
             />
           </div>
           <div className="header-buttons">
@@ -129,7 +130,7 @@ function Main() {
           </div>
         </div>
       </header>
-
+  
       <div className={`sidebar ${showNavMenu ? 'show' : ''}`}>
         <nav className="main_navigation">
           <button type="button" className="close-menu-btn" onClick={closeNavMenu}><FaTimes /></button>
@@ -147,7 +148,7 @@ function Main() {
         <ViewsList />
         <LatestList />
         <Routes>
-          <Route path="/productDetail/:productId" element={<ProductDetail />} />
+          <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
         </Routes>
@@ -155,10 +156,9 @@ function Main() {
           <p className="search-error">{searchError}</p>
         )}
       </div>
-
+  
       {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
     </div>
-    
   );
 }
 

@@ -98,7 +98,7 @@ function ProductManagement() {
   };
 
   const navigateToProductDetail = (productId) => {
-    navigate(`/productDetail/${productId}`);
+    navigate(`/ProductDetail/${productId}`);
   };
 
   return (

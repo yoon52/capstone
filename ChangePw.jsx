@@ -1,6 +1,7 @@
-
 import React, { useState } from 'react';
-import '../../styles/passwordchange.css';
+import '../../styles/changepw.css';
+import logo from '../../image/logo.png';
+
 function ChangePw() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -32,7 +33,6 @@ function ChangePw() {
 
       if (response.ok) {
         alert('비밀번호가 변경되었습니다.');
-        // 로그인 페이지로 이동
         window.location.href = '/login';
       } else {
         const data = await response.json();
@@ -45,13 +45,36 @@ function ChangePw() {
   };
 
   return (
-    <div>
-      <h2>비밀번호 변경</h2>
-      <p>현재 비밀번호: <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} /></p>
-      <p>새 비밀번호: <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></p>
-      <p>새 비밀번호 확인: <input type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} /></p>
-      <button onClick={handleChangePassword}>비밀번호 변경</button>
-    </div>
+    <div><img src={logo} id='logo' alt="로고" />
+      <h1 className="changepw-header">비밀번호 변경</h1>
+      <div className="changepw-container">
+        <div className="form-group">
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            placeholder="현재 비밀번호"
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="새로운 비밀번호"
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
+            placeholder="새로운 비밀번호 확인"
+          />
+        </div>
+        <button className="changepw" onClick={handleChangePassword}>비밀번호 변경</button>
+      </div>
+    </div >
   );
 }
 

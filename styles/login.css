@@ -241,14 +241,14 @@ input[type="file"]::file-selector-button:hover {
 /* signup.css */
 
 /* 회원가입 헤더 */
-.Signup-header {
+.signup-header {
   font-size: 40px;
   margin-top: -70px;
   text-align: center;
 }
 
 /* 회원가입 컨테이너 */
-.Signup-container {
+.signup-container {
   max-width: 500px;
   max-height: 700px;
   margin: 0 auto;

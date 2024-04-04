@@ -9,53 +9,70 @@
   /* 상품 추가 컨테이너 */
   .add-products-container {
     max-width: 700px;
-    max-height: 500px;
-    height: 600px;
+    height: 450px;
+    max-height: 450px;
     margin: 0 auto;
     padding: 20px;
     border: 2px solid #2f4f4f50;
     border-radius: 5px;
-    overflow-y: auto;
     text-align: center;
+    margin-top: 50px;
     margin-bottom: 20px;
   }
 
   /* 상품 추가 버튼 */
   .add-product-button {
     background-color: #103260;
-    color: #fff;
-    height: 40px;
-    width: 75px;
-    border: none;
+    color: #ffffff;
+    border: 2px solid #103260;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 13px;
-    transition: filter 0.3s ease;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 30px;
+    margin-bottom: 15px;
   }
 
   .add-product-button:hover {
-    filter: brightness(0.9)
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
   }
 
   /*--------------------------------------------------------------------------------*/
 
   /* productdetail.css */
 
+  /* 디테일 컨테이너 */
   .product-detail {
-    max-width: 600px;
+    max-width: 700px;
+    height: 450px;
+    max-height: 450px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 2px solid #162b9150;
     border-radius: 5px;
-  }
-
-  .product-name {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-
-  .product-description {
+    margin-top: 100px;
     margin-bottom: 20px;
+  }
+
+  /* 상품 이름 */
+  .product-name {
+    font-size: 25px;
+    margin-bottom: 30px;
+    margin-left: 20px;
+  }
+
+  /* 상품 설명 */
+  .product-description,
+  .product-price,
+  .product-date,
+  .product-views,
+  .product-availability {
+    margin-bottom: 10px;
+    margin-left: 20px;
   }
 
   .product-info {
@@ -67,14 +84,24 @@
     margin-bottom: 10px;
   }
 
+  /* 채팅하기 버튼 */
   .chat-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
+    background-color: #103260;
+    color: #ffffff;
+    border: 2px solid #103260;
     border-radius: 5px;
     cursor: pointer;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 80px;
+  }
+
+  .chat-button:hover {
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
   }
 
   .ReactModal__Overlay {
@@ -161,33 +188,6 @@
     /* 이미지를 상품 아이템의 너비에 맞게 설정 */
     height: auto;
     /* 이미지 비율 유지 */
-  }
-
-  .product-details {
-    padding: 10px;
-    /* 상품 설명의 여백 설정 */
-  }
-
-  .product-name {
-    font-size: 16px;
-    /* 상품 이름 크기 설정 */
-    margin: 0;
-    /* 상품 이름 여백 제거 */
-  }
-
-  .product-description {
-    margin: 5px 0;
-    /* 상품 설명 여백 설정 */
-  }
-
-  .product-price {
-    margin: 5px 0;
-    /* 상품 가격 여백 설정 */
-  }
-
-  .product-views {
-    margin: 5px 0;
-    /* 조회수 텍스트 여백 설정 */
   }
 
   /*--------------------------------------------------------------------------------*/

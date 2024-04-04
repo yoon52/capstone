@@ -10,7 +10,7 @@ function ProductList({ filteredProducts }) {
       await fetch(`http://localhost:4000/updateViews/${productId}`, {
         method: 'POST',
       });
-      navigate(`/productDetail/${productId}`);
+      navigate(`/ProductDetail/${productId}`);
     } catch (error) {
       console.error('Error updating views:', error);
     }

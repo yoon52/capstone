@@ -37,7 +37,11 @@ function MyInfo() {
         {!isPasswordConfirmed && (
           <>
             <h3 className="input-password">비밀번호를 입력해주세요</h3>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호"
+            />
             <button className="myinfo-button" onClick={handleConfirm}>확인</button>
           </>
         )}

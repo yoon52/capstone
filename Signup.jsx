@@ -115,8 +115,8 @@ function Signup() {
   return (
     <div>
       <img src={logo} id='logo' alt="로고" />
-      <h1 className="Signup-header">회원가입</h1>
-      <div className="Signup-container">
+      <h1 className="signup-header">회원가입</h1>
+      <div className="signup-container">
         {isModalOpen && (
           <div className="modal">
             <div className="modal-content">

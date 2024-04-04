@@ -1,0 +1,37 @@
+.changepw-header {
+    font-size: 40px;
+    margin-top: 0px;
+    text-align: center;
+}
+
+.changepw-container {
+    max-width: 500px;
+    height: 350px;
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid #162b9150;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.changepw {
+    background-color: #103260;
+    color: #ffffff;
+    border: 2px solid #103260;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.changepw:hover {
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
+}
