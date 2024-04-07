@@ -14,7 +14,7 @@ function Signup() {
     email: '',
     department: '',
     grade: '',
-    studentIdImage: null  // New state to store the uploaded image
+    studentIdImage: null
   });
   const [idAvailability, setIdAvailability] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +23,6 @@ function Signup() {
   const handleChange = (e) => {
     const { name, value, type } = e.target;
 
-    // If the input type is file, handle it separately
     if (type === 'file') {
       setFormData(prevState => ({
         ...prevState,
@@ -37,21 +36,16 @@ function Signup() {
     }
   };
 
-  // 함수를 사용하여 이미지 파일 이름을 생성합니다.
   const getImageFileName = (userId, file) => {
-    // 파일 확장자를 가져옵니다.
     const extension = file.name.split('.').pop();
-    // 파일 이름을 사용자 ID와 확장자를 결합하여 반환합니다.
     return `${userId}.${extension}`;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 이미지 파일 이름을 생성합니다.
     const imageFileName = getImageFileName(formData.id, formData.studentIdImage);
 
-    // 이미지를 포함한 FormData 생성
     const formDataWithImage = new FormData();
     formDataWithImage.append('id', formData.id);
     formDataWithImage.append('name', formData.name);
@@ -60,24 +54,24 @@ function Signup() {
     formDataWithImage.append('email', formData.email);
     formDataWithImage.append('department', formData.department);
     formDataWithImage.append('grade', formData.grade);
-    formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName); // 이미지 추가 및 파일 이름 설정
+    formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName);
 
     try {
       const response = await fetch('http://localhost:4000/signup', {
         method: 'POST',
-        body: formDataWithImage // FormData 전송
+        body: formDataWithImage
       });
       if (response.ok) {
         handleSignupSuccess();
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.error);
-        setIsModalOpen(true); // 에러 발생 시 모달 열기
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error('Error:', error);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
-      setIsModalOpen(true); // 에러 발생 시 모달 열기
+      setIsModalOpen(true);
     }
   };
 
@@ -103,19 +97,20 @@ function Signup() {
       } else {
         setIdAvailability(null);
         setErrorMessage('아이디 중복 확인 중 오류가 발생했습니다.');
-        setIsModalOpen(true); // Open modal on error
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error('Error:', error);
       setIdAvailability(null);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
-      setIsModalOpen(true); // Open modal on error
+      setIsModalOpen(true);
     }
   };
+
   return (
     <div>
       <a href="/Login">
-      <img src={logo} id='logo' alt="로고" />
+        <img src={logo} id='logo' alt="로고" />
       </a>
       <h1 className="signup-header">회원가입</h1>
       <div className="signup-container">
@@ -228,7 +223,6 @@ function Signup() {
       </div>
     </div>
   );
-
 }
 
 export default Signup;

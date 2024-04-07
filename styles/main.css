@@ -33,7 +33,6 @@
 
 .nav-menu-toggle:hover {
   color: #000000;
-  font-size: 27px;
 }
 
 #logo {
@@ -52,7 +51,7 @@ input[type="search"] {
   font-size: 16px;
   box-sizing: border-box;
   margin: auto;
-  margin-left: 100px;
+  margin-left: 70px;
 }
 
 .search-input::-webkit-search-cancel-button {
@@ -67,7 +66,7 @@ input[type="search"] {
 .header-buttons {
   display: flex;
   gap: 10px;
-  margin-left: 190px;
+  margin-left: 185px;
   margin-right: 10px;
 }
 
@@ -75,13 +74,13 @@ input[type="search"] {
   background-color: transparent;
   border: none;
   color: #103260;
-  font-size: 20px;
+  font-size: 25px;
   cursor: pointer;
 }
 
 .header-button:hover {
   color: #000000;
-  font-size: 25px;
+  font-size: 27px;
 }
 
 
