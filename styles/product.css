@@ -1,7 +1,7 @@
 /* productdetail.css */
 
 .product-detail {
-  max-width: 600px;
+  max-width: 500%;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -36,6 +36,7 @@
   cursor: pointer;
 }
 
+/* React Modal Styles */
 .ReactModal__Overlay {
   position: fixed;
   top: 0;
@@ -67,6 +68,94 @@
   border: none;
   cursor: pointer;
 }
+
+/* productlist.css */
+
+.product-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.product-item {
+  flex: 0 0 300px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-details {
+  padding: 10px;
+}
+
+.product-name {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.product-description {
+  margin-bottom: 5px;
+}
+
+.product-price {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.product-views {
+  color: #888;
+  margin-bottom: 5px;
+}
+
+/* productmanagement.css */
+
+.product-management-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.product-management-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.management-list {
+  list-style: none;
+  padding: 0;
+}
+
+.management-item {
+  margin-bottom: 10px;
+}
+
+.management-text {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.product-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+}
+
+.product-button:hover {
+  background-color: #0056b3;
+}
+
 
 /* productlist.css */
 
@@ -105,10 +194,6 @@
 .product-image {
   width: 100%; /* 이미지를 상품 아이템의 너비에 맞게 설정 */
   height: auto; /* 이미지 비율 유지 */
-}
-
-.product-details {
-  padding: 10px; /* 상품 설명의 여백 설정 */
 }
 
 .product-name {

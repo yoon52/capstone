@@ -1,19 +1,18 @@
 /* main.css */
 
-/* Main container */
+/* 메인 컨테이너 */
 .container-main {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* 화면 전체 높이 */
+  height: 100vh;
 }
 
 /* Header */
-/* Header */
 .header-main {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 10px;
   display: flex;
-  justify-content: space-between; /* 요소들을 컨테이너 양쪽에 정렬 */
+  justify-content: space-between;
   align-items: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -23,76 +22,76 @@
   align-items: center;
 }
 
-/* main.css */
+/* = 버튼 */
+.nav-menu-toggle {
+  color: #103260;
+  font-size: 25px;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
+}
 
-/* Header buttons */
+.nav-menu-toggle:hover {
+  color: #000000;
+}
+
+#logo {
+  width: 210px;
+  height: 130px;
+  display: block;
+  margin-left: 10px;
+}
+
+/* 검색창 */
+input[type="search"] {
+  padding: 15px;
+  width: 1000px;
+  border-radius: 5px;
+  border: 3px solid #103260;
+  font-size: 16px;
+  box-sizing: border-box;
+  margin: auto;
+  margin-left: 70px;
+}
+
+.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search-input::-webkit-search-decoration {
+  display: none;
+}
+
+/* 헤더 버튼 */
 .header-buttons {
   display: flex;
   gap: 10px;
-  margin-left: auto; /* Pushes buttons to the right */
+  margin-left: 185px;
+  margin-right: 10px;
 }
 
 .header-button {
   background-color: transparent;
   border: none;
+  color: #103260;
+  font-size: 25px;
   cursor: pointer;
-  color: #007bff; /* Change color on hover */
 }
 
 .header-button:hover {
-  color: #007bff; /* Change color on hover */
+  color: #000000;
+  font-size: 27px;
 }
 
 
-.nav-menu-toggle {
-  font-size: 24px;
-  cursor: pointer;
-}
-
-#logo {
-  width: 120px;
-  height: auto;
-  margin-right: 20px;
-}
-
-/* Search bar */
-.search-container {
-  display: flex;
-  align-items: center;
-}
-
-.search-input {
-  padding: 10px;
-  border: none;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  width: 300px;
-  font-size: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.search-button {
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.search-button:hover {
-  background-color: #0056b3;
-}
-
-/* Sidebar */
+/* 사이드 바 */
 .sidebar {
   background-color: #022a52;
   width: 250px;
   height: 100%;
   position: fixed;
+  border: none;
+  border-top-right-radius: 20px;
   top: 0;
   left: -250px;
   transition: left 0.3s ease;
@@ -113,21 +112,20 @@
   background-color: #022a52;
   color: #ffffff;
   border: none;
-  border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
   width: calc(100% - 40px);
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 15px;
+}
+
+.main-nav-button:hover {
+  font-size: 17px;
 }
 
 .main-nav-button svg {
   margin-right: 10px;
-}
-
-.main-nav-button:hover {
-  background-color: #0056b3;
 }
 
 .overlay {
@@ -142,11 +140,17 @@
 
 .close-menu-btn {
   position: absolute;
+  color: #ffffff;
   top: 20px;
   right: 20px;
   background-color: transparent;
   border: none;
   cursor: pointer;
+  font-size: 15px;
+}
+
+.close-menu-btn:hover {
+  font-size: 17px;
 }
 
 /* Main content container */
@@ -158,7 +162,7 @@
 
 /* Scrollbar customization */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 13px;
 }
 
 ::-webkit-scrollbar-thumb {

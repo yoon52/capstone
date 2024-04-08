@@ -1,482 +1,341 @@
-/* 로고 */
-  #logo {
-    width: 200px;
-    height: 120px;
-    margin-left: 25px;
-    margin-top: 10px;
-  }
+/* 입력 창 */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: calc(100% - 20px) !important;
+  padding: 15px !important;
+  border-radius: 5px !important;
+  border: 1.5px solid #b0c4de !important;
+  font-size: 1rem !important;
+  box-sizing: border-box !important;
+}
 
-  #login-logo {
-    width: 240px;
-    height: 150px;
-    margin: auto;
-    display: block;
-    margin-top: 50px;
-  }
-  /* 메인 컨테이너 스타일 */
-.container-login {
-    max-width: 1200px; /* 최대 너비 */
-    margin: 0 auto; /* 가운데 정렬 */
-    padding: 20px; /* 안쪽 여백 */
-  }
-  
+input[type="file"] {
+  font-size: 13px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  color: gray;
+}
 
-  /* 입력 창 */
-  input[type="text"],
-  input[type="password"],
-  input[type="email"] {
-    width: calc(100% - 20px);
-    padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #B0C4DE;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
+/* 파일 선택 */
+input[type="file"]::file-selector-button {
+  padding: 12px 15px;
+  background-color: #5080c5;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  margin-right: 10px;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
 
-  /* 검색어 창 */
-  input[type="search"] {
-    width: calc(100% - 20px);
-    padding: 15px;
-    border-radius: 5px;
-    border: 3px solid #103260;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
+input[type="file"]::file-selector-button:hover {
+  color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 40px 40px #103260 inset;
+}
 
-  .form-group {
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
+.form-group {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
 
-  .select-group {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    height: 100%;
-    margin-top: 20px;
-  }
+/* 모달 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .select-group input,
-  .select-group select {
-    width: 230px;
-    height: 45px;
-    font-size: 15px;
-    text-align: left;
-    text-indent: 10px;
-    color: gray;
-    border-radius: 5px;
-    border: 1px solid #B0C4DE;
-  }
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+  width: 300px;
+  max-width: 90%;
+  height: auto;
+}
 
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+.modal-close {
+  background-color: #103260;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
 
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ccc;
-    width: 300px;
-    max-width: 90%;
-    height: auto;
-  }
+.modal-close:hover {
+  filter: brightness(0.8)
+}
 
-  .modal-close {
-    background-color: #103260;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-  }
+/*--------------------------------------------------------------------------------*/
 
-  .modal-close:hover {
-    filter: brightness(0.9)
-  }
+/* login.css */
 
-  /*--------------------------------------------------------------------------------*/
+/* 로그인 로고 */
+#login-logo {
+  width: 240px;
+  height: 150px;
+  margin: auto;
+  display: block;
+  margin-top: 50px;
+}
 
-  /* Login.css */
+/* 로그인 헤더 */
+.login-header {
+  font-size: 40px;
+  margin-bottom: 30px;
+}
 
-  /* 로그인 컨테이너 */
-  .login-container {
-    background-color: #ffffff;
-    position: absolute;
-    top: 68%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 500px;
-    height: 480px;
-    padding: 10px;
-    border: 2px solid #2f4f4f50;
-    border-radius: 10px;
-    text-align: center;
-  }
+/* 로그인 컨테이너 */
+.login-container {
+  max-width: 500px;
+  max-height: 480px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid #162b9150;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
 
-  /* 로그인 헤더 */
-  .login-header {
-    font-size: 40px;
-    margin-bottom: 30px;
-  }
+/* 로그인 버튼 */
+.login-button {
+  appearance: none;
+  background-color: #103260;
+  border: 2px solid #103260;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  align-self: center;
+  font-size: 17px;
+  padding: 15px 20px;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  width: 95%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 
-  /* 로그인 버튼 */
-  .login-button {
-    background-color: #103260;
-    color: #fff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 95%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 17px;
-    transition: filter 0.3s ease;
-  }
+.login-button:hover {
+  color: #103260;
+  outline: 0;
+  box-shadow: 0 0 40px 40px #ffffff inset, 0 0 5px 1px #103260;
+}
 
-  .login-button:hover {
-    filter: brightness(0.9)
-  }
+/* 회원가입 및 찾기 버튼 그룹 */
+.all-group {
+  display: flex;
+  justify-content: center;
+  margin: 0 1.5%;
+  margin-top: 5px;
+}
 
-  /* 회원가입 및 찾기 버튼 그룹 */
-  .all-group {
-    display: flex;
-    justify-content: center;
-    margin: 0 1.5%;
-    margin-top: 5px;
-  }
+.all-group button {
+  margin: 0;
+  padding: 15px 20px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  font-size: 17px;
+}
 
-  .all-group button {
-    margin: 0;
-    padding: 15px 20px;
-    background-color: #ffffff;
-    color: #000000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;
-    font-size: 17px;
-  }
+.all-group button:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  height: 50%;
+  width: 2px;
+  background-color: #2f4f4f50;
+  left: 0;
+  top: 25%;
+}
 
-  .all-group button:not(:first-child)::before {
-    content: "";
-    position: absolute;
-    height: 50%;
-    width: 2px;
-    background-color: #2f4f4f50;
-    left: 0;
-    top: 25%;
-  }
+/* 회원가입 및 찾기 버튼 */
+.signup,
+.find-id,
+.find-pw {
+  background-color: #ffffff;
+  color: #000000;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  height: min-content;
+}
 
-  /* 회원가입 및 찾기 버튼 */
-  .signup,
-  .find-id,
-  .find-pw {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 10px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    height: min-content;
-  }
+/* rest 로그인 버튼 */
+.rest-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+}
 
-  /* rest 로그인 버튼 */
-  .rest-group {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    width: 100%;
-  }
+.rest-group button {
+  margin: 0 10px;
+}
 
-  .rest-group button {
-    margin: 0 10px;
-  }
+/* 네이버 로그인 버튼 */
+.naver-login {
+  background: url(../image/naver.png) no-repeat center center;
+  background-size: 100% 100%;
+  padding: 25px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50%;
+  transition: filter 0.3s ease;
+}
 
-  /* 네이버 로그인 버튼 */
-  .naver-login {
-    background: url(../image/naver.png) no-repeat center center;
-    background-size: 100% 100%;
-    padding: 25px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 50%;
-    transition: filter 0.3s ease;
-  }
+.naver-login:hover {
+  filter: brightness(0.90)
+}
 
-  .naver-login:hover {
-    filter: brightness(0.9)
-  }
+/* 카카오 로그인 버튼 */
+.kakao-login {
+  background: url(../image/kakao.png) no-repeat center center;
+  background-size: 100% 100%;
+  padding: 25px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 50%;
+  transition: filter 0.3s ease;
+}
 
-  /* 카카오 로그인 버튼 */
-  .kakao-login {
-    background: url(../image/kakao.png) no-repeat center center;
-    background-size: 100% 100%;
-    padding: 20px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 50%;
-    transition: filter 0.3s ease;
-  }
+.kakao-login:hover {
+  filter: brightness(0.9)
+}
 
-  .kakao-login:hover {
-    filter: brightness(0.9)
-  }
+/* 로그인 오류 메세지 */
+.login-failure-message {
+  color: black;
+  text-align: center;
+  margin-top: -20px;
+  margin-bottom: -1px;
+}
 
-  /* 로그인 오류 메세지 */
-  .login-failure-message {
-    color: black;
-    text-align: center;
-    margin-top: -20px;
-    margin-bottom: -2px;
-  }
+/*--------------------------------------------------------------------------------*/
 
-  /*--------------------------------------------------------------------------------*/
+/* signup.css */
 
-  /* Signup.css */
+/* 회원가입 헤더 */
+.Signup-header {
+  font-size: 40px;
+  margin-top: -70px;
+  text-align: center;
+}
 
-  /* 회원가입 헤더 */
-  .Signup-header {
-    font-size: 40px;
-    margin-top: -70px;
-    text-align: center;
-  }
+/* 회원가입 컨테이너 */
+.Signup-container {
+  max-width: 500px;
+  max-height: 700px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid #162b9150;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
 
-  /* 회원가입 컨테이너 */
-  .Signup-container {
-    background-color: #ffffff;
-    position: absolute;
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 500px;
-    height: 630px;
-    padding: 10px;
-    border: 2px solid #2f4f4f50;
-    border-radius: 10px;
-    text-align: center;
-  }
+/* 셀렉트 창 */
+.select-group {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+  margin-top: 20px;
+}
 
-  /* 입력창 중복확인 그룹 */
-  .id-group {
-    display: flex;
-    align-items: center;
-  }
+.select-group input,
+.select-group select {
+  width: 230px;
+  height: 45px;
+  font-size: 15px;
+  text-align: left;
+  text-indent: 10px;
+  color: gray;
+  border-radius: 5px;
+  border: 1.5px solid #b0c4de;
+}
 
-  /* 아이디 입력 창 */
-  .id-form {
-    flex: 1;
-  }
+/* 입력창 중복확인 그룹 */
+.id-group {
+  display: flex;
+  align-items: center;
+}
 
-  .id-form input {
-    width: 95%;
-  }
+/* 아이디 입력 창 */
+.id-form {
+  flex: 1;
+}
 
-  .id-group button {
-    margin-left: 10px;
-  }
+.id-form input {
+  width: 95%;
+}
 
-  /* 중복 확인 버튼 */
-  .check {
-    background-color: #103260;
-    color: #fff;
-    height: 50px;
-    width: 75px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 13px;
-    margin-right: 10px;
-    transition: filter 0.3s ease;
-  }
+.id-group button {
+  margin-left: 10px;
+}
 
-  .check:hover {
-    filter: brightness(0.9)
-  }
+/* 중복 확인 버튼 */
+.check {
+  height: 50px;
+  width: 80px;
+  background-color: #5080c5;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  margin-right: 10px;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
 
-  /* 가입하기 버튼 */
-  .signup-button {
-    background-color: #103260;
-    color: #fff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 80%;
-    margin-top: 35px;
-    margin-bottom: 10px;
-    font-size: 15px;
-    transition: filter 0.3s ease;
-  }
+.check:hover {
+  color: #ffffff;
+  outline: 0;
+  box-shadow: 0 0 40px 40px #103260 inset;
+}
 
-  .signup-button:hover {
-    filter: brightness(0.9)
-  }
+/* 가입하기 버튼 */
+.signup-button {
+  appearance: none;
+  background-color: #103260;
+  border: 2px solid #103260;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  align-self: center;
+  font-size: 17px;
+  padding: 15px 20px;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  width: 95%;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
 
-  /*--------------------------------------------------------------------------------*/
-
-  /* FindId.css */
-
-  /* 아이디 찾기 헤더 */
-  .findid-header {
-    font-size: 40px;
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  /* 아이디 찾기 컨테이너 */
-  .findid-container {
-    background-color: #ffffff;
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 500px;
-    height: 280px;
-    padding: 10px;
-    border: 2px solid #2f4f4f50;
-    border-radius: 15px;
-    text-align: center;
-  }
-
-  /* 아이디 찾기 버튼 */
-  .findid-button {
-    background-color: #103260;
-    color: #fff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 95%;
-    margin-top: 55px;
-    font-size: 17px;
-    transition: filter 0.3s ease;
-  }
-
-  .findid-button:hover {
-    filter: brightness(0.9)
-  }
-
-  /* 아이디 모달 */
-  .found-id {
-    font-size: 20px;
-  }
-
-  .findid-modal {
-    display: flex;
-    justify-content: center;
-  }
-
-  .findid-modal button {
-    margin: 0 10px;
-    margin-top: 30px;
-  }
-
-  /* 로그인 하기 버튼 */
-  .findid-login {
-    background-color: #103260;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-  }
-
-  .findid-login:hover {
-    filter: brightness(0.9)
-  }
-
-  /* 비밀번호 찾기 버튼 */
-  .findid-fwfind {
-    background-color: #103260;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-  }
-
-  .findid-fwfind:hover {
-    filter: brightness(0.9)
-  }
-
-  /*--------------------------------------------------------------------------------*/
-
-  /* FindPw.css */
-
-  /* 비밀번호 찾기 헤더 */
-  .findpw-header {
-    font-size: 40px;
-    margin-top: 20px;
-    text-align: center;
-  }
-
-  /* 비밀번호 찾기 컨테이너 */
-  .findpw-container {
-    background-color: #ffffff;
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 500px;
-    height: 200px;
-    padding: 10px;
-    border: 2px solid #2f4f4f50;
-    border-radius: 10px;
-    text-align: center;
-  }
-
-  /* 비밀번호 찾기 버튼 */
-  .findpw-button {
-    background-color: #103260;
-    color: #fff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 95%;
-    margin-top: 20px;
-    font-size: 17px;
-    transition: filter 0.3s ease;
-  }
-
-  .findpw-button:hover {
-    filter: brightness(0.9)
-  }
-
-  /* 로그인 하기 버튼 */
-  .findpw-login {
-    background-color: #103260;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-  }
-
-  .findpw-login:hover {
-    filter: brightness(0.9)
-  }
-
-
-/* Signup.css */
+.signup-button:hover {
+  color: #103260;
+  outline: 0;
+  box-shadow: 0 0 40px 40px #ffffff inset, 0 0 5px 1px #103260;
+}
 
 /* 학생증 미리보기 컨테이너 */
 .student-id-preview {
@@ -489,9 +348,175 @@
 }
 
 .student-id-preview img {
-  max-width: 300px; /* 이미지의 최대 너비 설정 */
-  max-height: 300px; /* 이미지의 최대 높이 설정 */
+  max-width: 300px;
+  /* 이미지의 최대 너비 설정 */
+  max-height: 300px;
+  /* 이미지의 최대 높이 설정 */
   margin-top: 10px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/*--------------------------------------------------------------------------------*/
+
+/* findid.css */
+
+/* 아이디 찾기 헤더 */
+.findid-header {
+  font-size: 40px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* 아이디 찾기 컨테이너 */
+.findid-container {
+  max-width: 500px;
+  height: 250px;
+  max-height: 250px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid #162b9150;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
+/* 아이디 찾기 버튼 */
+.findid-button {
+  background-color: #103260;
+  color: #fff;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 95%;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 17px;
+  transition: filter 0.3s ease;
+}
+
+.findid-button:hover {
+  filter: brightness(0.8)
+}
+
+/* 아이디 모달 */
+.found-id {
+  font-size: 19px;
+}
+
+.findid-modal {
+  display: flex;
+  justify-content: center;
+}
+
+.findid-modal button {
+  margin: 0 10px;
+  margin-top: 30px;
+}
+
+/* 로그인 하기 버튼 */
+.findid-login {
+  background-color: #103260;
+  color: #fff;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+
+.findid-login:hover {
+  filter: brightness(0.8)
+}
+
+/* 비밀번호 찾기 버튼 */
+.findid-fwfind {
+  background-color: #103260;
+  color: #fff;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+
+.findid-fwfind:hover {
+  filter: brightness(0.8)
+}
+
+/*--------------------------------------------------------------------------------*/
+
+/* findpw.css */
+
+/* 비밀번호 찾기 헤더 */
+.findpw-header {
+  font-size: 40px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* 비밀번호 찾기 컨테이너 */
+.findpw-container {
+  max-width: 500px;
+  height: 250px;
+  max-height: 250px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid #162b9150;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
+
+
+/* 비밀번호 모달 */
+.found-pw {
+  font-size: 19px;
+}
+
+.pwfind-modal {
+  display: flex;
+  justify-content: center;
+}
+
+.findpw-modal button {
+  margin: 0 10px;
+  margin-top: 30px;
+}
+
+/* 비밀번호 찾기 버튼 */
+.findpw-button {
+  background-color: #103260;
+  color: #fff;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 95%;
+  margin-top: 60px;
+  margin-bottom: 15px;
+  font-size: 17px;
+  transition: filter 0.3s ease;
+}
+
+.findpw-button:hover {
+  filter: brightness(0.8)
+}
+
+/* 로그인 하기 버튼 */
+.findpw-login {
+  background-color: #103260;
+  color: #fff;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+
+.findpw-login:hover {
+  filter: brightness(0.8)
 }
