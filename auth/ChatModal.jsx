@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
 
-const ChatModal = ({ chatRoomId, productId, closeModal }) => {
+const ChatPage = ({ chatRoomId, productId }) => {
   const userId = sessionStorage.getItem('userId');
   const userType = sessionStorage.getItem('userType');
   const receiver = userType === 'seller' ? 'buyer' : 'seller';
@@ -82,34 +82,30 @@ const ChatModal = ({ chatRoomId, productId, closeModal }) => {
   const isCurrentUser = (senderId) => senderId === userId;
 
   return (
-    <div className="modal">
-      <div className="chat-component">
-        <span className="close" onClick={closeModal}>&times;</span>
-        <h2>채팅방 번호: {chatRoomId}</h2>
-        <div ref={messageContainerRef} className="chat-messages">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`message-container ${isCurrentUser(message.sender) ? 'own-message' : 'other-message'}`}
-            >
-              <span className="message-sender">{isCurrentUser(message.sender) ? '나' : message.sender}</span>
-              <span className="message-text">{message.text}</span>
-            </div>
-          ))}
-        </div>
-        <form onSubmit={handleMessageSubmit} className="message-input-form">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="메시지를 입력하세요..."
-          />
-          <button type="submit">전송</button>
-        </form>
+    <div className="chat-page">
+      <h2>채팅방 번호: {chatRoomId}</h2>
+      <div ref={messageContainerRef} className="chat-messages">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`message-container ${isCurrentUser(message.sender) ? 'own-message' : 'other-message'}`}
+          >
+            <span className="message-sender">{isCurrentUser(message.sender) ? '나' : message.sender}</span>
+            <span className="message-text">{message.text}</span>
+          </div>
+        ))}
       </div>
-      
+      <form onSubmit={handleMessageSubmit} className="message-input-form">
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="메시지를 입력하세요..."
+        />
+        <button type="submit">전송</button>
+      </form>
     </div>
   );
 };
 
-export default ChatModal;
+export default ChatPage;

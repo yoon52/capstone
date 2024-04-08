@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
 
@@ -9,13 +10,13 @@ const ChatComponent = () => {
   const receiver = userType === 'seller' ? 'buyer' : 'seller';
   const messageContainerRef = useRef(null);
   const socket = useRef(null);
-
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
     socket.current = io('http://localhost:4001/', {
-      query: { productId, receiver } // userType 및 receiver 정보를 함께 전달
+      query: { productId, receiver }
     });
 
     socket.current.on('newMessage', (message) => {
@@ -61,7 +62,7 @@ const ChatComponent = () => {
     try {
       const response = await fetch(`http://localhost:4001/messages/${productId}`, {
         headers: {
-          'receiver': receiver // receiver 정보를 헤더에 추가하여 서버에 전달
+          'receiver': receiver
         }
       });
       if (!response.ok) {
@@ -80,6 +81,11 @@ const ChatComponent = () => {
       socket.current.emit('sendMessage', { text: newMessage, sender: userId, receiver, productId });
       setNewMessage('');
     }
+  };
+
+  const handlePayment = () => {
+    navigate('/PayMent');
+    console.log('결제 처리 로직을 추가하세요.');
   };
 
   return (
@@ -107,6 +113,7 @@ const ChatComponent = () => {
         />
         <button type="submit">전송</button>
       </form>
+      <button onClick={handlePayment}>결제하기</button>
     </div>
   );
 };
