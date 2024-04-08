@@ -2,93 +2,93 @@
 
 /* 대화창 컨테이너 */
 .chat-component {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-  }
-  
-  /* 대화 헤더 */
-  .chat-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* 대화 메시지 영역 */
-  .chat-messages {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  
-  /* 대화 메시지 컨테이너 */
-  .message-container {
-    margin-bottom: 10px;
-  }
-  
-  /* 사용자의 메시지 */
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+/* 대화 헤더 */
+.chat-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* 대화 메시지 영역 */
+.chat-messages {
+  height: 520px;
+  max-height: 520px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* 대화 메시지 컨테이너 */
+.message-container {
+  margin-bottom: 10px;
+}
+
+/* 사용자의 메시지 */
 .own-message {
-    text-align: right;
-  }
-  
-  /* 상대방의 메시지 */
-  .other-message {
-    text-align: left;
-  }
-  
-  /* 메시지 텍스트 스타일 */
-  .message-text {
-    background-color: #f0f0f0;
-    padding: 10px;
-    border-radius: 15px;
-    display: inline-block;
-    max-width: 70%; /* 메시지 텍스트의 최대 너비를 설정하여 너무 긴 메시지가 글씨를 벗어나는 것을 방지 */
-    word-wrap: break-word; /* 너무 긴 단어가 있을 경우 줄 바꿈 */
-  }
-  
-  /* 상대방 메시지 텍스트 스타일 */
-  .other-message .message-text {
-    background-color: #e6e6e6; /* 상대방 메시지의 배경색 */
-  }
-  
-  /* 사용자의 메시지 텍스트 스타일 */
-  .own-message .message-text {
-    background-color: #007bff; /* 사용자 메시지의 배경색 */
-    color: #fff; /* 사용자 메시지의 글자색 */
-  }
-  
-  
-  /* 메시지 입력 폼 */
-  .message-input-form {
-    display: flex;
-    margin-bottom: 20px; /* 입력 폼과 이전 메시지 간의 간격 */
-  }
-  
-  /* 메시지 입력 필드 */
-  .message-input-form input[type="text"] {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px; /* 입력 필드 간의 간격 */
-  }
-  
-  /* 전송 버튼 */
-  .message-input-form button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  /* 전송 버튼 호버 효과 */
-  .message-input-form button:hover {
-    background-color: #0056b3;
-  }
-  
+  text-align: right;
+}
+
+/* 상대방의 메시지 */
+.other-message {
+  text-align: left;
+}
+
+/* 메시지 텍스트 스타일 */
+.message-text {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 15px;
+  display: inline-block;
+  max-width: 70%; /* 메시지 텍스트의 최대 너비를 설정하여 너무 긴 메시지가 글씨를 벗어나는 것을 방지 */
+  word-wrap: break-word; /* 너무 긴 단어가 있을 경우 줄 바꿈 */
+}
+
+/* 상대방 메시지 텍스트 스타일 */
+.other-message .message-text {
+  background-color: #e6e6e6; /* 상대방 메시지의 배경색 */
+}
+
+/* 사용자의 메시지 텍스트 스타일 */
+.own-message .message-text {
+  background-color: #007bff; /* 사용자 메시지의 배경색 */
+  color: #fff; /* 사용자 메시지의 글자색 */
+}
+
+
+/* 메시지 입력 폼 */
+.message-input-form {
+  display: flex;
+  margin-bottom: 20px; /* 입력 폼과 이전 메시지 간의 간격 */
+}
+
+/* 메시지 입력 필드 */
+.message-input-form input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px; /* 입력 필드 간의 간격 */
+}
+
+/* 전송 버튼 */
+.message-input-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 전송 버튼 호버 효과 */
+.message-input-form button:hover {
+  background-color: #0056b3;
+}

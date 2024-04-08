@@ -10,7 +10,7 @@ import ProductManagement from './ProductManagement';
 import ChatListComponent from './ChatListComponent';
 import '../../styles/main.css';
 import '../../styles/product.css';
-import logo from '../../image/logo.png';
+import Header from './Header';
 
 function Main() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -21,7 +21,9 @@ function Main() {
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-
+  
+  
+  
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -108,40 +110,21 @@ function Main() {
 
   return (
     <div className="container-main">
-      <header className="header-main">
-        <div className="header-content">
-          <FaBars className="nav-menu-toggle" onClick={toggleNavMenu} />
-          <a href="/Main">
-            <img src={logo} id="logo" alt="로고" />
-          </a>
-          <div className="search-container">
-            <input
-              ref={searchInputRef}
-              type="search"
-              placeholder="검색어를 입력하세요"
-              value={searchTerm}
-              onChange={handleChangeSearchTerm}
-              onKeyDown={handleEnterKeyPress}
-              className="search-input"
-            />
-          </div>
-          <div className="header-buttons">
-            <button className="header-button" onClick={handleAddProduct}><FaPlus /></button>
-            <button className="header-button" onClick={handleShowChatList}><FaComments /></button>
-            <button className="header-button" onClick={handleShowMyInfoPage}><FaUser /></button>
-          </div>
-        </div>
-      </header>
-
-      <div className={`sidebar ${showNavMenu ? 'show' : ''}`}>
-        <nav className="main_navigation">
-          <button type="button" className="close-menu-btn" onClick={closeNavMenu}><FaTimes /></button>
-          <button type="button" className="main-nav-button" onClick={handleKeywordManagement}><FaCog /> 검색어 관리</button>
-          <button type="button" className="main-nav-button" onClick={handleProductManagement}><FaCog /> 상품 관리</button>
-          <button type="button" className="main-nav-button" onClick={handleLogout}><FaSignOutAlt /> 로그아웃</button>
-        </nav>
-      </div>
-
+              <Header 
+          toggleNavMenu={toggleNavMenu} 
+          showNavMenu={showNavMenu} 
+          closeNavMenu={closeNavMenu} 
+          handleAddProduct={handleAddProduct} 
+          handleShowChatList={handleShowChatList} 
+          handleShowMyInfoPage={handleShowMyInfoPage} 
+          handleKeywordManagement={handleKeywordManagement} 
+          handleProductManagement={handleProductManagement} 
+          handleLogout={handleLogout} 
+          searchTerm={searchTerm} 
+          handleChangeSearchTerm={handleChangeSearchTerm} 
+          handleEnterKeyPress={handleEnterKeyPress} 
+          searchInputRef={searchInputRef} 
+        />
       <div className="main-container">
         {showSearchResults && (
           <SearchResults filteredProducts={filteredProducts} searchTerm={searchTerm} />
@@ -150,7 +133,7 @@ function Main() {
         <ViewsList />
         <LatestList />
         <Routes>
-          <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
+          <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
         </Routes>
@@ -158,7 +141,7 @@ function Main() {
           <p className="search-error">{searchError}</p>
         )}
       </div>
-
+  
       {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
     </div>
   );

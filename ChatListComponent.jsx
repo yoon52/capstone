@@ -1,26 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import '../../styles/chat.css';
-import ChatModal from './ChatModal'; // ChatModal 컴포넌트 추가
+import '../../styles/chatList.css';
+import ChatModal from './ChatModal';
+import Header from './Header';
 
 const ChatListComponent = () => {
   const userId = sessionStorage.getItem('userId');
-  const productId = sessionStorage.getItem('productId');
-  const userType = sessionStorage.getItem('userType'); // 사용자 유형 정보 추가
+  const userType = sessionStorage.getItem('userType');
   const [chatRooms, setChatRooms] = useState([]);
-  const [selectedRoom, setSelectedRoom] = useState(null); // 선택된 채팅방 상태
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [selectedRoomProductId, setSelectedRoomProductId] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [savedSearchTerm, setSavedSearchTerm] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showNavMenu, setShowNavMenu] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const navigate = useNavigate();
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     fetchChatRooms();
-  }, []);
+  }, [userId, userType]);
 
   const fetchChatRooms = async () => {
     try {
-      const response = await fetch('http://localhost:4001/chatRooms', {
+      const response = await fetch('http://localhost:4001/myChatRooms', {
         headers: {
           'user_id': userId,
-          'product_id': productId,
-          'user_type': userType // userType도 헤더에 포함
+          'user_type': userType
         }
       });
       if (!response.ok) {
@@ -33,31 +42,146 @@ const ChatListComponent = () => {
     }
   };
 
-  // 모달 열기 함수
-  const openModal = (chatRoom, productId) => {
-    setSelectedRoom({ chatRoom, productId, userType }); // userType 정보도 함께 전달
-  };
-  
-  // 모달 닫기 함수
-  const closeModal = () => {
-    setSelectedRoom(null);
+  const openChat = (chatRoomId, productId) => {
+    setSelectedRoomId(chatRoomId);
+    setSelectedRoomProductId(productId);
+    setIsChatOpen(true);
   };
 
+  const closeChat = () => {
+    setSelectedRoomId(null);
+    setSelectedRoomProductId(null);
+    setIsChatOpen(false);
+  };
+  const handleAddProduct = () => {
+    navigate('/AddProducts');
+  };
+
+  const handleSearchProduct = async () => {
+    if (!searchTerm) {
+      setSearchError('검색어를 입력하세요.');
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFilteredProducts(data);
+        setSavedSearchTerm(searchTerm);
+        saveSearchTerm(searchTerm);
+        setShowSearchResults(true);
+        setSearchError('');
+      } else {
+        console.error('검색 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('검색 오류:', error);
+    }
+  };
+
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchProduct();
+    }
+  };
+
+  const saveSearchTerm = async (searchTerm) => {
+    try {
+      const userId = sessionStorage.getItem('userId');
+      const response = await fetch('http://localhost:4000/searchHistory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ searchTerm, userId })
+      });
+      if (!response.ok) {
+        console.error('검색어 저장 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('검색어 저장 오류:', error);
+    }
+  };
+
+  const handleChangeSearchTerm = (event) => {
+    setSearchTerm(event.target.value);
+    setSearchError('');
+  };
+
+  const handleKeywordManagement = () => {
+    navigate('/SearchKeyword');
+  };
+
+  const handleProductManagement = () => {
+    navigate('/ProductManagement');
+  };
+
+  const handleShowMyInfoPage = () => {
+    navigate('/MyInfo');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('userId');
+    navigate('/login');
+  };
+
+  const handleShowChatList = () => {
+    navigate('/ChatListComponent');
+  };
+
+  const toggleNavMenu = () => {
+    setShowNavMenu(!showNavMenu);
+  };
+
+  const closeNavMenu = () => {
+    setShowNavMenu(false);
+  };
+  const [filteredProducts, setFilteredProducts] = useState([]);
   return (
-    <div className="chat-list-container">
-      <h2>채팅방 목록</h2>
-      <ul>
-        {chatRooms.map((chatRoom) => (
-          <li key={chatRoom}>
-            {/* 클릭 시 모달 열기 */}
-            <button onClick={() => openModal(chatRoom, productId)}>채팅방 번호: {chatRoom}</button>
-          </li>
-        ))}
-      </ul>
-      {/* 모달 창 */}
-      {selectedRoom && (
-        <ChatModal chatRoom={selectedRoom.chatRoom} productId={selectedRoom.productId} receiver={selectedRoom.userType === 'seller' ? 'buyer' : 'seller'} closeModal={closeModal} />
-      )}
+    <div className="container-main">
+      <Header
+        toggleNavMenu={toggleNavMenu}
+        showNavMenu={showNavMenu}
+        closeNavMenu={closeNavMenu}
+        handleAddProduct={handleAddProduct}
+        handleShowChatList={handleShowChatList}
+        handleShowMyInfoPage={handleShowMyInfoPage}
+        handleKeywordManagement={handleKeywordManagement}
+        handleProductManagement={handleProductManagement}
+        handleLogout={handleLogout}
+        searchTerm={searchTerm}
+        handleChangeSearchTerm={handleChangeSearchTerm}
+        handleEnterKeyPress={handleEnterKeyPress}
+        searchInputRef={searchInputRef}
+      />
+      <div className="chatsidebar-container">
+        <div className="chatsidebar">
+          <div className="chat-list-container">
+            <h2>참여중인 채팅</h2>
+            {chatRooms.length === 0 ? (
+              <p className="loading-text">채팅방을 로딩하는 중입니다...</p>
+            ) : (
+              <ul className="chat-room-list">
+                {chatRooms.map((chatRoom) => (
+                  <li key={chatRoom.id} className={selectedRoomId === chatRoom.id ? 'selected' : 'chat-room-item'}>
+                    <button onClick={() => openChat(chatRoom.id, chatRoom.productId)} className="chat-room-button">
+                      <div className="chat-room-info">
+                        <span className="chat-room-name">상품명: {chatRoom.productName}</span>
+                        <span className="last-message">{chatRoom.lastMessage}</span>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        {isChatOpen && (
+          <div className={`chat-window ${isChatOpen ? 'chat-open' : ''}`}>
+            <ChatModal chatRoomId={selectedRoomId} productId={selectedRoomProductId} closeChat={closeChat} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
