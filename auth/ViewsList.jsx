@@ -24,7 +24,6 @@ function ViewsList() {
 
   return (
     <div>
-      <h2>조회순 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>
   );

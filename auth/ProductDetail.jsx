@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
 import Modal from 'react-modal';
-import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
+import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
+
+
 import ChatComponent from './ChatComponent';
 import '../../styles/product.css';
 import Header from './Header';
-
+import ViewsList from './ViewsList';
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {
@@ -22,6 +25,11 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false); // 추가: 찜 상태
+  const [isFavorited, setIsFavorited] = useState(false); // 찜 상태 여부
+
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
@@ -29,6 +37,20 @@ const ProductDetail = () => {
         if (response.ok) {
           const data = await response.json();
           setProduct(data);
+
+          // 서버에서 찜 상태 확인
+          const favoriteResponse = await fetch(`http://localhost:4000/products/checkFavorite/${productId}?userId=${userId}`, {
+            headers: {
+              Authorization: `Bearer ${userId}` // 사용자 토큰을 헤더에 포함하여 인증
+            }
+          });
+
+          if (favoriteResponse.ok) {
+            const { isFavorited } = await favoriteResponse.json();
+            setIsFavorite(isFavorited);
+          } else {
+            console.error('찜 상태 확인 실패:', favoriteResponse.status);
+          }
         } else {
           console.error('상품 상세 정보 가져오기 오류:', response.status);
         }
@@ -38,11 +60,32 @@ const ProductDetail = () => {
     };
 
     fetchProductDetail();
-  }, [productId]);
+  }, [productId, userId]);
+
 
   useEffect(() => {
     sessionStorage.setItem('productId', productId);
   }, [productId]);
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/products/views');
+        if (response.ok) {
+          const data = await response.json();
+          setRelatedProducts(data);
+        } else {
+          console.error('Failed to fetch related products:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching related products:', error);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, []);
+
+
 
   const handleChatButtonClick = async () => {
     try {
@@ -76,6 +119,31 @@ const ProductDetail = () => {
   const handleSendMessage = (roomId, message) => {
     // 메시지 전송 로직 추가
   };
+
+  const handleToggleFavorite = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/products/toggleFavorite/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorite(data.isFavorite); // 서버에서 받은 찜 상태로 업데이트
+      } else {
+        console.error('찜 상태 토글 실패:', response.status);
+      }
+    } catch (error) {
+      console.error('찜 상태 토글 오류:', error);
+    }
+  };
+
+
+
+
 
   if (!product) {
     return <div className="loading">Loading...</div>;
@@ -168,6 +236,50 @@ const ProductDetail = () => {
     setShowNavMenu(false);
   };
 
+  const handleReport = () => {
+    // 신고하기 핸들러
+  };
+
+  const handleDelete = async () => {
+    if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
+      alert("작성자만 삭제할 수 있습니다.");
+      return;
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:4000/productsmanage/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': userId // 사용자 ID를 헤더에 포함하여 서버로 전송
+        }
+      });
+  
+      if (response.ok) {
+        // 삭제가 성공적으로 처리된 경우에 대한 처리
+        console.log('상품이 삭제되었습니다.');
+        alert("상품이 삭제되었습니다.");
+        // 메인 페이지로 이동
+        navigate('/Main');
+
+      } else {
+        console.error('상품 삭제 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('상품 삭제 오류:', error);
+    }
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+
   return (
     <div className="container-main">
               <Header 
@@ -214,7 +326,26 @@ const ProductDetail = () => {
           <Typography variant="body2" color="text.secondary">
             판매상태: {availability}
           </Typography>
+          <Button onClick={handleToggleFavorite} variant="contained" color={isFavorite ? 'secondary' : 'primary'}>
+        {isFavorite ? <Favorite /> : <FavoriteBorder />}
+        {isFavorite ? '찜 해제' : '찜하기'}
+      </Button>
+
+
+
           <Button onClick={handleChatButtonClick} variant="contained">채팅하기</Button>
+          
+          <IconButton onClick={handleClick}><MoreVert /></IconButton> {/* 케밥 아이콘 */}
+
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleReport}>신고하기</MenuItem>
+              <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
+            </Menu>
+
         </CardContent>
       </Card>
       <MuiModal
@@ -240,7 +371,14 @@ const ProductDetail = () => {
           <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
         </div>
       </MuiModal>
-      <Link to="/Main">메인으로 돌아가기</Link>
+
+      <div className="related-products">
+          <h2>연관 상품</h2>
+          <ViewsList />
+        </div>
+
+
+        <Link className="link-back" to="/Main">메인으로 돌아가기</Link>
     </div>
     </div>
   );
