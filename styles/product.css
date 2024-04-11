@@ -266,3 +266,27 @@
   padding: 10px; /* 좌우 여백 추가 */
 }
 
+.related-products {
+  flex: 0 1 auto;
+  margin-right: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+
+}
+
+.related-products h2 {
+  margin-bottom: 10px;
+}
+
+.related-products ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.related-products li {
+  margin-bottom: 10px;
+}
+
+.link-back {
+  margin-top: 20px;
+}

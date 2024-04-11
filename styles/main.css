@@ -45,7 +45,7 @@
 /* 검색창 */
 input[type="search"] {
   padding: 15px;
-  width: 1000px;
+  width: 800px;
   border-radius: 5px;
   border: 3px solid #103260;
   font-size: 16px;
