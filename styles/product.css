@@ -43,6 +43,90 @@
 
   /*--------------------------------------------------------------------------------*/
 
+  /* productdetail.css */
+
+  /* 디테일 컨테이너 */
+  .product-detail {
+    width: 1500px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* 상품 이미지 */
+  .custom-card-media {
+    padding: 0px;
+    margin: 20px 20px 20px 20px;
+    max-width: 500px;
+    max-height: 500px;
+    width: 500px;
+    height: 500px;
+    border-radius: 15px;
+    object-fit: contain;
+  }
+
+  /* 상품 이름 */
+  .product-d-name {
+    padding: 50px 10px 10px 100px;
+    font-size: 40px !important;
+  }
+
+  /* 상품 정보 */
+  .product-d-description,
+  .product-d-price,
+  .product-d-date,
+  .product-d-views,
+  .product-d-availability {
+    padding: 10px 10px 10px 100px;
+    font-size: 20px !important;
+  }
+
+  /* 찜하기 */
+  .favorite-button {
+    margin-top: 50px !important;
+    margin-left: 100px !important;
+    background-color: #103260 !important;
+    color: #ffffff !important;
+    border: 2px solid #103260 !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    align-self: center !important;
+    font-size: 13px !important;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out !important;
+  }
+
+  .favorite-button:hover {
+    outline: 0 !important;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260 !important;
+  }
+
+  /* 채팅하기 */
+  .chat-button {
+    margin-top: 50px !important;
+    margin-left: 10px !important;
+    background-color: #103260 !important;
+    color: #ffffff !important;
+    border: 2px solid #103260 !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    align-self: center !important;
+    font-size: 13px !important;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out !important;
+  }
+
+  .chat-button:hover {
+    outline: 0 !important;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260 !important;
+  }
+
+  /* 더보기 */
+  .more-button {
+    margin-top: 50px !important;
+    margin-left: 10px !important;
+    color: #103260 !important;
+  }
+
+  /*--------------------------------------------------------------------------------*/
+
   /* productlist.css */
 
   /* 상품 이름 */
