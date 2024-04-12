@@ -473,7 +473,7 @@ app.post('/reset-password', async (req, res) => {
     // 데이터베이스에 새로운 비밀번호가 업데이트되었는지 확인
     if (result.affectedRows > 0) {
       // 임시 비밀번호와 함께 성공 메시지 응답 전송
-      res.status(200).json({ message: `임시 비밀번호는 ${temporaryPassword} 입니다. 로그인 후에 비밀번호를 변경해주세요.` });
+      res.status(200).json({ message: `임시 비밀번호는'${temporaryPassword}'입니다. 로그인 후 비밀번호 변경해주세요.` });
     } else {
       res.status(404).json({ error: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' });
     }
