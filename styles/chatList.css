@@ -1,88 +1,97 @@
-/* chatList.css */
-
 /* 사이드바 스타일 */
 .chatsidebar-container {
-    display: flex;
-    height: calc(100vh - 20px); /* 화면 아래쪽까지 쫙 뜨게 하기 */
-    overflow-y: auto; /* 넘치는 경우 스크롤 생성 */
-  }
-  
-  .chatsidebar {
-    width: 300px;
-    background-color: #f4f4f4;
-    padding: 20px;
-  }
-  
-  .chat-list-container {
-    flex-grow: 1;
-  }
-  
-  .chat-room-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .chat-room-item {
-      margin-bottom: 10px;
-      background-color: #f4f4f4;
-      border-radius: 10px; /* 둥근 테두리 */
-  
-  
-  }
-  
-  .chat-room-button {
-    width: 100%;
-    background-color: transparent;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .selected {
-    background-color: #e6e6e6;
-  }
-  
-  /* 채팅 창 스타일 */
-  .chat-window {
-    flex-grow: 1;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    margin-left: 20px;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
-  .chat-open {
-    width: calc(100% - 320px); /* 사이드바 너비 + 채팅창과의 간격 */
-  }
-  
-  /* 메시지 입력 폼 스타일 */
-  .message-input-form {
-    display: flex;
-    margin-top: 20px;
-  }
-  
-  .message-input-form input {
-    flex-grow: 1;
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  .message-input-form button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 10px;
-  }
-  
-  .message-input-form button:hover {
-    background-color: #0056b3;
-  }
-  
-  .chat-room-name {
-      font-size: 18px; /* 원하는 크기로 조정하세요 */
-    }
+  display: flex;
+  height: calc(100vh - 20px);
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: none;
+}
+
+.loading-text {
+  margin-left: 15px;
+}
+
+.chatsidebar {
+  width: 300px;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-top-right-radius: 15px;
+}
+
+/* 채팅 헤더*/
+.chat-heading {
+  margin-left: 15px;
+}
+
+
+.chat-room-item {
+  background-color: transparent;
+}
+
+.chat-room-name {
+  font-size: 18px;
+}
+
+/* 채팅방 */
+.chat-room-button {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  padding: 15px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* 채팅방 선택시 */
+.selected {
+  background-color: #e6e6e6;
+  border-radius: 10px;
+}
+
+
+.chat-room-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* 채팅 창 스타일 */
+.chat-window {
+  max-width: 1000px;
+  flex-grow: 1;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  margin-left: 0px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.chat-open {
+  width: calc(100% - 320px);
+  /* 사이드바 너비 + 채팅창과의 간격 */
+}
+
+/* 메시지 입력 폼 스타일 */
+.message-input-form {
+  display: flex;
+}
+
+.message-input-form input {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.message-input-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.message-input-form button:hover {
+  background-color: #0056b3;
+}
