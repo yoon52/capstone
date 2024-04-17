@@ -91,6 +91,7 @@ input[type="search"] {
   height: 100%;
   position: fixed;
   border: none;
+  overflow: hidden;
   border-top-right-radius: 20px;
   top: 0;
   left: -250px;
@@ -101,6 +102,15 @@ input[type="search"] {
 
 .sidebar.show {
   left: 0;
+}
+
+.sidebar-item {
+  display: grid;
+  border: 3px solid #ffffff;
+  top: 0;
+  height: 120px;
+  padding: 70px;
+  
 }
 
 .main_navigation {

@@ -1,73 +1,37 @@
-/* changepw.css */
+.changepw-header {
+  font-size: 40px;
+  margin-top: 0px;
+  text-align: center;
+}
 
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* 그림자 효과 */
-    max-width: 400px;
-    width: 100%;
-  }
-  
-  h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .message {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8d7da; /* 메시지 배경색 */
-    border: 1px solid #f5c6cb; /* 메시지 테두리 */
-    border-radius: 5px;
-    color: #721c24; /* 메시지 텍스트 색상 */
-  }
-  
-  .button-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  button {
-    padding: 10px 20px;
-    margin-left: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:last-child {
-    margin-left: 0; /* 마지막 버튼의 왼쪽 마진 제거 */
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
+.changepw-container {
+  max-width: 500px;
+  height: 350px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid #162b9150;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.changepw {
+  background-color: #103260;
+  color: #ffffff;
+  border: 2px solid #103260;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+  font-size: 17px;
+  padding: 15px 20px;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  width: 95%;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+
+.changepw:hover {
+  outline: 0;
+  box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
+}

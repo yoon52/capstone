@@ -1,45 +1,178 @@
-/* main.css */
+/* myinfo.css */
+
 /* 내 정보 헤더 스타일 */
 .myinfo-header {
-    text-align: center; /* 텍스트 가운데 정렬 */
-    margin-bottom: 20px; /* 하단 마진 */
+    font-size: 40px;
+    margin-top: -20px;
+    text-align: center;
 }
 
 /* 내 정보 컨테이너 스타일 */
 .myinfo-container {
-    max-width: 400px; /* 최대 너비 */
-    margin: 0 auto; /* 가운데 정렬 */
-    padding: 20px; /* 안쪽 여백 */
-    border: 1px solid #ccc; /* 테두리 */
-    border-radius: 5px; /* 테두리 모서리의 굴곡 */
+    max-width: 500px;
+    max-height: 1000px;
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid #162b9150;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
 }
 
 /* 비밀번호 입력 문구 스타일 */
 .input-password {
-    margin-bottom: 10px; /* 하단 마진 */
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
-/* 비밀번호 입력 필드 스타일 */
-input[type="password"] {
-    width: 100%; /* 너비 지정 */
-    padding: 10px; /* 안쪽 여백 */
-    border: 1px solid #ccc; /* 테두리 */
-    border-radius: 5px; /* 테두리 모서리의 굴곡 */
-    margin-bottom: 10px; /* 하단 마진 */
-}
-
-/* 확인 버튼 스타일 */
+/* 확인 버튼 */
 .myinfo-button {
-    width: 100%; /* 너비 지정 */
-    padding: 10px; /* 안쪽 여백 */
-    background-color: #007bff; /* 배경색 */
-    color: #fff; /* 텍스트 색상 */
-    border: none; /* 테두리 없음 */
-    border-radius: 5px; /* 모서리 굴곡 */
-    cursor: pointer; /* 커서 타입 */
+    background-color: #103260;
+    color: #ffffff;
+    border: 2px solid #103260;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 50px;
+    margin-bottom: 15px;
 }
 
-/* 사용자 정보 편집 스타일 */
-.user-edit {
-    margin-top: 20px; /* 상단 마진 */
+.myinfo-button:hover {
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
+}
+
+.user-id {
+    text-align: left;
+    padding-left: 10px;
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+/* 저장 버튼 */
+.save-button {
+    background-color: #103260;
+    color: #ffffff;
+    border: 2px solid #103260;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.save-button:hover {
+    color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
+}
+
+.right-align-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+}
+
+/* 비밀번호 변경 버튼 */
+.changepw-button {
+    height: 40px;
+    width: 100px;
+    background-color: #5080c5;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+.changepw-button:hover {
+    color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset;
+}
+
+/* 회원 탈퇴 버튼 */
+.withdrawal {
+    color: #000000;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.withdrawal:hover {
+    text-decoration: underline;
+}
+
+/* 회원 탈퇴 모달 */
+.withdrawl-modal {
+    width: 500px;
+    height: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid #162b9150;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 120px;
+    margin-bottom: 20px;
+}
+
+.withdrawl-title {
+    margin-top: 50px;
+    margin-bottom: 70px;
+}
+
+.withdrawl-form {
+    margin-top: 30px;
+}
+
+/* 확인 버튼 */
+.confirm {
+    height: 45px;
+    width: 80px;
+    background-color: #5080c5;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+.confirm:hover {
+    color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 40px 40px #601010 inset;
+}
+
+/* 취소 버튼 */
+.cancel {
+    height: 45px;
+    width: 80px;
+    background-color: #5080c5;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    margin-right: 10px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+}
+
+.cancel:hover {
+    color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset;
 }
