@@ -75,7 +75,7 @@ function ProductManagement() {
       console.error('상품 수정 실패:', error);
     }
   };
-  
+
   const handleSellProduct = async (productId) => {
     try {
       const response = await fetch(`http://localhost:4000/productsmanage/sold/${productId}`, {

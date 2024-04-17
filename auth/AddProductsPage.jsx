@@ -1,4 +1,3 @@
-// AddProducts.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
@@ -51,9 +50,12 @@ function AddProducts() {
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
+      <h1 className="add-products-header">상품 추가</h1>
       <div className="add-products-container">
-        <h2>상품 추가</h2>
         <form onSubmit={handleAddProduct}>
           <div className="form-group">
             <input type="text" placeholder="상품명" value={name} onChange={(e) => setName(e.target.value)} required />

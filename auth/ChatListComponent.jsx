@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import '../../styles/chat.css';
 import '../../styles/chatList.css';
-
 import ChatModal from './ChatModal';
 import Header from './Header';
 
@@ -48,7 +47,7 @@ const ChatListComponent = () => {
     setSelectedRoomProductId(productId);
     setIsChatOpen(true);
   };
-  
+
   const closeChat = () => {
     setSelectedRoomId(null);
     setSelectedRoomProductId(null);
@@ -140,56 +139,47 @@ const ChatListComponent = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   return (
     <div className="container-main">
-    <Header 
-          toggleNavMenu={toggleNavMenu} 
-          showNavMenu={showNavMenu} 
-          closeNavMenu={closeNavMenu} 
-          handleAddProduct={handleAddProduct} 
-          handleShowChatList={handleShowChatList} 
-          handleShowMyInfoPage={handleShowMyInfoPage} 
-          handleKeywordManagement={handleKeywordManagement} 
-          handleProductManagement={handleProductManagement} 
-          handleLogout={handleLogout} 
-          searchTerm={searchTerm} 
-          handleChangeSearchTerm={handleChangeSearchTerm} 
-          handleEnterKeyPress={handleEnterKeyPress} 
-          searchInputRef={searchInputRef} 
-        />
-    <div className="chatsidebar-container">
-      <div className="chatsidebar">
-        <div className="chat-list-container">
-          <h2>참여중인 채팅</h2>
+      <Header
+        toggleNavMenu={toggleNavMenu}
+        showNavMenu={showNavMenu}
+        closeNavMenu={closeNavMenu}
+        handleAddProduct={handleAddProduct}
+        handleShowChatList={handleShowChatList}
+        handleShowMyInfoPage={handleShowMyInfoPage}
+        handleKeywordManagement={handleKeywordManagement}
+        handleProductManagement={handleProductManagement}
+        handleLogout={handleLogout}
+        searchTerm={searchTerm}
+        handleChangeSearchTerm={handleChangeSearchTerm}
+        handleEnterKeyPress={handleEnterKeyPress}
+        searchInputRef={searchInputRef}
+      />
+      <div className="chatsidebar-container">
+        <div className="chatsidebar">
+          <h2 className="chat-heading">채팅</h2>
           {chatRooms.length === 0 ? (
-            <p className="loading-text">채팅방을 로딩하는 중입니다...</p>
+            <p className="loading-text">채팅방을 로딩하는 중입니다.</p>
           ) : (
             <ul className="chat-room-list">
               {chatRooms.map((chatRoom) => (
                 <li key={chatRoom.id} className={selectedRoomId === chatRoom.id ? 'selected' : 'chat-room-item'}>
                   <button onClick={() => openChat(chatRoom.id, chatRoom.productId)} className="chat-room-button">
                     <div className="chat-room-info">
-                      <span className="chat-room-name">상품명: {chatRoom.productName}</span>
+                      <span className="chat-room-name">상품명 : {chatRoom.productName}</span>
                       <span className="last-message">{chatRoom.lastMessage}</span>
-                      
                     </div>
-                    
                   </button>
-
                 </li>
-                
               ))}
-              <Link to="/Main">메인 화면으로 돌아가기</Link>
             </ul>
           )}
         </div>
+        {isChatOpen && (
+          <div className={`chat-window ${isChatOpen ? 'chat-open' : ''}`}>
+            <ChatModal chatRoomId={selectedRoomId} productId={selectedRoomProductId} closeChat={closeChat} />
+          </div>
+        )}
       </div>
-      {isChatOpen && (
-  <div className={`chat-window ${isChatOpen ? 'chat-open' : ''}`}>
-    <ChatModal chatRoomId={selectedRoomId} productId={selectedRoomProductId} closeChat={closeChat} />
-  </div>
-)}
-
-
-</div>      
     </div>
   );
 };

@@ -3,12 +3,11 @@ import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
 import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
-
-
 import ChatComponent from './ChatComponent';
 import '../../styles/product.css';
 import Header from './Header';
 import ViewsList from './ViewsList';
+
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {
@@ -62,7 +61,6 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [productId, userId]);
 
-
   useEffect(() => {
     sessionStorage.setItem('productId', productId);
   }, [productId]);
@@ -84,8 +82,6 @@ const ProductDetail = () => {
 
     fetchRelatedProducts();
   }, []);
-
-
 
   const handleChatButtonClick = async () => {
     try {
@@ -141,17 +137,13 @@ const ProductDetail = () => {
     }
   };
 
-
-
-
-
   if (!product) {
     return <div className="loading">Loading...</div>;
   }
 
   const availability = product.status === 'available' ? '구매 가능' : '판매 완료';
 
-  
+
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -245,7 +237,7 @@ const ProductDetail = () => {
       alert("작성자만 삭제할 수 있습니다.");
       return;
     }
-    
+
     try {
       const response = await fetch(`http://localhost:4000/productsmanage/${productId}`, {
         method: 'DELETE',
@@ -254,7 +246,7 @@ const ProductDetail = () => {
           'user_id': userId // 사용자 ID를 헤더에 포함하여 서버로 전송
         }
       });
-  
+
       if (response.ok) {
         // 삭제가 성공적으로 처리된 경우에 대한 처리
         console.log('상품이 삭제되었습니다.');
@@ -278,65 +270,57 @@ const ProductDetail = () => {
     setAnchorEl(null);
   };
 
-
-
   return (
     <div className="container-main">
-              <Header 
-          toggleNavMenu={toggleNavMenu} 
-          showNavMenu={showNavMenu} 
-          closeNavMenu={closeNavMenu} 
-          handleAddProduct={handleAddProduct} 
-          handleShowChatList={handleShowChatList} 
-          handleShowMyInfoPage={handleShowMyInfoPage} 
-          handleKeywordManagement={handleKeywordManagement} 
-          handleProductManagement={handleProductManagement} 
-          handleLogout={handleLogout} 
-          searchTerm={searchTerm} 
-          handleChangeSearchTerm={handleChangeSearchTerm} 
-          handleEnterKeyPress={handleEnterKeyPress} 
-          searchInputRef={searchInputRef} 
-        />
-    
-    <div className="product-detail" style={{ width: '100%', margin: '0 auto', padding: '20px', border: '1px solid #ccc', borderRadius: '5px', height: '100%' }}>
-  <Card sx={{ display: 'flex', width: '100%' }}>
+      <Header
+        toggleNavMenu={toggleNavMenu}
+        showNavMenu={showNavMenu}
+        closeNavMenu={closeNavMenu}
+        handleAddProduct={handleAddProduct}
+        handleShowChatList={handleShowChatList}
+        handleShowMyInfoPage={handleShowMyInfoPage}
+        handleKeywordManagement={handleKeywordManagement}
+        handleProductManagement={handleProductManagement}
+        handleLogout={handleLogout}
+        searchTerm={searchTerm}
+        handleChangeSearchTerm={handleChangeSearchTerm}
+        handleEnterKeyPress={handleEnterKeyPress}
+        searchInputRef={searchInputRef}
+      />
 
-        <CardMedia
-          component="img"
-          sx={{ width: '25%', objectFit: 'cover' }}
-          src={`http://localhost:4000/uploads/${product.image}`}
-          alt={product.name}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {product.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            상품정보: {product.description}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            가격: {product.price}원
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            등록일: {new Date(product.createdAt).toLocaleDateString()}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            조회수: {product.views}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            판매상태: {availability}
-          </Typography>
-          <Button onClick={handleToggleFavorite} variant="contained" color={isFavorite ? 'secondary' : 'primary'}>
-        {isFavorite ? <Favorite /> : <FavoriteBorder />}
-        {isFavorite ? '찜 해제' : '찜하기'}
-      </Button>
-
-
-
-          <Button onClick={handleChatButtonClick} variant="contained">채팅하기</Button>
-          
-          <IconButton onClick={handleClick}><MoreVert /></IconButton> {/* 케밥 아이콘 */}
-
+      <div className="product-detail">
+        <Card sx={{ display: 'flex', width: '100%' }}>
+          <CardMedia
+            component="img"
+            className="custom-card-media"
+            src={`http://localhost:4000/uploads/${product.image}`}
+            alt={product.name}
+          />
+          <CardContent className="product-content">
+            <Typography gutterBottom variant="h5" component="div" className="product-d-name">
+              {product.name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="product-d-description">
+              상품정보: {product.description}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="product-d-price">
+              가격: {product.price}원
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="product-d-date">
+              등록일: {new Date(product.createdAt).toLocaleDateString()}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="product-d-views">
+              조회수: {product.views}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="product-d-availability">
+              판매상태: {availability}
+            </Typography>
+            <Button onClick={handleToggleFavorite} variant="contained" color={isFavorite ? 'secondary' : 'primary'} className="favorite-button">
+              {isFavorite ? <Favorite /> : <FavoriteBorder />}
+              {isFavorite ? '찜 해제' : '찜하기'}
+            </Button>
+            <Button onClick={handleChatButtonClick} variant="contained" className="chat-button">채팅하기</Button>
+            <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
@@ -346,40 +330,37 @@ const ProductDetail = () => {
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
 
-        </CardContent>
-      </Card>
-      <MuiModal
-        open={isChatModalOpen}
-        onClose={() => setIsChatModalOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        BackdropProps={{ style: { backgroundColor: 'rgba(255, 255, 255, 0.5)' } }} // 모달 배경색 투명도 조정
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)', // 모달 내부 배경색 조정
-          backdropFilter: 'blur(5px)', // 배경에 블러 효과 추가
-          border: 'none', // 테두리 제거
-          boxShadow: 24, // 그림자 추가
-          p: 4, // 내부 패딩 추가
-          borderRadius: 2, // 모달 테두리 둥글게 조정
-        }}
-      >
-        <div>
-          <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-          <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
-        </div>
-      </MuiModal>
+          </CardContent>
+        </Card>
+        <MuiModal
+          open={isChatModalOpen}
+          onClose={() => setIsChatModalOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          BackdropProps={{ style: { backgroundColor: 'rgba(255, 255, 255, 0.5)' } }} // 모달 배경색 투명도 조정
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)', // 모달 내부 배경색 조정
+            backdropFilter: 'blur(5px)', // 배경에 블러 효과 추가
+            border: 'none', // 테두리 제거
+            boxShadow: 24, // 그림자 추가
+            p: 4, // 내부 패딩 추가
+            borderRadius: 2, // 모달 테두리 둥글게 조정
+          }}
+        >
+          <div>
+            <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
+            <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
+          </div>
+        </MuiModal>
 
-      <div className="related-products">
+        <div className="related-products">
           <h2>연관 상품</h2>
           <ViewsList />
         </div>
-
-
-        <Link className="link-back" to="/Main">메인으로 돌아가기</Link>
-    </div>
+      </div>
     </div>
   );
 };

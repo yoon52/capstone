@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
-import { FaUser, FaCog, FaSignOutAlt, FaPlus, FaSearch, FaComments, FaBars, FaTimes } from 'react-icons/fa'; // 추가 아이콘 임포트
 import RecommendList from './RecommendList';
 import ViewsList from './ViewsList';
 import LatestList from './LatestList';
@@ -11,6 +10,7 @@ import ChatListComponent from './ChatListComponent';
 import '../../styles/main.css';
 import '../../styles/product.css';
 import Header from './Header';
+import ShowWishlist from './ShowWishlist';
 
 function Main() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -21,9 +21,8 @@ function Main() {
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  
-  
-  
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
+    
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -31,6 +30,7 @@ function Main() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
+      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
     try {
@@ -42,6 +42,7 @@ function Main() {
         saveSearchTerm(searchTerm);
         setShowSearchResults(true);
         setSearchError('');
+        
       } else {
         console.error('검색 오류:', response.status);
       }
@@ -86,7 +87,9 @@ function Main() {
   const handleProductManagement = () => {
     navigate('/ProductManagement');
   };
-
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
   const handleShowMyInfoPage = () => {
     navigate('/MyInfo');
   };
@@ -108,6 +111,8 @@ function Main() {
     setShowNavMenu(false);
   };
 
+  
+
   return (
     <div className="container-main">
               <Header 
@@ -124,6 +129,9 @@ function Main() {
           handleChangeSearchTerm={handleChangeSearchTerm} 
           handleEnterKeyPress={handleEnterKeyPress} 
           searchInputRef={searchInputRef} 
+          handleShowWishlist={handleShowWishlist}
+          setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
+
         />
       <div className="main-container">
         {showSearchResults && (
@@ -137,6 +145,7 @@ function Main() {
           <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
+          <Route path="/showWishlist" element={<ShowWishlist />} />
         </Routes>
         {searchError && (
           <p className="search-error">{searchError}</p>
