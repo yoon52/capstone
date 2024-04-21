@@ -13,7 +13,6 @@ function Login() {
 
   const [loginSuccess, setLoginSuccess] = useState(true);
   const navigation = useNavigation();
-
   const handleChange = (value, name) => {
     setFormData(prevState => ({
       ...prevState,
@@ -26,7 +25,6 @@ function Login() {
       console.log('Please enter both id and password');
       return;
     }
-
     try {
       const response = await fetch('http://172.20.10.3:4000/login', {
         method: 'POST',
@@ -35,16 +33,13 @@ function Login() {
         },
         body: JSON.stringify(formData)
       });
-
       if (response.ok) {
         const { message, id, isAdmin } = await response.json();
         console.log(message); // 로그인 메시지 출력
         console.log('User ID:', id); // 사용자 ID 출력
         console.log('Is Admin:', isAdmin); // 관리자 여부 출력
-
         // 사용자 ID를 AsyncStorage에 저장
         await AsyncStorage.setItem('userId', id);
-
         // 로그인 성공 시 필요한 작업 수행
         navigation.navigate('Main');
       } else {
@@ -56,7 +51,6 @@ function Login() {
       setLoginSuccess(false);
     }
   };
-
 
   const handleNaverLogin = () => {
     // Handle Naver login
@@ -134,8 +128,8 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
-    marginTop: -10,
-    marginBottom: -10,
+    marginTop: -9,
+    marginBottom: -11,
   },
   loginButton: {
     backgroundColor: '#103260',
@@ -146,8 +140,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginbuttonText: {
-    color: '#fff',
     fontSize: 13,
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -162,8 +157,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#000',
+    color: '#000000',
     fontSize: 13,
+    
   },
   separator: {
     width: 1,

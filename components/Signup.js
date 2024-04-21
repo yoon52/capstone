@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 
 function Signup() {
+  const navigation = useNavigation();
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
@@ -16,8 +19,8 @@ function Signup() {
     studentIdImage: null
   });
   const [idAvailability, setIdAvailability] = useState(null);
-  const [isDepartmentModalVisible, setIsDepartmentModalVisible] = useState(false);
-  const [isGradeModalVisible, setIsGradeModalVisible] = useState(false);
+  const [itemPrice, setItemPrice] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleChange = (name, value) => {
     setFormData(prevState => ({
@@ -34,16 +37,13 @@ function Signup() {
   const handleSubmit = async () => {
     if (!formData.studentIdImage) {
       setErrorMessage('이미지를 선택해주세요.');
+      setModalVisible(true);
       return;
     }
     if (signupSuccess) {
       navigation.navigate('Login');
     }
-
-
-
     const imageFileName = getImageFileName(formData.id, formData.studentIdImage);
-
     const formDataWithImage = new FormData();
     formDataWithImage.append('id', formData.id);
     formDataWithImage.append('name', formData.name);
@@ -53,10 +53,9 @@ function Signup() {
     formDataWithImage.append('department', formData.department);
     formDataWithImage.append('grade', formData.grade);
 
-    // 이미지 정보를 FormData에 추가
     formDataWithImage.append('studentIdImage', {
       uri: formData.studentIdImage,
-      type: 'image/jpeg', // 이미지 타입을 JPEG로 가정합니다. 필요에 따라 변경 가능합니다.
+      type: 'image/jpeg',
       name: imageFileName,
     });
 
@@ -65,13 +64,10 @@ function Signup() {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
-          // 사용자 ID를 헤더에 추가합니다. 필요에 따라 변경 가능합니다.
           'user_id': formData.id,
         },
         body: formDataWithImage,
       });
-
-      console.log('FormData:', formData); // 추가: FormData 출력
 
       if (response.ok) {
         const data = await response.json();
@@ -79,10 +75,12 @@ function Signup() {
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.error);
+        setModalVisible(true);
       }
     } catch (error) {
       console.error('클라이언트 오류:', error);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setModalVisible(true);
     }
   };
 
@@ -94,12 +92,15 @@ function Signup() {
         const data = await response.json();
         setIdAvailability(data.available);
         setErrorMessage(data.available ? '사용 가능한 아이디입니다!' : '이미 존재하는 아이디입니다!');
+        setModalVisible(true);
       } else {
         setErrorMessage('아이디 중복 확인 중 오류가 발생했습니다.');
+        setModalVisible(true);
       }
     } catch (error) {
       console.error('클라이언트 오류:', error);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setModalVisible(true);
     }
   };
 
@@ -111,47 +112,38 @@ function Signup() {
     }
 
     const pickerResult = await ImagePicker.launchImageLibraryAsync();
-    console.log('Picker Result:', pickerResult); // 콘솔 로그 추가
     if (!pickerResult.cancelled && pickerResult.assets && pickerResult.assets.length > 0 && pickerResult.assets[0].uri) {
       const selectedImageUri = pickerResult.assets[0].uri;
       setFormData(prevState => ({
         ...prevState,
         studentIdImage: selectedImageUri,
       }));
-      console.log('Selected Image:', selectedImageUri); // 이미지 선택 시 콘솔에 로그 출력
       alert('이미지가 선택되었습니다.');
     } else {
       console.error('Selected image URI is undefined');
     }
   };
 
-  const handleDepartmentSelect = (department) => {
-    setFormData(prevState => ({
-      ...prevState,
-      department: department
-    }));
-    setIsDepartmentModalVisible(false);
-  };
-
-  const handleGradeSelect = (grade) => {
-    setFormData(prevState => ({
-      ...prevState,
-      grade: grade
-    }));
-    setIsGradeModalVisible(false);
-  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>회원가입</Text>
+      <Text style={styles.header}>회원가입</Text>
       {signupSuccess && <Text style={styles.successMessage}>회원가입 성공</Text>}
-      {errorMessage !== '' && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>{errorMessage}</Text>
-          <TouchableOpacity onPress={() => setErrorMessage('')} style={styles.errorButton}>
-            <Text style={styles.errorButtonText}>확인</Text>
-          </TouchableOpacity>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{errorMessage}</Text>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      )}
+      </Modal>
       <TextInput
         placeholder="이름"
         value={formData.name}
@@ -163,7 +155,7 @@ function Signup() {
           placeholder="학번"
           value={formData.id}
           onChangeText={text => handleChange('id', text)}
-          style={[styles.input, { flex: 1 }]}
+          style={[styles.input, { flex: 0.73 }]}
         />
         <TouchableOpacity onPress={handleCheckAvailability} style={styles.checkButton}>
           <Text style={styles.checkButtonText}>중복 확인</Text>
@@ -190,73 +182,47 @@ function Signup() {
         keyboardType="email-address"
         style={styles.input}
       />
-      <TouchableOpacity onPress={() => setIsDepartmentModalVisible(true)}>
-        <Text style={styles.input}>{formData.department || '학과를 선택하세요'}</Text>
+      <View style={styles.departmentContainer}>
+        <Picker
+          selectedValue={formData.department}
+          onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
+          style={[styles.picker]}
+          itemStyle={styles.pickerItem}
+        >
+          <Picker.Item label="학과 선택" value="" style={styles.pickerItem} />
+          <Picker.Item label="컴퓨터 공학과" value="computer_science" style={styles.pick} />
+          <Picker.Item label="소프트웨어 공학과" value="software_engineering" style={styles.pick} />
+          <Picker.Item label="디자인학과" value="design" style={styles.pick} />
+          <Picker.Item label="경영학과" value="business-administration" style={styles.pick} />
+        </Picker>
+      </View>
+      <View style={styles.gradeContainer}>
+        <Picker
+          selectedValue={formData.grade}
+          onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
+          style={[styles.picker]}
+        >
+          <Picker.Item label="학년 선택" value="" style={styles.pickerItem} />
+          <Picker.Item label="1학년" value="1" style={styles.pick} />
+          <Picker.Item label="2학년" value="2" style={styles.pick} />
+          <Picker.Item label="3학년" value="3" style={styles.pick} />
+          <Picker.Item label="4학년" value="4" style={styles.pick} />
+        </Picker>
+      </View>
+      <TouchableOpacity onPress={handleImageSelect} style={styles.imageButton}>
+        <Text style={styles.imageButtonText}>이미지 선택</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setIsGradeModalVisible(true)}>
-        <Text style={styles.input}>{formData.grade || '학년을 선택하세요'}</Text>
+      <TouchableOpacity onPress={handleSubmit} style={styles.signupButton}>
+        <Text style={styles.signupButtonText}>가입하기</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleImageSelect}>
-        <Text style={styles.imageButton}>이미지 선택</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleSubmit}>
-        <Text style={styles.signupButton}>가입하기</Text>
-      </TouchableOpacity>
-      <Text style={styles.loginText}>이미 계정이 있으신가요? 로그인</Text>
-
-      {/* Department Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isDepartmentModalVisible}
-        onRequestClose={() => setIsDepartmentModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity onPress={() => handleDepartmentSelect('컴퓨터 공학과')}>
-              <Text style={styles.modalItem}>컴퓨터 공학과</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDepartmentSelect('소프트웨어 공학과')}>
-              <Text style={styles.modalItem}>소프트웨어 공학과</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDepartmentSelect('디자인학과')}>
-              <Text style={styles.modalItem}>디자인학과</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDepartmentSelect('경영학과')}>
-              <Text style={styles.modalItem}>경영학과</Text>
-            </TouchableOpacity>
-          </View>
-
-        </View>
-      </Modal>
-
-      {/* Grade Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isGradeModalVisible}
-        onRequestClose={() => setIsGradeModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity onPress={() => handleGradeSelect('1')}>
-              <Text style={styles.modalItem}>1학년</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleGradeSelect('2')}>
-              <Text style={styles.modalItem}>2학년</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleGradeSelect('3')}>
-              <Text style={styles.modalItem}>3학년</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleGradeSelect('4')}>
-              <Text style={styles.modalItem}>4학년</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={handleCheckAvailability} style={styles.modalButton}>
-            <Text style={styles.modalButtonText}>중복 확인</Text>
+      <View style={styles.loginContainer}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.loginText}>이미 계정이 있으신가요?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={[styles.loginText, { textDecorationLine: 'underline' }]}>로그인</Text>
           </TouchableOpacity>
         </View>
-      </Modal>
+      </View>
     </View>
   );
 };
@@ -264,101 +230,130 @@ function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20
-  },
-  successMessage: {
-    color: 'green',
-    marginBottom: 10
-  },
-  errorContainer: {
     alignItems: 'center',
-    marginBottom: 10
   },
-  errorMessage: {
-    color: 'red',
-    marginBottom: 5
-  },
-  errorButton: {
-    backgroundColor: 'lightgray',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5
-  },
-  errorButtonText: {
-    color: 'black'
+  header: {
+    fontSize: 30,
+    marginBottom: 30,
   },
   input: {
+    width: '80%',
+    height: 45,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#b0c4de',
     borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    width: '100%'
-  },
-  imageButton: {
-    backgroundColor: 'lightblue',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginBottom: 10
-  },
-  signupButton: {
-    backgroundColor: 'lightblue',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginBottom: 10
-  },
-  loginText: {
-    marginTop: 10
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20
-  },
-  modalItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 20
-  },
-  modalButton: {
-    marginTop: 10,
-    backgroundColor: 'lightblue',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5
-  },
-  modalButtonText: {
-    color: 'white'
+    marginBottom: 15,
+    paddingHorizontal: 10,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   checkButton: {
-    backgroundColor: 'lightblue',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    backgroundColor: '#5080c5',
+    paddingVertical: 13,
+    paddingHorizontal: 10,
     borderRadius: 5,
+    marginTop: -15,
     marginLeft: 10,
   },
   checkButtonText: {
+    fontSize: 13,
     color: 'white',
-  }
-
+  },
+  departmentContainer: {
+    width: '38%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginLeft: -173,
+    marginBottom: 10,
+  },
+  gradeContainer: {
+    width: '38%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginTop: -55,
+    marginLeft: 173,
+    marginBottom: 20,
+  },
+  picker: {
+    flex: 1,
+    marginTop: -5,
+    marginStart: -7,
+    marginEnd: -7,
+  },
+  pickerItem: {
+    fontSize: 13,
+    color: '#555555',
+  },
+  pick: {
+    fontSize: 13,
+    color: '#000000',
+  },
+  imageButton: {
+    backgroundColor: '#5080c5',
+    paddingVertical: 13,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  imageButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
+  },
+  signupButton: {
+    backgroundColor: '#103260',
+    padding: 15,
+    borderRadius: 5,
+    marginTop: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  signupButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    marginTop: 30,
+  },
+  loginText: {
+    marginRight: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: '#5080c5',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: -7,
+  },
+  modalButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
+  },
+  successMessage: {
+    color: 'green',
+    marginBottom: 10,
+  },
 });
 
 export default Signup;
