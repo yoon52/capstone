@@ -1,3 +1,4 @@
+
   /* addproducts.css */
 
   .add-products-header {
@@ -47,9 +48,9 @@
 
   /* 디테일 컨테이너 */
   .product-detail {
-    width: 1500px;
+    width: 1655px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
   }
 
   /* 상품 이미지 */
@@ -77,7 +78,7 @@
   .product-d-views,
   .product-d-availability {
     padding: 10px 10px 10px 100px;
-    font-size: 20px !important;
+    font-size: 22px !important;
   }
 
   /* 찜하기 */
