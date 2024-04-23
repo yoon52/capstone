@@ -73,11 +73,11 @@ const handleSubmit = async (e) => {
 
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
-    window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&state=?';
+    window.location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=http://localhost:3000/Main`;
   };
 
   const handleKakaoLogin = () => {
-    window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=0bee6abe1a644025c9faedffda0ddd04&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&response_type=code&ka=sdk%2F1.43.2%20os%2Fjavascript%20sdk_type%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttps%253A%252F%252FSEUNGH00N.github.io&origin=https%3A%2F%2FSEUNGH00N.github.io';
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=0bee6abe1a644025c9faedffda0ddd04&redirect_uri=http://localhost:3000/Main&response_type=code`;
   };
 
 

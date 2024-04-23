@@ -153,6 +153,7 @@ const ProductDetail = () => {
       setSearchError('검색어를 입력하세요.');
       return;
     }
+
     try {
       const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
       if (response.ok) {
@@ -162,6 +163,9 @@ const ProductDetail = () => {
         saveSearchTerm(searchTerm);
         setShowSearchResults(true);
         setSearchError('');
+
+        // Navigate to ResultPage with encoded searchTerm
+        navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
       } else {
         console.error('검색 오류:', response.status);
       }
@@ -197,6 +201,10 @@ const ProductDetail = () => {
   const handleChangeSearchTerm = (event) => {
     setSearchTerm(event.target.value);
     setSearchError('');
+  };
+
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
   };
 
   const handleKeywordManagement = () => {
@@ -286,6 +294,7 @@ const ProductDetail = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
       />
 
       <div className="product-detail">

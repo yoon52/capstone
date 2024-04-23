@@ -1,40 +1,57 @@
 import React, { useState } from 'react';
-
 import { FaBars, FaPlus, FaComments, FaUser, FaTimes, FaCog, FaSignOutAlt, FaHeart } from 'react-icons/fa';
 import logo from '../../image/logo.png';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
-const Header = ({ 
-  toggleNavMenu, 
-  showNavMenu, 
-  closeNavMenu, 
-  handleAddProduct, 
-  handleShowChatList, 
-  handleShowMyInfoPage, 
-  handleKeywordManagement, 
-  handleProductManagement, 
-  handleLogout, 
+
+const Header = ({
+  toggleNavMenu,
+  showNavMenu,
+  closeNavMenu,
+  handleAddProduct,
+  handleShowChatList,
+  handleShowMyInfoPage,
+  handleKeywordManagement,
+  handleProductManagement,
+  handleLogout,
   handleShowWishlist, // 찜목록 표시 핸들러 추가
-  searchTerm, 
-  handleChangeSearchTerm, 
-  handleEnterKeyPress, 
-  searchInputRef 
+  searchTerm,
+  handleChangeSearchTerm,
+  handleEnterKeyPress,
+  searchInputRef,
+  onSearchSubmit // 검색 제출 핸들러 추가
+
 }) => {
-    const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
   // 최근 검색어 목록
   const recentSearches = ['iPhone', '갤럭시', '노트북', '키보드', '마우스'];
+  const navigate = useNavigate(); // Get navigate function from react-router-dom
 
   const handleSearchInputFocus = () => {
-    setShowRecentSearches(true);
+    console.log('Input clicked'); // 검색 인풋창 클릭시 "Input clicked"를 콘솔에 출력
+
   };
 
   const handleSearchInputBlur = () => {
     setShowRecentSearches(false);
   };
-  
+
+  const handleSearchSubmit = () => {
+    if (searchTerm.trim() !== '') {
+      // Call the onSearchSubmit handler with the searchTerm
+      onSearchSubmit(searchTerm);
+
+      // Navigate to SearchResultsPage with the encoded searchTerm
+      navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
+
+
   return (
     <header className="header-main">
       <div className="header-content">
-      <FaBars className="nav-menu-toggle" onClick={toggleNavMenu} />
+        <FaBars className="nav-menu-toggle" onClick={toggleNavMenu} />
         <a href="/Main">
           <img src={logo} id='logo' alt="로고" />
         </a>
@@ -66,6 +83,8 @@ const Header = ({
           <button className="header-button" onClick={handleShowChatList}><FaComments /></button>
           <button className="header-button" onClick={handleShowMyInfoPage}><FaUser /></button>
           <button className="header-button" onClick={handleShowWishlist}><FaHeart /></button> {/* 찜목록 표시 버튼 */}
+
+
         </div>
       </div>
       <div className={`sidebar ${showNavMenu ? 'show' : ''}`}>

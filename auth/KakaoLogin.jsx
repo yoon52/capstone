@@ -26,7 +26,7 @@ function KakaoLogin() {
           // 로그인 실패 시 처리할 로직을 여기에 작성
           console.error('카카오 로그인 실패:', err);
         },
-        redirectUri: 'https://SEUNGH00N.github.io/Main' // 리디렉션 URL 수정
+        redirectUri: 'http://localhost:3000/Main' // 리디렉션 URL 수정
       });
     }
   }, []);

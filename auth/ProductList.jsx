@@ -32,6 +32,7 @@ function ProductList({ filteredProducts }) {
     }
   };
 
+
   return (
     <div className="product-list-container">
       <div className="product-list-wrapper">
@@ -43,8 +44,6 @@ function ProductList({ filteredProducts }) {
               className="product-item"
               onClick={() => handleProductClick(product.id)}
             >
-
-
               <div className="product-image-container">
                 <img
                   src={`http://localhost:4000/uploads/${product.image}`}

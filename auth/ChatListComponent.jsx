@@ -102,6 +102,9 @@ const ChatListComponent = () => {
       console.error('검색어 저장 오류:', error);
     }
   };
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
 
   const handleChangeSearchTerm = (event) => {
     setSearchTerm(event.target.value);
@@ -153,6 +156,8 @@ const ChatListComponent = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
+
       />
       <div className="chatsidebar-container">
         <div className="chatsidebar">
@@ -184,4 +189,4 @@ const ChatListComponent = () => {
   );
 };
 
-export default ChatListComponent;
+export default ChatListComponent; 
