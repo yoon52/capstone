@@ -12,7 +12,7 @@ function ProductManagement() {
   const fetchProducts = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.20.10.3:4000/productsmanage', {
+      const response = await fetch('http://192.168.219.165:4000/productsmanage', {
         headers: {
           'user_id': userId
         }
@@ -36,7 +36,7 @@ function ProductManagement() {
   const handleDeleteProduct = async (productId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://172.20.10.3:4000/productsmanage/${productId}`, {
+      const response = await fetch(`http://192.168.219.165:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'user_id': userId
@@ -61,7 +61,7 @@ function ProductManagement() {
   const handleSaveEdit = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://172.20.10.3:4000/productsmanage/${editingProduct.id}`, {
+      const response = await fetch(`http://192.168.219.165:4000/productsmanage/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ function ProductManagement() {
   const handleSellProduct = async (productId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://172.20.10.3:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`http://192.168.219.165:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

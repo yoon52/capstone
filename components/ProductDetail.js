@@ -12,7 +12,7 @@ const ProductDetail = ({ route }) => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await fetch(`http://172.20.10.3:4000/products/detail/${productId}`);
+        const response = await fetch(`http://192.168.219.165:4000/products/detail/${productId}`);
         if (response.ok) {
           const data = await response.json();
           setProduct(data);
@@ -42,7 +42,7 @@ const ProductDetail = ({ route }) => {
 
   const handleChatButtonClick = async () => {
     try {
-      const response = await fetch(`http://172.20.10.3:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
+      const response = await fetch(`http://192.168.219.165:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
       if (response.ok) {
         const existingChatRoom = await response.json();
         if (existingChatRoom) {
@@ -51,7 +51,7 @@ const ProductDetail = ({ route }) => {
         }
       }
 
-      const createResponse = await fetch('http://172.20.10.3:4001/api/chat-rooms', {
+      const createResponse = await fetch('http://192.168.219.165:4001/api/chat-rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -82,7 +82,7 @@ const ProductDetail = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{product.name}</Text>
-      <Image style={styles.image} source={{ uri: `http://172.20.10.3:4000/uploads/${product.image}` }} />
+      <Image style={styles.image} source={{ uri: `http://192.168.219.165:4000/uploads/${product.image}` }} />
       <Text style={styles.description}>{product.description}</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.price}>Price: ${product.price}</Text>

@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { TextInput } from 'react-native-paper'; // TextInput을 추가로 import합니다.
-import { Ionicons } from '@expo/vector-icons'; // 검색 아이콘을 추가로 import합니다.
+import { Ionicons } from '@expo/vector-icons';
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AddProducts from './Addproducts'; // AddProducts 컴포넌트를 import합니다.
-import ChatList from './ChatList'; // ChatList 컴포넌트를 import합니다.
-import Sidebar from './SideBar'; // 사이드바 컴포넌트를 추가로 import합니다.
+import AddProducts from './Addproducts';
+import ChatList from './ChatList';
+import Sidebar from './SideBar';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -26,13 +25,13 @@ function MainScreen() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = 'http://172.20.10.3:4000/products';
+        let url = 'http://192.168.219.165:4000/products';
         if (sortType === 'latest') {
-          url = 'http://172.20.10.3:4000/products/latest';
+          url = 'http://192.168.219.165:4000/products/latest';
         } else if (sortType === 'recommend') {
-          url = 'http://172.20.10.3:4000/products/recommendations';
+          url = 'http://192.168.219.165:4000/products/recommendations';
         } else if (sortType === 'views') {
-          url = 'http://172.20.10.3:4000/products/views';
+          url = 'http://192.168.219.165:4000/products/views';
         }
         const userId = await AsyncStorage.getItem('userId');
         const response = await fetch(url, {
@@ -94,31 +93,29 @@ function MainScreen() {
   };
 
   return (
-    <ScrollView style={styles.mainContainer}>
-      <View style={styles.navigationButtons}>
-        <TouchableOpacity onPress={toggleSidebar} style={styles.managementButton}>
-          <Ionicons name="menu" size={24} color="black" />
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={toggleSidebar} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#103260" />
         </TouchableOpacity>
-
       </View>
-      {/* 수정된 검색어창 */}
       <View style={styles.searchContainer}>
         <TextInput
-
-          label="상품 검색"
-          value={searchTerm}
-          onChangeText={handleChangeSearchTerm}
           style={styles.input}
+          placeholder="상품 검색"
+          onChangeText={handleChangeSearchTerm}
+          value={searchTerm}
         />
-        {/* 수정된 검색 버튼 */}
         <TouchableOpacity onPress={handleSearchProduct} style={styles.searchButton}>
-          <Ionicons name="search" size={24} color="black" />
+          <Ionicons name="search" size={24} color="#103260" />
         </TouchableOpacity>
       </View>
-      <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-      <ProductList filteredProducts={filteredProducts} />
+      <ScrollView style={styles.productContainer}>
+        <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
+        <ProductList filteredProducts={filteredProducts} />
+      </ScrollView>
       {isSidebarOpen && <Sidebar onClose={toggleSidebar} />}
-    </ScrollView>
+    </View>
   );
 }
 
@@ -162,28 +159,43 @@ const BottomTabNavigator = () => {
 
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  container: {
     flex: 1,
-    padding: 20,
   },
-  navigationButtons: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    backgroundColor: '#f4f4f4',
   },
+  menuButton: {},
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#f4f4f4',
   },
   input: {
+    backgroundColor: '#ffffff',
     flex: 1,
-    marginRight: 10,
+    height: 45,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#103260',
+    paddingHorizontal: 10,
+    marginTop: 5,
   },
   searchButton: {
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#ffffff',
+    padding: 5,
+    borderRadius: 10,
+    marginLeft: -40,
+    marginTop: 5,
+  },
+  productContainer: {
+    flex: 1,
+    padding: 20,
   },
 });
 

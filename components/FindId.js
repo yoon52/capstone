@@ -25,7 +25,7 @@ const FindId = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://172.20.10.3:4000/find-id', {
+      const response = await fetch('http://192.168.219.165:4000/find-id', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -73,6 +73,7 @@ const FindId = () => {
           onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
           style={[styles.picker]}
           itemStyle={styles.pickerItem}
+          mode="dropdown"
         >
           <Picker.Item label="학과 선택" value="" style={styles.pickerItem} />
           <Picker.Item label="컴퓨터 공학과" value="computer_science" style={styles.pick} />
@@ -86,6 +87,7 @@ const FindId = () => {
           selectedValue={formData.grade}
           onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
           style={[styles.picker]}
+          mode="dropdown"
         >
           <Picker.Item label="학년 선택" value="" style={styles.pickerItem} />
           <Picker.Item label="1학년" value="1" style={styles.pick} />

@@ -19,7 +19,7 @@ const ChatList = () => {
   const fetchChatRooms = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.20.10.3:4001/myChatRooms', {
+      const response = await fetch('http://192.168.219.165:4001/myChatRooms', {
         headers: {
           'user_id': userId
         }

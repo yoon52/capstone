@@ -22,7 +22,7 @@ const ChatComponent = ({ route }) => {
         setUserId(storedUserId);
 
         if (storedUserId && productId && receiver) {
-          socket.current = io('http://172.20.10.3:4001/', {
+          socket.current = io('http://192.168.219.165:4001/', {
             query: { productId, receiver }
           });
 
@@ -60,7 +60,7 @@ const ChatComponent = ({ route }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://172.20.10.3:4001/messages/${productId}`, {
+      const response = await fetch(`http://192.168.219.165:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }

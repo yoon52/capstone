@@ -44,7 +44,7 @@ function AddProducts() {
         name: `product-image.${fileType}`,
       });
 
-      const response = await fetch('http://172.20.10.3:4000/addProduct', {
+      const response = await fetch('http://192.168.219.165:4000/addProduct', {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',

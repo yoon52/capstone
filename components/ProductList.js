@@ -19,7 +19,7 @@ function ProductList({ filteredProducts }) {
       const isProductViewed = await AsyncStorage.getItem(viewedProductKey);
 
       if (!isProductViewed) {
-        await fetch(`http://172.20.10.3:4000/updateViews/${productId}`, {
+        await fetch(`http://192.168.219.165:4000/updateViews/${productId}`, {
           method: 'POST',
         });
 
@@ -49,7 +49,7 @@ function ProductList({ filteredProducts }) {
         >
           <View style={styles.card}>
             <Image
-              source={{ uri: `http://172.20.10.3:4000/uploads/${product.image}` }} // Replace with your image URL
+              source={{ uri: `http://192.168.219.165:4000/uploads/${product.image}` }} // Replace with your image URL
               style={styles.productImage}
             />
             <Text numberOfLines={2} style={styles.productName}>
