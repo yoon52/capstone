@@ -13,7 +13,6 @@ function Login() {
 
   const [loginSuccess, setLoginSuccess] = useState(true);
   const navigation = useNavigation();
-
   const handleChange = (value, name) => {
     setFormData(prevState => ({
       ...prevState,
@@ -26,22 +25,22 @@ function Login() {
       console.log('Please enter both id and password');
       return;
     }
-
     try {
-      const response = await fetch('http://172.30.1.76:4000/login', {
+      const response = await fetch('http://192.168.219.190:4000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
       });
-
       if (response.ok) {
-        const { token } = await response.json();
-        // 서버에서 받은 토큰을 AsyncStorage에 저장
-        await AsyncStorage.setItem('token', token);
-        // 아이디도 AsyncStorage에 저장
-        await AsyncStorage.setItem('userId', formData.id);
+        const { message, id, isAdmin } = await response.json();
+        console.log(message); // 로그인 메시지 출력
+        console.log('User ID:', id); // 사용자 ID 출력
+        console.log('Is Admin:', isAdmin); // 관리자 여부 출력
+        // 사용자 ID를 AsyncStorage에 저장
+        await AsyncStorage.setItem('userId', id);
+        // 로그인 성공 시 필요한 작업 수행
         navigation.navigate('Main');
       } else {
         console.error('Login failed:', response.status);
@@ -52,7 +51,6 @@ function Login() {
       setLoginSuccess(false);
     }
   };
-
 
   const handleNaverLogin = () => {
     // Handle Naver login
@@ -82,15 +80,17 @@ function Login() {
         <Text style={styles.errorMessage}>아이디 또는 비밀번호가 올바르지 않습니다.</Text>
       )}
       <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>로그인</Text>
+        <Text style={styles.loginbuttonText}>로그인</Text>
       </TouchableOpacity>
       <View style={styles.buttonGroup}>
         <TouchableOpacity style={styles.additionalButton} onPress={() => navigation.navigate('Signup')}>
           <Text style={styles.buttonText}>회원가입</Text>
         </TouchableOpacity>
+        <View style={styles.separator} />
         <TouchableOpacity style={styles.additionalButton} onPress={() => navigation.navigate('FindId')}>
           <Text style={styles.buttonText}>아이디 찾기</Text>
         </TouchableOpacity>
+        <View style={styles.separator} />
         <TouchableOpacity style={styles.additionalButton} onPress={() => navigation.navigate('FindPw')}>
           <Text style={styles.buttonText}>비밀번호 찾기</Text>
         </TouchableOpacity>
@@ -114,60 +114,73 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   heading: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 40,
+    marginBottom: 30,
   },
   input: {
     width: '80%',
-    height: 40,
+    height: 45,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#b0c4de',
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 15,
     paddingHorizontal: 10,
   },
   errorMessage: {
     color: 'red',
-    marginBottom: 10,
+    marginTop: -9,
+    marginBottom: -11,
   },
   loginButton: {
-    backgroundColor: '#000',
+    backgroundColor: '#103260',
     padding: 15,
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: 20,
     width: '80%',
     alignItems: 'center',
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
+  loginbuttonText: {
+    fontSize: 13,
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
   buttonGroup: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
-    marginTop: 20,
+    marginTop: 10,
   },
   additionalButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#f4f4f4',
     padding: 10,
-    borderRadius: 5,
     width: '30%',
     alignItems: 'center',
+  },
+  buttonText: {
+    color: '#000000',
+    fontSize: 13,
+    
+  },
+  separator: {
+    width: 1,
+    height: 25,
+    alignSelf: 'center',
+    backgroundColor: '#162b9150',
   },
   restButtonGroup: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 20,
+    width: '60%',
+    marginTop: 10,
   },
   restButton: {
     width: '30%',
     alignItems: 'center',
   },
   restButtonIcon: {
-    width: 50,
-    height: 50,
+    width: 155,
+    height: 40,
+    borderRadius: 5
   },
 });
 

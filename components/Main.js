@@ -1,28 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import SearchInput from './SearchInput';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AddProducts from './AddProducts';
+import ChatList from './ChatList';
+import Sidebar from './SideBar';
+import MyInfo from './MyInfo';
 
-function Main() {
+const Tab = createMaterialBottomTabNavigator();
+
+function MainScreen() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortType, setSortType] = useState('recommend');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 사이드바 열기/닫기 상태를 관리합니다.
+
   const navigation = useNavigation();
+
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = 'http://172.30.1.76:4000/products';
+        let url = 'http://192.168.219.190:4000/products';
         if (sortType === 'latest') {
-          url = 'http://172.30.1.76:4000/products/latest';
+          url = 'http://192.168.219.190:4000/products/latest';
         } else if (sortType === 'recommend') {
-          url = 'http://172.30.1.76:4000/products/searchByRecent';
+          url = 'http://192.168.219.190:4000/products/recommendations';
         } else if (sortType === 'views') {
-          url = 'http://172.30.1.76:4000/products/views';
+          url = 'http://192.168.219.190:4000/products/views';
         }
         const userId = await AsyncStorage.getItem('userId');
         const response = await fetch(url, {
@@ -68,10 +78,7 @@ function Main() {
   const handleKeywordManagement = () => {
     navigation.navigate('search-keyword');
   };
-  
-  const handleProductManagement = () => {
-    navigation.navigate('ProductManagement');
-  };
+
 
   const handleMyProfile = () => {
     navigation.navigate('MyInfo');
@@ -81,67 +88,116 @@ function Main() {
     // 로그아웃 액션 수행
     navigation.navigate('Login');
   };
-  
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+    console.log('touched')
+  };
 
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.navigationButtons}>
-        <TouchableOpacity onPress={handleKeywordManagement} style={styles.managementButton}>
-          <Text>검색어 관리</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleProductManagement} style={styles.managementButton}>
-          <Text>상품 관리</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleMyProfile} style={styles.profileButton}>
-          <Text>내 정보</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text>로그아웃</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={toggleSidebar} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#103260" />
         </TouchableOpacity>
       </View>
-      <SearchInput
-        searchTerm={searchTerm}
-        handleChangeSearchTerm={handleChangeSearchTerm}
-        handleSearchProduct={handleSearchProduct}
-      />
-      <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-      <ProductList filteredProducts={filteredProducts} />
-      <Button title="상품 등록" onPress={handleAddProduct} />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="상품 검색"
+          onChangeText={handleChangeSearchTerm}
+          value={searchTerm}
+        />
+        <TouchableOpacity onPress={handleSearchProduct} style={styles.searchButton}>
+          <Ionicons name="search" size={24} color="#103260" />
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={styles.productContainer}>
+        <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
+        <ProductList filteredProducts={filteredProducts} />
+      </ScrollView>
+      {isSidebarOpen && <Sidebar onClose={toggleSidebar} />}
     </View>
   );
 }
 
+
+const BottomTabNavigator = () => {
+  return (
+    <Tab.Navigator
+      shifting={true} // 탭이 스와이프되는 동안 색상이 변경되도록 설정
+      barStyle={{ backgroundColor: 'white' }} // 탭 바의 배경색 설정
+    >
+      <Tab.Screen
+        name="MainScreen"
+        component={MainScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="list" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddProduct"
+        component={AddProducts}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="add-circle" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ChatList"
+        component={ChatList}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="chatbubbles" size={24} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+
 const styles = StyleSheet.create({
-  mainContainer: {
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    backgroundColor: '#f4f4f4',
+  },
+  menuButton: {},
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#f4f4f4',
+  },
+  input: {
+    backgroundColor: '#ffffff',
+    flex: 1,
+    height: 45,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#103260',
+    paddingHorizontal: 10,
+    marginTop: 5,
+  },
+  searchButton: {
+    backgroundColor: '#ffffff',
+    padding: 5,
+    borderRadius: 10,
+    marginLeft: -40,
+    marginTop: 5,
+  },
+  productContainer: {
     flex: 1,
     padding: 20,
   },
-  navigationButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  managementButton: {
-    padding: 10,
-    backgroundColor: 'lightblue',
-    borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  profileButton: {
-    padding: 10,
-    backgroundColor: 'lightgreen',
-    borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  logoutButton: {
-    padding: 10,
-    backgroundColor: 'lightcoral',
-    borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
-  },
 });
-  
-export default Main;
+
+export default BottomTabNavigator;

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Picker } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
 function Signup() {
   const navigation = useNavigation();
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -11,9 +15,12 @@ function Signup() {
     confirmPassword: '',
     email: '',
     department: '',
-    grade: ''
+    grade: '',
+    studentIdImage: null
   });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [idAvailability, setIdAvailability] = useState(null);
+  const [itemPrice, setItemPrice] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleChange = (name, value) => {
     setFormData(prevState => ({
@@ -22,176 +29,333 @@ function Signup() {
     }));
   };
 
-  const handleCheckAvailability = async () => {
-    try {
-      const response = await fetch(`http://localhost:4000/checkUser?id=${formData.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (!data.available) {
-          setErrorMessage('이미 존재하는 아이디입니다.');
-        } else {
-          setErrorMessage('사용 가능한 아이디입니다.');
-        }
-      } else {
-        setErrorMessage('아이디 중복 확인 중 오류가 발생했습니다.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
-    }
+  const getImageFileName = (userId, file) => {
+    const extension = file.split('.').pop();
+    return `${userId}.${extension}`;
   };
 
   const handleSubmit = async () => {
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage('비밀번호가 일치하지 않습니다.');
+    if (!formData.studentIdImage) {
+      setErrorMessage('이미지를 선택해주세요.');
+      setModalVisible(true);
       return;
     }
+    if (signupSuccess) {
+      navigation.navigate('Login');
+    }
+    const imageFileName = getImageFileName(formData.id, formData.studentIdImage);
+    const formDataWithImage = new FormData();
+    formDataWithImage.append('id', formData.id);
+    formDataWithImage.append('name', formData.name);
+    formDataWithImage.append('password', formData.password);
+    formDataWithImage.append('confirmPassword', formData.confirmPassword);
+    formDataWithImage.append('email', formData.email);
+    formDataWithImage.append('department', formData.department);
+    formDataWithImage.append('grade', formData.grade);
+
+    formDataWithImage.append('studentIdImage', {
+      uri: formData.studentIdImage,
+      type: 'image/jpeg',
+      name: imageFileName,
+    });
 
     try {
-      const response = await fetch('http://172.30.1.76:4000/Signup', {
+      const response = await fetch('http://192.168.219.190:4000/signup', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data',
+          'user_id': formData.id,
         },
-        body: JSON.stringify(formData)
+        body: formDataWithImage,
       });
+
       if (response.ok) {
-        navigation.navigate('Login');
+        const data = await response.json();
+        setSignupSuccess(true);
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.error);
+        setModalVisible(true);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('클라이언트 오류:', error);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setModalVisible(true);
+    }
+  };
+
+  const handleCheckAvailability = async () => {
+    try {
+      const response = await fetch(`http://192.168.219.190:4000/checkUser?id=${formData.id}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setIdAvailability(data.available);
+        setErrorMessage(data.available ? '사용 가능한 아이디입니다!' : '이미 존재하는 아이디입니다!');
+        setModalVisible(true);
+      } else {
+        setErrorMessage('아이디 중복 확인 중 오류가 발생했습니다.');
+        setModalVisible(true);
+      }
+    } catch (error) {
+      console.error('클라이언트 오류:', error);
+      setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
+      setModalVisible(true);
+    }
+  };
+
+  const handleImageSelect = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("갤러리에 접근할 수 있는 권한이 필요합니다.");
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (!pickerResult.cancelled && pickerResult.assets && pickerResult.assets.length > 0 && pickerResult.assets[0].uri) {
+      const selectedImageUri = pickerResult.assets[0].uri;
+      setFormData(prevState => ({
+        ...prevState,
+        studentIdImage: selectedImageUri,
+      }));
+      alert('이미지가 선택되었습니다.');
+    } else {
+      console.error('Selected image URI is undefined');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>회 원 가 입</Text>
+      <Text style={styles.header}>회원가입</Text>
+      {signupSuccess && <Text style={styles.successMessage}>회원가입 성공</Text>}
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{errorMessage}</Text>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <TextInput
-        style={styles.input}
+        placeholder="이름"
         value={formData.name}
         onChangeText={text => handleChange('name', text)}
-        placeholder="이름"
-        required
-      />
-      <TextInput
         style={styles.input}
-        value={formData.id}
-        onChangeText={text => handleChange('id', text)}
-        placeholder="아이디"
-        required
       />
-      <TouchableOpacity style={styles.checkButton} onPress={handleCheckAvailability}>
-        <Text style={styles.checkText}>중복 확인</Text>
-      </TouchableOpacity>
-      <Text style={styles.message}>{errorMessage}</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="학번"
+          value={formData.id}
+          onChangeText={text => handleChange('id', text)}
+          style={[styles.input, { flex: 0.73 }]}
+        />
+        <TouchableOpacity onPress={handleCheckAvailability} style={styles.checkButton}>
+          <Text style={styles.checkButtonText}>중복 확인</Text>
+        </TouchableOpacity>
+      </View>
       <TextInput
-        style={styles.input}
+        placeholder="비밀번호"
         value={formData.password}
         onChangeText={text => handleChange('password', text)}
-        placeholder="비밀번호"
         secureTextEntry
-        required
+        style={styles.input}
       />
       <TextInput
-        style={styles.input}
+        placeholder="비밀번호 확인"
         value={formData.confirmPassword}
         onChangeText={text => handleChange('confirmPassword', text)}
-        placeholder="비밀번호 확인"
         secureTextEntry
-        required
+        style={styles.input}
       />
       <TextInput
-        style={styles.input}
+        placeholder="이메일"
         value={formData.email}
         onChangeText={text => handleChange('email', text)}
-        placeholder="이메일"
         keyboardType="email-address"
-        required
+        style={styles.input}
       />
-      <Picker
-        style={styles.input}
-        selectedValue={formData.department}
-        onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
-        required
-      >
-        <Picker.Item label="학과를 선택하세요" value="" />
-        <Picker.Item label="컴퓨터 공학과" value="computer_science" />
-        <Picker.Item label="소프트웨어 공학과" value="software_engineering" />
-        <Picker.Item label="디자인학과" value="design" />
-        <Picker.Item label="경영학과" value="business-administration" />
-      </Picker>
-      <Picker
-        style={styles.input}
-        selectedValue={formData.grade}
-        onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
-        required
-      >
-        <Picker.Item label="학년을 선택하세요" value="" />
-        <Picker.Item label="1학년" value="1" />
-        <Picker.Item label="2학년" value="2" />
-        <Picker.Item label="3학년" value="3" />
-        <Picker.Item label="4학년" value="4" />
-      </Picker>
-      <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
-        <Text style={styles.signupText}>가입하기</Text>
+      <View style={styles.departmentContainer}>
+        <Picker
+          selectedValue={formData.department}
+          onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
+          style={[styles.picker]}
+          itemStyle={styles.pickerItem}
+          mode="dropdown"
+        >
+          <Picker.Item label="학과 선택" value="" style={styles.pickerItem} />
+          <Picker.Item label="컴퓨터 공학과" value="computer_science" style={styles.pick} />
+          <Picker.Item label="소프트웨어 공학과" value="software_engineering" style={styles.pick} />
+          <Picker.Item label="디자인학과" value="design" style={styles.pick} />
+          <Picker.Item label="경영학과" value="business-administration" style={styles.pick} />
+        </Picker>
+      </View>
+      <View style={styles.gradeContainer}>
+        <Picker
+          selectedValue={formData.grade}
+          onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
+          style={[styles.picker]}
+          mode="dropdown"
+        >
+          <Picker.Item label="학년 선택" value="" style={styles.pickerItem} />
+          <Picker.Item label="1학년" value="1" style={styles.pick} />
+          <Picker.Item label="2학년" value="2" style={styles.pick} />
+          <Picker.Item label="3학년" value="3" style={styles.pick} />
+          <Picker.Item label="4학년" value="4" style={styles.pick} />
+        </Picker>
+      </View>
+      <TouchableOpacity onPress={handleImageSelect} style={styles.imageButton}>
+        <Text style={styles.imageButtonText}>이미지 선택</Text>
       </TouchableOpacity>
-      <Text>이미 계정이 있으신가요? <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>로그인</Text></Text>
+      <TouchableOpacity onPress={handleSubmit} style={styles.signupButton}>
+        <Text style={styles.signupButtonText}>가입하기</Text>
+      </TouchableOpacity>
+      <View style={styles.loginContainer}>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.loginText}>이미 계정이 있으신가요?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={[styles.loginText, { textDecorationLine: 'underline' }]}>로그인</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
+    alignItems: 'center',
   },
   header: {
-    fontSize: 24,
-    marginBottom: 20
+    fontSize: 30,
+    marginBottom: 30,
   },
   input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
+    width: '80%',
+    height: 45,
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 10
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   checkButton: {
-    padding: 10,
-    backgroundColor: 'lightblue',
+    backgroundColor: '#5080c5',
+    paddingVertical: 13,
+    paddingHorizontal: 10,
     borderRadius: 5,
-    marginBottom: 10
+    marginTop: -15,
+    marginLeft: 10,
   },
-  checkText: {
-    color: '#fff',
-    fontWeight: 'bold'
+  checkButtonText: {
+    fontSize: 13,
+    color: 'white',
+  },
+  departmentContainer: {
+    width: '38%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginLeft: -173,
+    marginBottom: 10,
+  },
+  gradeContainer: {
+    width: '38%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginTop: -55,
+    marginLeft: 173,
+    marginBottom: 20,
+  },
+  picker: {
+    flex: 1,
+    marginTop: -5,
+    marginStart: -7,
+    marginEnd: -7,
+  },
+  pickerItem: {
+    fontSize: 13,
+    color: '#555555',
+  },
+  pick: {
+    fontSize: 13,
+    color: '#000000',
+  },
+  imageButton: {
+    backgroundColor: '#5080c5',
+    paddingVertical: 13,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  imageButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
   },
   signupButton: {
-    marginTop: 20,
+    backgroundColor: '#103260',
     padding: 15,
-    backgroundColor: 'lightblue',
-    borderRadius: 5
+    borderRadius: 5,
+    marginTop: 20,
+    width: '80%',
+    alignItems: 'center',
   },
-  signupText: {
-    color: '#fff',
+  signupButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
     fontWeight: 'bold',
-    textAlign: 'center'
   },
-  message: {
+  loginContainer: {
+    flexDirection: 'row',
+    marginTop: 30,
+  },
+  loginText: {
+    marginRight: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: '#5080c5',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: -7,
+  },
+  modalButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
+  },
+  successMessage: {
+    color: 'green',
     marginBottom: 10,
-    color: 'red'
   },
-  loginLink: {
-    color: 'blue',
-    textDecorationLine: 'underline'
-  }
 });
 
 export default Signup;

@@ -10,7 +10,7 @@ function FindPw() {
 
   const handleResetPassword = async () => {
     try {
-      const response = await fetch('http://172.30.1.76:4000/reset-password', {
+      const response = await fetch('http://192.168.219.190:4000/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -34,6 +34,7 @@ function FindPw() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>비밀번호 찾기</Text>
       <TextInput
         style={styles.input}
         value={email}
@@ -43,23 +44,22 @@ function FindPw() {
         required
       />
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-        <Text style={styles.resetText}>임시 비밀번호 발급받기</Text>
+        <Text style={styles.resetButtonText}>임시 비밀번호 발급받기</Text>
       </TouchableOpacity>
 
       <Modal
-        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(!modalVisible)}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
             <Text style={styles.modalText}>{message}</Text>
             <TouchableOpacity style={styles.loginButton} onPress={() => {
               navigation.navigate('Login');
               setModalVisible(!modalVisible);
             }}>
-              <Text style={styles.buttonText}>로그인하기</Text>
+              <Text style={styles.loginButtonText}>로그인하기</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -71,64 +71,61 @@ function FindPw() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
+    alignItems: 'center',
+  },
+  header: {
+    fontSize: 30,
+    marginBottom: 50,
   },
   input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
+    width: '80%',
+    height: 45,
     borderWidth: 1,
-    marginBottom: 20,
-    paddingLeft: 10
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
   },
   resetButton: {
+    backgroundColor: '#103260',
     padding: 15,
-    backgroundColor: 'lightblue',
-    borderRadius: 5
+    borderRadius: 5,
+    marginTop: 20,
+    width: '80%',
+    alignItems: 'center',
   },
-  resetText: {
-    color: '#fff',
+  resetButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
     fontWeight: 'bold',
-    textAlign: 'center'
   },
-  centeredView: {
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+  modalContent: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+    width: '70%',
   },
   modalText: {
-    marginBottom: 15,
-    textAlign: 'center'
+    fontSize: 17,
+    marginBottom: 20,
   },
   loginButton: {
-    backgroundColor: '#000',
-    padding: 15,
+    backgroundColor: '#5080c5',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
     marginTop: 10,
-    width: '80%',
-    alignItems: 'center'
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18
+  loginButtonText: {
+    fontSize: 13,
+    color: '#ffffff'
   }
 });
 

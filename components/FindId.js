@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Picker, Modal, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
 import { useNavigation } from '@react-navigation/native';
 
-function FindId() {
+const FindId = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
     email: '',
@@ -11,7 +13,8 @@ function FindId() {
   });
   const [id, setId] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [modalVisible, setModalVisible] = useState(false); // 모달 표시 여부 상태
+  const [modalVisible, setModalVisible] = useState(false);
+  const [gradeModalVisible, setGradeModalVisible] = useState(false);
 
   const handleChange = (name, value) => {
     setFormData(prevState => ({
@@ -22,7 +25,7 @@ function FindId() {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://172.30.1.76:4000/find-id', {
+      const response = await fetch('http://192.168.219.190:4000/find-id', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -33,7 +36,7 @@ function FindId() {
         const data = await response.json();
         setId(data.id);
         setErrorMessage('');
-        setModalVisible(true); // 아이디를 찾으면 모달을 엽니다.
+        setModalVisible(true);
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.error);
@@ -46,166 +49,196 @@ function FindId() {
     }
   };
 
+  const openGradeModal = () => {
+    setGradeModalVisible(true);
+  };
+
+  const closeGradeModal = () => {
+    setGradeModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>아이디 찾기</Text>
       <TextInput
-        style={styles.input}
+        placeholder="이메일"
         value={formData.email}
         onChangeText={text => handleChange('email', text)}
-        placeholder="이메일"
         keyboardType="email-address"
-        required
+        style={styles.input}
       />
-      <Picker
-        style={styles.input}
-        selectedValue={formData.department}
-        onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
-        required
-      >
-        <Picker.Item label="학과를 선택하세요" value="" />
-        <Picker.Item label="컴퓨터 공학과" value="computer_science" />
-        <Picker.Item label="소프트웨어 공학과" value="software_engineering" />
-        <Picker.Item label="디자인학과" value="design" />
-        <Picker.Item label="경영학과" value="business-administration" />
-      </Picker>
-      <Picker
-        style={styles.input}
-        selectedValue={formData.grade}
-        onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
-        required
-      >
-        <Picker.Item label="학년을 선택하세요" value="" />
-        <Picker.Item label="1학년" value="1" />
-        <Picker.Item label="2학년" value="2" />
-        <Picker.Item label="3학년" value="3" />
-        <Picker.Item label="4학년" value="4" />
-      </Picker>
-      <TouchableOpacity style={styles.findButton} onPress={handleSubmit}>
-        <Text style={styles.findText}>아이디 찾기</Text>
+      <View style={styles.departmentContainer}>
+        <Picker
+          selectedValue={formData.department}
+          onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
+          style={[styles.picker]}
+          itemStyle={styles.pickerItem}
+          mode="dropdown"
+        >
+          <Picker.Item label="학과 선택" value="" style={styles.pickerItem} />
+          <Picker.Item label="컴퓨터 공학과" value="computer_science" style={styles.pick} />
+          <Picker.Item label="소프트웨어 공학과" value="software_engineering" style={styles.pick} />
+          <Picker.Item label="디자인학과" value="design" style={styles.pick} />
+          <Picker.Item label="경영학과" value="business-administration" style={styles.pick} />
+        </Picker>
+      </View>
+      <View style={styles.gradeContainer}>
+        <Picker
+          selectedValue={formData.grade}
+          onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
+          style={[styles.picker]}
+          mode="dropdown"
+        >
+          <Picker.Item label="학년 선택" value="" style={styles.pickerItem} />
+          <Picker.Item label="1학년" value="1" style={styles.pick} />
+          <Picker.Item label="2학년" value="2" style={styles.pick} />
+          <Picker.Item label="3학년" value="3" style={styles.pick} />
+          <Picker.Item label="4학년" value="4" style={styles.pick} />
+        </Picker>
+      </View>
+      <TouchableOpacity style={styles.findIdButton} onPress={handleSubmit}>
+        <Text style={styles.findIdButtonText}>아이디 찾기</Text>
       </TouchableOpacity>
       <Text style={styles.errorMessage}>{errorMessage}</Text>
 
       {/* 모달 */}
       <Modal
-        animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
+        onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>찾은 아이디: {id}</Text>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>찾은 아이디 : {id}</Text>
             <TouchableOpacity style={styles.loginButton} onPress={() => {
-              navigation.navigate('Login'); // Login.js로 이동
-              setModalVisible(!modalVisible);
+              navigation.navigate('Login');
+              setModalVisible(false);
             }}>
-              <Text style={styles.buttonText}>로그인하기</Text>
+              <Text style={styles.loginButtonText}>로그인하기</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.passwordButton} onPress={() => {
-              navigation.navigate('FindPw'); // FindPw.js로 이동
-              setModalVisible(!modalVisible);
+            <TouchableOpacity style={styles.findPwButton} onPress={() => {
+              navigation.navigate('FindPw');
+              setModalVisible(false);
             }}>
-              <Text style={styles.buttonText}>비밀번호 찾기</Text>
+              <Text style={styles.findPwButtonText}>비밀번호 찾기</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
+    alignItems: 'center',
   },
   header: {
-    fontSize: 24,
-    marginBottom: 20
+    fontSize: 30,
+    marginBottom: 50,
   },
   input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
+    width: '80%',
+    height: 45,
     borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  departmentContainer: {
+    width: '38%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginLeft: -173,
     marginBottom: 10,
-    paddingLeft: 10
   },
-  findButton: {
-    marginTop: 20,
+  gradeContainer: {
+    width: '38%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#b0c4de',
+    borderRadius: 5,
+    marginTop: -55,
+    marginLeft: 173,
+    marginBottom: 20,
+  },
+  picker: {
+    flex: 1,
+    marginTop: -5,
+    marginStart: -7,
+    marginEnd: -7,
+  },
+  pickerItem: {
+    fontSize: 13,
+    color: '#555555',
+  },
+  pick: {
+    fontSize: 13,
+    color: '#000000',
+  },
+  findIdButton: {
+    backgroundColor: '#103260',
     padding: 15,
-    backgroundColor: 'lightblue',
-    borderRadius: 5
+    borderRadius: 5,
+    marginTop: 20,
+    width: '80%',
+    alignItems: 'center',
   },
-  findText: {
-    color: '#fff',
+  findIdButtonText: {
+    fontSize: 13,
+    color: '#ffffff',
     fontWeight: 'bold',
-    textAlign: 'center'
-  },
-  idText: {
-    marginTop: 10,
-    fontWeight: 'bold'
   },
   errorMessage: {
-    marginTop: 10,
-    color: 'red'
+    marginTop: -80,
+    color: 'red',
+    textAlign: 'center',
   },
-  // 모달 스타일
-  centeredView: {
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22
+    flexDirection: 'row',
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+  modalContent: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center'
   },
   modalText: {
-    marginBottom: 15,
-    textAlign: 'center'
+    fontSize: 17,
+    marginBottom: 20,
   },
   loginButton: {
-    backgroundColor: '#000',
-    padding: 15,
+    backgroundColor: '#5080c5',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
+    marginRight: 110,
     marginTop: 10,
-    width: '80%',
-    alignItems: 'center'
   },
-  passwordButton: {
-    backgroundColor: 'gray',
-    padding: 15,
+  loginButtonText: {
+    fontSize: 13,
+    color: '#ffffff'
+  },
+  findPwButton: {
+    backgroundColor: '#5080c5',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     borderRadius: 5,
-    marginTop: 10,
-    width: '80%',
-    alignItems: 'center'
+    marginLeft: 110,
+    marginTop: -37,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18
+  findPwButtonText: {
+    fontSize: 13,
+    color: '#ffffff'
   },
-  modalButton: {
-    marginTop: 20
-  },
-  modalButtonText: {
-    color: 'blue',
-    fontWeight: 'bold'
-  }
 });
 
 export default FindId;

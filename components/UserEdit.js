@@ -13,7 +13,7 @@ function UserEdit({ route }) {
   const fetchUserInfo = async (password) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.30.1.76:4000/myinfo', {
+      const response = await fetch('http://192.168.219.190:4000/myinfo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ function UserEdit({ route }) {
   const handleSave = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.30.1.76:4000/edituserinfo', {
+      const response = await fetch('http://192.168.219.190:4000/edituserinfo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

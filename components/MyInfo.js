@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Modal, Picker } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
+import { Picker } from '@react-native-picker/picker'; // Picker import 수정
 const MyInfo = () => {
   const navigation = useNavigation();
 
@@ -43,7 +43,7 @@ const MyInfo = () => {
         return;
       }
 
-      const response = await fetch('http://172.30.1.76:4000/myinfo', {
+      const response = await fetch('http://172.30.1.54:4000/myinfo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ const MyInfo = () => {
 
   const handleEditUserInfo = async () => {
     try {
-      const response = await fetch('http://172.30.1.76:4000/edituserinfo', {
+      const response = await fetch('http://172.30.1.54:4000/edituserinfo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const handleChangePassword = async () => {
       return;
     }
 
-    const response = await fetch('http://172.30.1.76:4000/changepassword', {
+    const response = await fetch('http://172.30.1.54:4000/changepassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const handleChangePassword = async () => {
 const handleWithdrawal = async () => {
   try {
     // 회원 탈퇴를 위한 요청 보내기
-    const response = await fetch('http://172.30.1.76:4000/deleteaccount', {
+    const response = await fetch('http://172.30.1.54:4000/deleteaccount', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
