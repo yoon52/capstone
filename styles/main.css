@@ -9,12 +9,11 @@
 
 /* Header */
 .header-main {
-  background-color: #ffffff;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  padding: 20px;
+  
+  max-width: 1960px; /* 가로 최대 너비를 1960px로 지정 */
+  margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 조정 */
 }
 
 .header-content {
@@ -45,13 +44,16 @@
 /* 검색창 */
 input[type="search"] {
   padding: 15px;
-  width: 800px;
+  width: 960px; /* 160 * 6 */
   border-radius: 5px;
   border: 3px solid #103260;
   font-size: 16px;
   box-sizing: border-box;
   margin: auto;
-  margin-left: 70px;
+
+  margin-left: 150px; /* 왼쪽 마진 150px */
+  margin-right: 150px; /* 오른쪽 마진 150px */
+
 }
 
 .search-input::-webkit-search-cancel-button {
@@ -66,8 +68,8 @@ input[type="search"] {
 .header-buttons {
   display: flex;
   gap: 10px;
-  margin-left: 185px;
-  margin-right: 10px;
+  margin-left: 50px; /* 160 * 3 */
+  margin-right: 20px;
 }
 
 .header-button {
@@ -87,14 +89,14 @@ input[type="search"] {
 /* 사이드 바 */
 .sidebar {
   background-color: #022a52;
-  width: 250px;
+  width: 300px; /* 160 * 1.875 */
   height: 100%;
   position: fixed;
   border: none;
   overflow: hidden;
   border-top-right-radius: 20px;
   top: 0;
-  left: -250px;
+  left: -300px; /* 160 * 1.875 */
   transition: left 0.3s ease;
   z-index: 1000;
   padding-top: 60px;
@@ -105,16 +107,56 @@ input[type="search"] {
 }
 
 .sidebar-item {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 3px solid #ffffff;
-  top: 0;
-  height: 120px;
-  padding: 70px;
-  
+  padding: 20px;
+  color: white;
+  margin-bottom: 20px;
 }
 
+.manner-temperature {
+  margin-right: 20px;
+}
+
+.user-info-container table {
+  width: 100%;
+}
+
+.user-info-container td {
+  padding: 8px;
+  border: none; /* 테이블 셀 간 간격을 없애기 위해 border 제거 */
+}
+
+.user-info-container td:first-child {
+  font-weight: bold;
+  width: 30%;
+}
+
+/* 매너 온도 테이블 스타일 */
+.manner-temperature table {
+  border-collapse: collapse;
+}
+
+.manner-temperature th,
+.manner-temperature td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.manner-temperature th {
+  background-color: #022a52;
+}
+
+.manner-temperature td {
+  background-color: #022a52;
+}
+
+
 .main_navigation {
-  padding: 20px;
+  padding: 30px; /* 160 * 0.75 */
 }
 
 .main-nav-button {
@@ -122,9 +164,9 @@ input[type="search"] {
   background-color: #022a52;
   color: #ffffff;
   border: none;
-  padding: 10px;
-  margin-bottom: 10px;
-  width: calc(100% - 40px);
+  padding: 15px; /* 160 * 0.375 */
+  margin-bottom: 15px; /* 160 * 0.375 */
+  width: calc(100% - 60px); /* 160 * 3.75 */
   text-align: left;
   cursor: pointer;
   font-size: 15px;
@@ -168,11 +210,15 @@ input[type="search"] {
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  max-width: 1960px; /* 가로 최대 너비를 1960px로 지정 */
+  margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 조정 */
+  
 }
+
 
 /* Scrollbar customization */
 ::-webkit-scrollbar {
-  width: 13px;
+  width: 13px; /* 스크롤바의 너비 */
 }
 
 ::-webkit-scrollbar-thumb {
@@ -183,3 +229,9 @@ input[type="search"] {
 ::-webkit-scrollbar-track {
   background-color: #f0f0f0;
 }
+
+/* 오른쪽에 딱 맞게 배치 */
+::-webkit-scrollbar {
+  margin-right: -13px; /* 스크롤바의 오른쪽 마진을 음수로 설정하여 오른쪽에 딱 맞게 배치 */
+}
+
