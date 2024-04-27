@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
 import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
@@ -153,7 +153,6 @@ const ProductDetail = () => {
       setSearchError('검색어를 입력하세요.');
       return;
     }
-
     try {
       const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
       if (response.ok) {

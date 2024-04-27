@@ -30,9 +30,9 @@ function Main() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
+  
 
     try {
       const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
@@ -150,7 +150,6 @@ function Main() {
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />
           <Route path="/SearchResults/:searchTerm" element={<SearchResultsPage />} />
-
         </Routes>
         {searchError && (
           <p className="search-error">{searchError}</p>
