@@ -83,7 +83,6 @@ input[type="search"] {
   font-size: 27px;
 }
 
-
 /* 사이드 바 */
 .sidebar {
   background-color: #022a52;
@@ -107,10 +106,19 @@ input[type="search"] {
 .sidebar-item {
   display: grid;
   border: 3px solid #ffffff;
-  top: 0;
-  height: 120px;
-  padding: 70px;
-  
+  border-radius: 10px;
+  height: 180px;
+  width: 180px;
+  color: white;
+  padding-left: 15px;
+  margin-block-start: 10px;
+  margin-bottom: 15px;
+}
+
+.user-info {
+  color: #ffffff;
+  font-size: 15px;
+  margin-top: 20px;
 }
 
 .main_navigation {
@@ -144,7 +152,6 @@ input[type="search"] {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
 
@@ -172,7 +179,7 @@ input[type="search"] {
 
 /* Scrollbar customization */
 ::-webkit-scrollbar {
-  width: 13px;
+  width: 15px;
 }
 
 ::-webkit-scrollbar-thumb {
