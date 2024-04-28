@@ -19,6 +19,7 @@ function Login() {
   // 페이지 이동 기능을 위한 navigate 함수 사용
   const navigate = useNavigate();
 
+
   // 입력 필드 값이 변경될 때마다 formData 객체 업데이트
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,57 +30,78 @@ function Login() {
   };
 
   // 로그인 폼 제출 시 수행되는 비동기 처리 함수
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    // 백엔드 서버로 로그인 요청 전송
-    const response = await fetch('http://localhost:4000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // 백엔드 서버로 로그인 요청 전송
+      const response = await fetch('http://localhost:4000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      sessionStorage.setItem('userId', data.id);
-      
-      // 여기서 관리자 여부 확인
-      if (data.isAdmin) {
-        navigate('/AdminPage'); // 관리자 페이지로 이동
+      if (response.ok) {
+        const data = await response.json();
+        sessionStorage.setItem('userId', data.id);
+
+        // 여기서 관리자 여부 확인
+        if (data.isAdmin) {
+          navigate('/AdminPage'); // 관리자 페이지로 이동
+        } else {
+          navigate('/Main/*'); // 일반 사용자 페이지로 이동
+        }
       } else {
-        navigate('/Main/*'); // 일반 사용자 페이지로 이동
-      }
-    } else {
-      console.error('로그인 실패:', response.status);
-      setLoginSuccess(false);
-      // 반려된 사용자일 경우
-      if (response.status === 403) {
-        // 반려 사유 가져오기
+        console.error('로그인 실패:', response.status);
+        setLoginSuccess(false);
+        // 반려된 사용자일 경우
         if (response.status === 403) {
           // 반려 사유 가져오기
-          const responseData = await response.json();
-          const rejectionReason = responseData.rejection_reason || '관리자에게 문의하세요.';
-          alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);  
+          if (response.status === 403) {
+            // 반려 사유 가져오기
+            const responseData = await response.json();
+            const rejectionReason = responseData.rejection_reason || '관리자에게 문의하세요.';
+            alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
+          }
         }
       }
+    } catch (error) {
+      console.error('로그인 오류:', error);
+      setLoginSuccess(false);
     }
-  } catch (error) {
-    console.error('로그인 오류:', error);
-    setLoginSuccess(false);
-  }
-};
+  };
 
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
-    window.location.href = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&state=?';
+    const state = generateRandomState();
+
+    // 세션 스토리지에 state 값 저장
+    sessionStorage.setItem('oauthState', state);
+
+    // 네이버 OAuth 인증 요청 URL 생성
+    const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=http://localhost:4000/oauth/naver/callback&state=${state}`;
+
+    // OAuth 인증 요청
+    window.location.href = naverOAuthUrl;
   };
+
+  // 랜덤 state 값 생성 함수
+  const generateRandomState = () => {
+    return Math.random().toString(36).substring(7);
+  };
+
 
   const handleKakaoLogin = () => {
-    window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=0bee6abe1a644025c9faedffda0ddd04&redirect_uri=https%3A%2F%2FSEUNGH00N.github.io%2FMain&response_type=code&ka=sdk%2F1.43.2%20os%2Fjavascript%20sdk_type%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttps%253A%252F%252FSEUNGH00N.github.io&origin=https%3A%2F%2FSEUNGH00N.github.io';
-  };
+    const clientId = '0bee6abe1a644025c9faedffda0ddd04';
+    const redirectUri = 'http://localhost:4000/oauth/kakao/callback';
+    const responseType = 'code';
 
+    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}`;
+
+    // 리다이렉트하여 카카오 OAuth 인증 요청을 시작
+    window.location.href = kakaoAuthUrl;
+  };
 
   // 회원가입 버튼 클릭 시 호출되는 함수
   const handleSignup = () => {
@@ -99,7 +121,7 @@ const handleSubmit = async (e) => {
   // 로그인 폼을 렌더링하는 JSX
   return (
     <div className="container-login">
-    <img src={logo} id='login-logo' alt="로고" />
+      <img src={logo} id='login-logo' alt="로고" />
       <div className="login-container">
         <h1 className="login-header">L O G I N</h1>
         <form onSubmit={handleSubmit}>
@@ -142,7 +164,7 @@ const handleSubmit = async (e) => {
           </div>
         </form>
       </div>
-      </div>
+    </div>
   );
 }
 

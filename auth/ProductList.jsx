@@ -37,8 +37,8 @@ function ProductList({ filteredProducts }) {
               <div className="product-details">
                 <h3 className="product-name">{product.name}</h3>
                 <p className="product-description">{product.description}</p>
-                <p className="product-price">Price: ${product.price}</p>
-                <p className="product-views">Views: {product.views}</p>
+                <p className="product-price">가격 : {product.price}원</p>
+                <p className="product-views">조회수 : {product.views}</p>
 
               </div>
             </div>

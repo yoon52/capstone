@@ -22,7 +22,7 @@ function Main() {
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
-    
+
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -42,7 +42,7 @@ function Main() {
         saveSearchTerm(searchTerm);
         setShowSearchResults(true);
         setSearchError('');
-        
+
       } else {
         console.error('검색 오류:', response.status);
       }
@@ -111,28 +111,28 @@ function Main() {
     setShowNavMenu(false);
   };
 
-  
+
 
   return (
     <div className="container-main">
-              <Header 
-          toggleNavMenu={toggleNavMenu} 
-          showNavMenu={showNavMenu} 
-          closeNavMenu={closeNavMenu} 
-          handleAddProduct={handleAddProduct} 
-          handleShowChatList={handleShowChatList} 
-          handleShowMyInfoPage={handleShowMyInfoPage} 
-          handleKeywordManagement={handleKeywordManagement} 
-          handleProductManagement={handleProductManagement} 
-          handleLogout={handleLogout} 
-          searchTerm={searchTerm} 
-          handleChangeSearchTerm={handleChangeSearchTerm} 
-          handleEnterKeyPress={handleEnterKeyPress} 
-          searchInputRef={searchInputRef} 
-          handleShowWishlist={handleShowWishlist}
-          setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
+      <Header
+        toggleNavMenu={toggleNavMenu}
+        showNavMenu={showNavMenu}
+        closeNavMenu={closeNavMenu}
+        handleAddProduct={handleAddProduct}
+        handleShowChatList={handleShowChatList}
+        handleShowMyInfoPage={handleShowMyInfoPage}
+        handleKeywordManagement={handleKeywordManagement}
+        handleProductManagement={handleProductManagement}
+        handleLogout={handleLogout}
+        searchTerm={searchTerm}
+        handleChangeSearchTerm={handleChangeSearchTerm}
+        handleEnterKeyPress={handleEnterKeyPress}
+        searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
+        setShowRecentSearches={setShowRecentSearches}
 
-        />
+      />
       <div className="main-container">
         {showSearchResults && (
           <SearchResults filteredProducts={filteredProducts} searchTerm={searchTerm} />
@@ -151,7 +151,7 @@ function Main() {
           <p className="search-error">{searchError}</p>
         )}
       </div>
-  
+
       {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
     </div>
   );
