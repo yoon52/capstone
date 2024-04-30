@@ -49,13 +49,13 @@ function ProductList({ filteredProducts }) {
         >
           <View style={styles.card}>
             <Image
-              source={{ uri: `http://192.168.219.165:4000/uploads/${product.image}` }} // Replace with your image URL
+              source={{ uri: `http://192.168.219.165:4000/uploads/${product.image}` }}
               style={styles.productImage}
             />
             <Text numberOfLines={2} style={styles.productName}>
               {product.name}
             </Text>
-            <Text style={styles.productPrice}>가격: {product.price}원</Text>
+            <Text style={styles.productPrice}>{product.price}원</Text>
             {loading && <ActivityIndicator size="small" color="#000" />}
           </View>
         </TouchableOpacity>
@@ -69,35 +69,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    padding: 10,
+    padding: 5,
   },
   productItem: {
-    width: itemWidth,
+    width: 110,
     marginBottom: 20,
   },
   card: {
     borderRadius: 10,
-    backgroundColor: '#fff',
-    elevation: 3,
+    backgroundColor: '#ffffff',
     padding: 5,
     alignItems: 'center',
   },
   productImage: {
-    width: '100%',
-    height: 100,
+    width: 110,
+    height: 110,
+    maxWidth:110,
+    maxHeight:110,
     resizeMode: 'contain',
-    borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   productName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 5,
   },
   productPrice: {
+    fontSize: 13,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000000',
   },
   emptyText: {
     textAlign: 'center',

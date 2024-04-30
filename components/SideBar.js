@@ -20,7 +20,7 @@ const Sidebar = ({ onClose }) => {
         <Text>내 정보</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.menuItem}>
-        <Text>설정</Text>
+        <Text>검색어 관리</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.menuItem} onPress={handleProductManagement}>
         <Text>상품 관리</Text>

@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddProducts from './Addproducts';
 import ChatList from './ChatList';
 import Sidebar from './SideBar';
@@ -195,7 +195,8 @@ const styles = StyleSheet.create({
   },
   productContainer: {
     flex: 1,
-    padding: 20,
+    paddingVertical: 10, // 위아래 패딩
+    paddingHorizontal: 20, // 양 옆 패딩
   },
 });
 
