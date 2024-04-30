@@ -12,17 +12,6 @@ const SearchInput = ({ searchTerm, handleChangeSearchTerm, handleSearchProduct }
     }
   };
 
-  const handleInputClick = () => {
-    setShowRecentSearches(true);
-    console.log('Input clicked'); // 검색 인풋창 클릭시 "Input clicked"를 콘솔에 출력
-  };
-
-  const handleEnterKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      setShowRecentSearches(true);
-      console.log('Enter key pressed'); // 엔터키를 누를 때 "Enter key pressed"를 콘솔에 출력
-    }
-  };
 
   return (
     <div className="search-container">

@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility'; // 눈 모양 아이콘 import
+
 import '../../styles/product.css';
 
 function ProductList({ filteredProducts }) {
@@ -20,8 +22,7 @@ function ProductList({ filteredProducts }) {
     <div className="product-list-container">
       <div className="product-list-wrapper">
         <div className="product-grid">
-
-          {filteredProducts.map(product => (
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
               className="product-item"
@@ -35,11 +36,14 @@ function ProductList({ filteredProducts }) {
                 />
               </div>
               <div className="product-details">
-                <h3 className="product-name">{product.name}</h3>
-                <p className="product-description">{product.description}</p>
-                <p className="product-price">가격 : {product.price}원</p>
-                <p className="product-views">조회수 : {product.views}</p>
-
+                <p className="product-name">{product.name}</p>
+                <p className="product-price">
+                  <span style={{ fontSize: '20px', fontWeight: 550 }}>{product.price}</span> 원
+                </p>
+                <p className="product-views">
+                  <VisibilityIcon sx={{ fontSize: 15, marginRight: 0.5, marginBottom: -0.3 }} />
+                  {product.views}
+                </p>
               </div>
             </div>
           ))}

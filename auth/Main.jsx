@@ -138,7 +138,6 @@ function Main() {
           <SearchResults filteredProducts={filteredProducts} searchTerm={searchTerm} />
         )}
         <RecommendList />
-        <h2>조회순 상품</h2>
         <ViewsList />
         <LatestList />
         <Routes>
