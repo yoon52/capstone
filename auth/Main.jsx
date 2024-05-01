@@ -3,7 +3,7 @@ import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import RecommendList from './RecommendList';
 import ViewsList from './ViewsList';
 import LatestList from './LatestList';
-import SearchResults from './SearchResults';
+import SearchResultsPage from './SearchResultsPage';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import ChatListComponent from './ChatListComponent';
@@ -33,6 +33,7 @@ function Main() {
       console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
+
     try {
       const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
       if (response.ok) {
@@ -43,6 +44,9 @@ function Main() {
         setShowSearchResults(true);
         setSearchError('');
 
+        // Navigate to the search results page
+        navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
+
       } else {
         console.error('검색 오류:', response.status);
       }
@@ -50,6 +54,7 @@ function Main() {
       console.error('검색 오류:', error);
     }
   };
+
 
   const handleEnterKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -130,14 +135,14 @@ function Main() {
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
-        setShowRecentSearches={setShowRecentSearches}
+        setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
+        userInfo // 사용자 정보 추가
 
       />
       <div className="main-container">
-        {showSearchResults && (
-          <SearchResults filteredProducts={filteredProducts} searchTerm={searchTerm} />
-        )}
+
         <RecommendList />
+        <h2 className='product-con'>조회순 상품</h2>
         <ViewsList />
         <LatestList />
         <Routes>
@@ -145,6 +150,8 @@ function Main() {
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />
+          <Route path="/SearchResults/:searchTerm" element={<SearchResultsPage />} />
+
         </Routes>
         {searchError && (
           <p className="search-error">{searchError}</p>

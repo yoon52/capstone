@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../styles/SearchResults.css';
+
 
 const SearchResults = ({ filteredProducts }) => {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ const SearchResults = ({ filteredProducts }) => {
   };
 
   return (
+    
     <div className="search-results-container">
       {filteredProducts.map(product => (
         <div key={product.id} className="product-card" onClick={() => handleProductClick(product.id)}>
@@ -38,6 +41,7 @@ const SearchResults = ({ filteredProducts }) => {
         </div>
       ))}
     </div>
+    
   );
 };
 

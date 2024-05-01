@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import SearchResults from './SearchResults'; // Import your SearchResults component
+import Header from './Header'; // Header 컴포넌트 임포트
+import SearchResults from './SearchResults';
+import ViewsList from './ViewsList';
 
 const SearchResultsPage = () => {
   const { searchTerm } = useParams();
@@ -53,7 +55,8 @@ const SearchResultsPage = () => {
 
   return (
     <div>
-      <h2>Search Results for: {decodeURIComponent(searchTerm)}</h2>
+      <Header /> {/* Header 컴포넌트 추가 */}
+      <h2>검색 결과: {decodeURIComponent(searchTerm)}</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -62,6 +65,10 @@ const SearchResultsPage = () => {
           onProductClick={handleProductClick}
         />
       )}
+      <div className="related-products">
+          <h2>연관 상품</h2>
+          <ViewsList />
+        </div>
     </div>
   );
 };
