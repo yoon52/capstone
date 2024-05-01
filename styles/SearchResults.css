@@ -1,0 +1,17 @@
+.search-results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .product-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .product-description {
+    font-size: 14px;
+    color: #555;
+  }
+  

@@ -4,17 +4,21 @@
 .container-main {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  max-width: 1300px;
+  padding-top: 120px;
+  margin: 0 auto;
 }
 
 /* Header */
 .header-main {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
   background-color: #ffffff;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 1300px;
+  flex-grow: 1;
+  padding: 0px 10px 0px 10px;
+  margin: 0 auto;
 }
 
 .header-content {
@@ -27,8 +31,8 @@
   color: #103260;
   font-size: 25px;
   cursor: pointer;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .nav-menu-toggle:hover {
@@ -51,7 +55,8 @@ input[type="search"] {
   font-size: 16px;
   box-sizing: border-box;
   margin: auto;
-  margin-left: 70px;
+  margin-left: 0px;
+  margin-right: 50px;
 }
 
 .search-input::-webkit-search-cancel-button {
@@ -66,8 +71,7 @@ input[type="search"] {
 .header-buttons {
   display: flex;
   gap: 10px;
-  margin-left: 350px;
-  margin-right: 10px;
+  margin-right: 0px;
 }
 
 .header-button {
@@ -86,7 +90,7 @@ input[type="search"] {
 /* 사이드 바 */
 .sidebar {
   background-color: #022a52;
-  width: 250px;
+  width: 240px;
   height: 100%;
   position: fixed;
   border: none;
