@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
-import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
 import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
 import Modal from 'react-modal';
-
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from './ChatComponent';
-import '../../styles/product.css';
 import Header from './Header';
 import ViewsList from './ViewsList';
-
+import '../../styles/product.css';
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {
@@ -164,6 +162,9 @@ const ProductDetail = () => {
         saveSearchTerm(searchTerm);
         setShowSearchResults(true);
         setSearchError('');
+
+        // Navigate to ResultPage with encoded searchTerm
+        navigate(`/SearchResultsP/${encodeURIComponent(searchTerm)}`);
       } else {
         console.error('검색 오류:', response.status);
       }
@@ -199,6 +200,10 @@ const ProductDetail = () => {
   const handleChangeSearchTerm = (event) => {
     setSearchTerm(event.target.value);
     setSearchError('');
+  };
+
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
   };
 
   const handleKeywordManagement = () => {
@@ -284,17 +289,12 @@ const ProductDetail = () => {
   };
 
   const handleClick = (event) => {
-    if (anchorEl === event.currentTarget) {
-      setAnchorEl(null);
-    } else {
-      setAnchorEl(event.currentTarget);
-    }
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
-
 
   return (
     <div className="container-main">
@@ -348,13 +348,12 @@ const ProductDetail = () => {
               variant="contained"
               color={isFavorite ? 'secondary' : 'primary'}
               className="favorite-button"
-              style={{ marginLeft: '30px' }}
             >
               {isFavorite ? <Favorite /> : <FavoriteBorder />}
               {isFavorite ? '찜 해제' : '찜하기'}
             </Button>
 
-            <button onClick={handleChatButtonClick} className="chat-button">채팅하기</button>
+            <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
             <Menu
               anchorEl={anchorEl}

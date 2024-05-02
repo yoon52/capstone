@@ -58,16 +58,7 @@ const Header = ({
     setShowRecentSearches(false);
   };
 
-  const handleSearchSubmit = () => {
-    if (searchTerm.trim() !== '') {
-      // Call the onSearchSubmit handler with the searchTerm
-      onSearchSubmit(searchTerm);
-
-      // Navigate to SearchResultsPage with the encoded searchTerm
-      navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
-    }
-  };
-
+  
   return (
     <header className="header-main">
       <div className="header-content">

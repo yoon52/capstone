@@ -7,10 +7,10 @@ import SearchResultsPage from './SearchResultsPage';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import ChatListComponent from './ChatListComponent';
-import '../../styles/main.css';
-import '../../styles/product.css';
 import Header from './Header';
 import ShowWishlist from './ShowWishlist';
+import '../../styles/main.css';
+import '../../styles/product.css';
 
 function Main() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -45,7 +45,7 @@ function Main() {
         setSearchError('');
 
         // Navigate to the search results page
-        navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
+        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
 
       } else {
         console.error('검색 오류:', response.status);
@@ -53,6 +53,9 @@ function Main() {
     } catch (error) {
       console.error('검색 오류:', error);
     }
+    // 검색어가 유효할 때 콘솔에 검색어 출력
+    console.log("검색어:", searchTerm);
+
   };
 
 
@@ -137,6 +140,9 @@ function Main() {
         handleShowWishlist={handleShowWishlist}
         setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
         userInfo // 사용자 정보 추가
+        onSearchSubmit={handleSearchProduct} // 검색 제출 핸들러 추가
+        recentSearches={[]} // 최근 검색어 배열 전달
+
 
       />
       <div className="main-container">
