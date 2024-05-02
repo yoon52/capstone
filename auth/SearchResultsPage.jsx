@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Header from './Header'; // Header 컴포넌트 임포트
+import Header from './Header';
 import SearchResults from './SearchResults';
 import ViewsList from './ViewsList';
 
@@ -17,10 +17,9 @@ const SearchResultsPage = () => {
         if (response.ok) {
           const data = await response.json();
 
-          // Assuming 'image' is the property name in the fetched data containing the image filename
           const updatedProducts = data.map(product => ({
             ...product,
-            imageUrl: `http://localhost:4000/uploads/${product.image}` // Construct image URL
+            imageUrl: `http://localhost:4000/uploads/${product.image}`
           }));
 
           setFilteredProducts(updatedProducts);
@@ -35,18 +34,15 @@ const SearchResultsPage = () => {
       }
     };
 
-    // Invoke fetchSearchResults when the component mounts or when searchTerm changes
     fetchSearchResults();
   }, [searchTerm]);
 
   const handleProductClick = async (productId) => {
     try {
-      // Update views count for the clicked product
       await fetch(`http://localhost:4000/updateViews/${productId}`, {
         method: 'POST',
       });
 
-      // Navigate to the product detail page with the selected productId
       navigate(`/ProductDetail/${productId}`);
     } catch (error) {
       console.error('Error updating views or navigating to product detail:', error);
@@ -55,7 +51,7 @@ const SearchResultsPage = () => {
 
   return (
     <div>
-      <Header /> {/* Header 컴포넌트 추가 */}
+      <Header />
       <h2>검색 결과: {decodeURIComponent(searchTerm)}</h2>
       {loading ? (
         <p>Loading...</p>

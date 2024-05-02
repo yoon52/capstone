@@ -142,7 +142,6 @@ function Main() {
       <div className="main-container">
 
         <RecommendList />
-        <h2 className='product-con'>조회순 상품</h2>
         <ViewsList />
         <LatestList />
         <Routes>

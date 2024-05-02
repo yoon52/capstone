@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
-import Modal from 'react-modal';
 import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
 import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
+import Modal from 'react-modal';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from './ChatComponent';
 import '../../styles/product.css';
 import Header from './Header';
@@ -228,6 +230,25 @@ const ProductDetail = () => {
     setShowNavMenu(false);
   };
 
+  const calculateTimeAgo = (date) => {
+    const today = new Date();
+    const registrationDate = new Date(date);
+    const diffTime = today.getTime() - registrationDate.getTime();
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+
+    if (diffHours < 1) {
+      return '방금 전';
+    } else if (diffHours < 24) {
+      return `${diffHours}시간 전`;
+    } else if (diffHours < 24 * 7) {
+      return `${Math.floor(diffHours / 24)}일 전`;
+    } else if (diffHours < 24 * 30) {
+      return `${Math.floor(diffHours / 24)}일 전`;
+    } else {
+      return '한달 ↑';
+    }
+  };
+
   const handleReport = () => {
     // 신고하기 핸들러
   };
@@ -263,12 +284,17 @@ const ProductDetail = () => {
   };
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (anchorEl === event.currentTarget) {
+      setAnchorEl(null);
+    } else {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
 
   return (
     <div className="container-main">
@@ -289,37 +315,46 @@ const ProductDetail = () => {
       />
 
       <div className="product-detail">
-        <Card sx={{ display: 'flex', width: '100%' }}>
-          <CardMedia
-            component="img"
-            className="custom-card-media"
+        <div style={{ display: 'flex', width: '100%' }}>
+          <img
+            className="product-d-image"
             src={`http://localhost:4000/uploads/${product.image}`}
             alt={product.name}
           />
-          <CardContent className="product-content">
-            <Typography gutterBottom variant="h5" component="div" className="product-d-name">
+          <div className="product-content">
+            <p className="product-d-name">
               {product.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-description">
-              상품정보: {product.description}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-price">
-              가격: {product.price}원
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-date">
-              등록일: {new Date(product.createdAt).toLocaleDateString()}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-views">
-              조회수: {product.views}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-availability">
-              판매상태: {availability}
-            </Typography>
-            <Button onClick={handleToggleFavorite} variant="contained" color={isFavorite ? 'secondary' : 'primary'} className="favorite-button">
+            </p>
+            <p className="product-d-price">
+              <span style={{ fontSize: '40px', fontWeight: 450 }}>{product.price}</span>원
+            </p>
+            <div className="product-info"
+              style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+              <p className="product-d-views">
+                <VisibilityIcon sx={{ fontSize: 20, marginRight: 0.5, marginBottom: -0.3 }} />
+                {product.views}
+              </p>
+              <span>|</span>
+              <p className="product-d-date">
+                {calculateTimeAgo(product.createdAt)}
+              </p>
+              <span>|</span>
+              <p className="product-d-availability">
+                {availability}
+              </p>
+            </div>
+            <Button
+              onClick={handleToggleFavorite}
+              variant="contained"
+              color={isFavorite ? 'secondary' : 'primary'}
+              className="favorite-button"
+              style={{ marginLeft: '30px' }}
+            >
               {isFavorite ? <Favorite /> : <FavoriteBorder />}
               {isFavorite ? '찜 해제' : '찜하기'}
             </Button>
-            <Button onClick={handleChatButtonClick} variant="contained" className="chat-button">채팅하기</Button>
+
+            <button onClick={handleChatButtonClick} className="chat-button">채팅하기</button>
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
             <Menu
               anchorEl={anchorEl}
@@ -329,25 +364,31 @@ const ProductDetail = () => {
               <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
+          </div>
+        </div>
+        <div className="product-d-description-container">
+          <p className="product-d-description-header">상품정보</p>
+          <p className="product-d-description">
+            {product.description}
+          </p>
+        </div>
 
-          </CardContent>
-        </Card>
         <MuiModal
           open={isChatModalOpen}
           onClose={() => setIsChatModalOpen(false)}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-          BackdropProps={{ style: { backgroundColor: 'rgba(255, 255, 255, 0.5)' } }} // 모달 배경색 투명도 조정
+          BackdropProps={{ style: { backgroundColor: 'rgba(255, 255, 255, 0.5)' } }}
           sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)', // 모달 내부 배경색 조정
-            backdropFilter: 'blur(5px)', // 배경에 블러 효과 추가
-            border: 'none', // 테두리 제거
-            boxShadow: 24, // 그림자 추가
-            p: 4, // 내부 패딩 추가
-            borderRadius: 2, // 모달 테두리 둥글게 조정
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(5px)',
+            border: 'none',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
           }}
         >
           <div>
@@ -357,7 +398,6 @@ const ProductDetail = () => {
         </MuiModal>
 
         <div className="related-products">
-          <h2>연관 상품</h2>
           <ViewsList />
         </div>
       </div>

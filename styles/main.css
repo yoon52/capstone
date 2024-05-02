@@ -71,7 +71,7 @@ input[type="search"] {
 .header-buttons {
   display: flex;
   gap: 10px;
-  margin-right: 0px;
+  margin-right: 7px;
 }
 
 .header-button {

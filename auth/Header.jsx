@@ -14,12 +14,12 @@ const Header = ({
   handleKeywordManagement,
   handleProductManagement,
   handleLogout,
-  handleShowWishlist, // 찜목록 표시 핸들러 추가
+  handleShowWishlist,
   searchTerm,
   handleChangeSearchTerm,
   handleEnterKeyPress,
   searchInputRef,
-  onSearchSubmit, // 검색 제출 핸들러 추가
+  onSearchSubmit,
   recentSearches
 }) => {
   const [showRecentSearches, setShowRecentSearches] = useState(false);
@@ -119,9 +119,9 @@ const Header = ({
           <div className="sidebar-item">
             {userInfo && (
               <>
-                <h7 className="user-info">이름 : {userInfo.name}</h7>
-                <h7 className="user-info">학과 : {userInfo.department}</h7>
-                <h7 className="user-info">학년 : {userInfo.grade}</h7>
+                <p className="user-info">이름 : {userInfo.name}</p>
+                <p className="user-info">학과 : {userInfo.department}</p>
+                <p className="user-info">학년 : {userInfo.grade}</p>
               </>
             )}
           </div>
