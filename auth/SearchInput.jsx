@@ -12,7 +12,6 @@ const SearchInput = ({ searchTerm, handleChangeSearchTerm, handleSearchProduct }
     }
   };
 
-
   return (
     <div className="search-container">
       <div className="search-input-container">

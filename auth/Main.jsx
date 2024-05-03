@@ -3,7 +3,7 @@ import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import RecommendList from './RecommendList';
 import ViewsList from './ViewsList';
 import LatestList from './LatestList';
-import SearchResultsPage from './SearchResultsPage';
+import SearchResults from './SearchResults';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import ChatListComponent from './ChatListComponent';
@@ -57,7 +57,6 @@ function Main() {
     console.log("검색어:", searchTerm);
 
   };
-
 
   const handleEnterKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -119,8 +118,6 @@ function Main() {
     setShowNavMenu(false);
   };
 
-
-
   return (
     <div className="container-main">
       <Header
@@ -138,15 +135,12 @@ function Main() {
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
-        setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
-        userInfo // 사용자 정보 추가
-        onSearchSubmit={handleSearchProduct} // 검색 제출 핸들러 추가
-        recentSearches={[]} // 최근 검색어 배열 전달
-
-
+        setShowRecentSearches={setShowRecentSearches}
+        userInfo
+        onSearchSubmit={handleSearchProduct}
+        recentSearches={[]}
       />
       <div className="main-container">
-
         <RecommendList />
         <ViewsList />
         <LatestList />
@@ -155,7 +149,7 @@ function Main() {
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />
-          <Route path="/SearchResults/:searchTerm" element={<SearchResultsPage />} />
+          <Route path="/SearchResults/:searchTerm" element={<SearchResults />} />
 
         </Routes>
         {searchError && (

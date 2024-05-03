@@ -75,14 +75,14 @@
 /* 상품 정보 */
 .product-d-name {
   font-size: 35px;
-  margin-left: 70px;
+  margin-left: 80px;
   margin-top: 90px;
 }
 
 .product-d-price {
   font-size: 30px;
   font-weight: 450;
-  margin-left: 70px;
+  margin-left: 80px;
   margin-top: 50px;
 }
 
@@ -103,7 +103,8 @@
 .product-d-description-container {
   margin-top: 50px;
   margin-left: 50px;
-  margin-right: 60px;
+  margin-right: 50px;
+  padding: 10px;
   border-top: 1.5px solid black;
 }
 
@@ -119,16 +120,16 @@
 
 /* 찜하기 */
 .favorite-button {
-  margin-top: 50px !important;
-  margin-left: 50px !important;
+  margin-top: 70px !important;
+  margin-left: 90px !important;
   background-color: #103260 !important;
   color: #ffffff !important;
-  border: none !important;
+  border-radius: 5px !important;
   cursor: pointer !important;
   align-self: center !important;
   font-size: 16px !important;
   height: 70px !important;
-  width: 180px !important;
+  width: 260px !important;
   transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out !important;
 }
 
@@ -148,53 +149,34 @@
 
 /* 채팅하기 */
 .chat-button {
-  margin-top: 50px;
-  margin-left: 50px;
-  background-color: #103260;
-  color: #ffffff;
-  border: none;
-  cursor: pointer;
-  align-self: center;
-  font-size: 16px;
-  height: 70px;
-  width: 180px;
-  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  margin-top: 70px !important;
+  margin-left: 50px !important;
+  background-color: #103260 !important;
+  color: #ffffff !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  align-self: center !important;
+  font-size: 16px !important;
+  height: 70px !important;
+  width: 260px !important;
+  transition: box-shadow 100ms ease-in-out, color 100ms ease-in-out !important;
 }
 
 .chat-button:hover {
-  outline: 0;
-  box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
+  outline: 0 !important;
+  box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260 !important;
 }
 
 /* 더보기 */
 .more-button {
-  margin-top: 50px;
-  margin-left: 50px;
-  background-color: #000000;
-  color: #ffffff;
-  border: none;
-  cursor: pointer;
-  align-self: center;
-  font-size: 16px;
-  height: 70px;
-  width: 180px;
-  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+  margin-top: 70px !important;
+  margin-left: 30px !important;
+  color: #000000 !important;
+  cursor: pointer !important;
+  align-self: center !important;
+  font-size: 16px !important;
 }
 
-.more-button:hover {
-  outline: 0;
-  box-shadow: 0 0 40px 40px #000000 inset, 0 0 5px 1px #000000;
-}
-
-.report {
-  margin-left: 605px;
-  cursor: pointer;
-}
- 
-.delete {
-  margin-left: 605px;
-  cursor: pointer;
-}
 
 /*--------------------------------------------------------------------------------*/
 
@@ -221,10 +203,6 @@
   margin-left: 175px;
   margin-top: -100px;
   margin-bottom: 70px;
-}
-
-.product-item {
-  position: relative;
 }
 
 /* 상품 시간 */
@@ -291,6 +269,7 @@
 }
 
 .product-item {
+  position: relative;
   flex: 0 0 auto;
   margin-right: 25.5px;
   /* 상품 리스트들 사이 간격 */
@@ -380,4 +359,13 @@
   color: #ffffff;
   outline: 0;
   box-shadow: 0 0 40px 40px #103260 inset;
+}
+
+.container-search {
+  display: flex;
+  flex-direction: column;
+  max-width: 1300px;
+  padding-top: 120px;
+  margin: 0 auto;
+  margin-left: 196px;
 }

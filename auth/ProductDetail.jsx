@@ -8,6 +8,7 @@ import ChatComponent from './ChatComponent';
 import Header from './Header';
 import ViewsList from './ViewsList';
 import '../../styles/product.css';
+
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {

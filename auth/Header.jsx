@@ -23,13 +23,11 @@ const Header = ({
   recentSearches
 }) => {
   const [showRecentSearches, setShowRecentSearches] = useState(false);
-  const [userInfo, setUserInfo] = useState(null); // 사용자 정보 상태 추가
-  const navigate = useNavigate(); // Get navigate function from react-router-dom
-
+  const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // 서버에 해당 사용자 정보 요청
         const response = await fetch('http://localhost:4000/getUserInfo', {
           method: 'GET',
           headers: {
@@ -48,17 +46,17 @@ const Header = ({
     };
 
     fetchUserInfo();
-  }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 설정
+  }, []);
 
   const handleSearchInputFocus = () => {
-    console.log('Input clicked'); // 검색 인풋창 클릭시 "Input clicked"를 콘솔에 출력
+    console.log('Input clicked');
   };
 
   const handleSearchInputBlur = () => {
     setShowRecentSearches(false);
   };
 
-  
+
   return (
     <header className="header-main">
       <div className="header-content">
@@ -66,28 +64,24 @@ const Header = ({
         <a href="/Main">
           <img src={logo} id="logo" alt="로고" />
         </a>
-        <div className="search-container">
-          <input
-            ref={searchInputRef}
-            type="search"
-            placeholder="검색어를 입력하세요"
-            value={searchTerm}
-            onChange={handleChangeSearchTerm}
-            onKeyDown={handleEnterKeyPress}
-            onFocus={handleSearchInputFocus}
-            onBlur={handleSearchInputBlur}
-            className="search-input"
-          />
-          {showRecentSearches && (
-            <div className="recent-searches-container">
-              <ul>
-                {recentSearches.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+        <input
+          ref={searchInputRef}
+          type="search"
+          placeholder="검색어를 입력하세요"
+          value={searchTerm}
+          onChange={handleChangeSearchTerm}
+          onKeyDown={handleEnterKeyPress}
+          onFocus={handleSearchInputFocus}
+          onBlur={handleSearchInputBlur}
+          className="search-input"
+        />
+        {showRecentSearches && (
+          <ul>
+            {recentSearches.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        )}
         <div className="header-buttons">
           <button className="header-button" onClick={handleAddProduct}>
             <FaPlus />

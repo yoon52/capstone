@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
 import '../../styles/admin.css';
 
 function AdminPage() {
@@ -14,8 +13,6 @@ function AdminPage() {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
-  
-
 
   useEffect(() => {
     fetchUsers();
@@ -143,8 +140,6 @@ function AdminPage() {
     }
   };
 
-
-
   const deleteUser = async (userId) => {
     try {
       const response = await fetch(`http://localhost:4000/deletefromadmin/${userId}`, {
@@ -159,8 +154,6 @@ function AdminPage() {
       console.error('사용자 삭제 중 오류 발생:', error);
     }
   };
-
-
 
   return (
     <div className="admin-container">
@@ -183,7 +176,7 @@ function AdminPage() {
           </tr>
         </thead>
         <tbody>
-        {(showApprovedUsers ? approvedUsers : users).map((user) => (
+          {(showApprovedUsers ? approvedUsers : users).map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
@@ -195,13 +188,13 @@ function AdminPage() {
                 <button onClick={() => handleAdminModalOpen(user)}>보기</button>
               </td>
               <td>
-              <div className="more-button-container">
+                <div className="more-button-container">
                   <button className="more-button" onClick={() => handleToggleOptions(user.id)}>
                     <MoreHorizIcon />
                   </button>
                   {showOptionsForUser === user.id && (
                     <div className="options-container">
-                      
+
                       <button onClick={() => handleDeleteUser(user.id)}>사용자 정보 삭제</button>
                     </div>
                   )}
