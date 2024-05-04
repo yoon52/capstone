@@ -5,10 +5,14 @@ const SearchInput = ({ searchTerm, handleChangeSearchTerm, handleSearchProduct }
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
 
+
+  
   const handleSearchButtonClick = () => {
     if (searchTerm.trim() !== '') {
       setRecentSearches(prevSearches => [...prevSearches, searchTerm]);
       handleSearchProduct();
+      setSearchError('검색어를 입력하세요.');
+
     }
   };
 

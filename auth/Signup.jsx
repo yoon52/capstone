@@ -63,7 +63,7 @@ function Signup() {
     formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName); // 이미지 추가 및 파일 이름 설정
 
     try {
-      const response = await fetch('http://localhost:4000/signup', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/signup', {
         method: 'POST',
         body: formDataWithImage // FormData 전송
       });
@@ -94,7 +94,7 @@ function Signup() {
 
   const handleCheckAvailability = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/checkUser?id=${formData.id}`);
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/checkUser?id=${formData.id}`);
       if (response.ok) {
         const data = await response.json();
         setIdAvailability(data.available);

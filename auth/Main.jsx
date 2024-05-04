@@ -3,14 +3,14 @@ import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import RecommendList from './RecommendList';
 import ViewsList from './ViewsList';
 import LatestList from './LatestList';
-import SearchResultsPage from './SearchResultsPage';
+import SearchResults from './SearchResults';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
 import ChatListComponent from './ChatListComponent';
-import '../../styles/main.css';
-import '../../styles/product.css';
 import Header from './Header';
 import ShowWishlist from './ShowWishlist';
+import '../../styles/main.css';
+import '../../styles/product.css';
 
 function Main() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -30,12 +30,12 @@ function Main() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
+      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
-  
 
     try {
-      const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -45,7 +45,7 @@ function Main() {
         setSearchError('');
 
         // Navigate to the search results page
-        navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
+        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
 
       } else {
         console.error('검색 오류:', response.status);
@@ -53,8 +53,10 @@ function Main() {
     } catch (error) {
       console.error('검색 오류:', error);
     }
-  };
+    // 검색어가 유효할 때 콘솔에 검색어 출력
+    console.log("검색어:", searchTerm);
 
+  };
 
   const handleEnterKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -65,7 +67,7 @@ function Main() {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('http://localhost:4000/searchHistory', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -116,8 +118,6 @@ function Main() {
     setShowNavMenu(false);
   };
 
-
-
   return (
     <div className="container-main">
       <Header
@@ -135,13 +135,13 @@ function Main() {
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
-        setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
-
+        setShowRecentSearches={setShowRecentSearches}
+        userInfo
+        onSearchSubmit={handleSearchProduct}
+        recentSearches={[]}
       />
       <div className="main-container">
-
         <RecommendList />
-        <h2>조회순 상품</h2>
         <ViewsList />
         <LatestList />
         <Routes>
@@ -149,7 +149,8 @@ function Main() {
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />
-          <Route path="/SearchResults/:searchTerm" element={<SearchResultsPage />} />
+          <Route path="/SearchResults/:searchTerm" element={<SearchResults />} />
+
         </Routes>
         {searchError && (
           <p className="search-error">{searchError}</p>

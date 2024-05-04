@@ -14,7 +14,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    socket.current = io('http://localhost:4001/', {
+    socket.current = io('https://ec2caps.liroocapstone.shop:4001/', {
       query: { productId, receiver }
     });
 
@@ -56,7 +56,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:4001/messages/${productId}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }
@@ -83,7 +83,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
 
   return (
     <div className="chat-page">
-      <h2>채팅방 번호: {chatRoomId}</h2>
+      <h2>채팅방 번호 : {chatRoomId}</h2>
       <div ref={messageContainerRef} className="chat-messages">
         {messages.map((message, index) => (
           <div
@@ -100,7 +100,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="메시지를 입력하세요..."
+          placeholder="메시지를 입력하세요."
         />
         <button type="submit">전송</button>
       </form>

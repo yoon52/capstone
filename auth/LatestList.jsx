@@ -7,7 +7,7 @@ function LatestList() {
   useEffect(() => {
     const fetchLatestProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/products/latest');
+        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/products/latest');
         if (response.ok) {
           const data = await response.json();
           setFilteredProducts(data);
@@ -23,7 +23,7 @@ function LatestList() {
   }, []);
 
   return (
-    <div>
+    <div className='h2-font'>
       <h2>최신순 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>

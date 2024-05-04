@@ -7,7 +7,7 @@ function ViewsList() {
   useEffect(() => {
     const fetchViewsProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/products/views');
+        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/products/views');
         if (response.ok) {
           const data = await response.json();
           setFilteredProducts(data);
@@ -23,7 +23,7 @@ function ViewsList() {
   }, []);
 
   return (
-    <div>
+    <div className='h2-font'>
       <ProductList filteredProducts={filteredProducts} />
     </div>
   );

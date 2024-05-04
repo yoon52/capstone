@@ -26,7 +26,7 @@ const ChatListComponent = () => {
 
   const fetchChatRooms = async () => {
     try {
-      const response = await fetch('http://localhost:4001/myChatRooms', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4001/myChatRooms', {
         headers: {
           'user_id': userId,
           'user_type': userType
@@ -63,7 +63,7 @@ const ChatListComponent = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -88,7 +88,7 @@ const ChatListComponent = () => {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('http://localhost:4000/searchHistory', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -101,9 +101,6 @@ const ChatListComponent = () => {
     } catch (error) {
       console.error('검색어 저장 오류:', error);
     }
-  };
-  const handleShowWishlist = () => {
-    navigate('/ShowWishlist');
   };
 
   const handleChangeSearchTerm = (event) => {
@@ -156,8 +153,6 @@ const ChatListComponent = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
-        handleShowWishlist={handleShowWishlist}
-
       />
       <div className="chatsidebar-container">
         <div className="chatsidebar">
@@ -189,4 +184,4 @@ const ChatListComponent = () => {
   );
 };
 
-export default ChatListComponent; 
+export default ChatListComponent;

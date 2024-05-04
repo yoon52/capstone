@@ -11,7 +11,7 @@ function ProductManagement() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage`, {
         headers: {
           'user_id': sessionStorage.getItem('userId')
         }
@@ -33,7 +33,7 @@ function ProductManagement() {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/${productId}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'user_id': sessionStorage.getItem('userId')
@@ -56,7 +56,7 @@ function ProductManagement() {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/${editingProduct.id}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ function ProductManagement() {
 
   const handleSellProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

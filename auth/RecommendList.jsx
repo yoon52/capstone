@@ -7,7 +7,7 @@ function RecommendList() {
   useEffect(() => {
     const fetchRecommendProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/products/recommendations', {
+        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/products/recommendations', {
           headers: {
             'user_id': sessionStorage.getItem('userId')
           }
@@ -27,7 +27,7 @@ function RecommendList() {
   }, []);
 
   return (
-    <div>
+    <div className='h2-font'>
       <h2>추천 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>

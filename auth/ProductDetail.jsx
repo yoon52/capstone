@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Modal from 'react-modal';
-import { Card, CardContent, CardMedia, Typography, Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
+import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
+import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
 import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
+import Modal from 'react-modal';
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from './ChatComponent';
 import '../../styles/product.css';
 import Header from './Header';
@@ -32,13 +34,13 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/products/detail/${productId}`);
+        const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products/detail/${productId}`);
         if (response.ok) {
           const data = await response.json();
           setProduct(data);
 
           // 서버에서 찜 상태 확인
-          const favoriteResponse = await fetch(`http://localhost:4000/products/checkFavorite/${productId}?userId=${userId}`, {
+          const favoriteResponse = await fetch(`https://ec2caps.liroocapstone.shop:4000/products/checkFavorite/${productId}?userId=${userId}`, {
             headers: {
               Authorization: `Bearer ${userId}` // 사용자 토큰을 헤더에 포함하여 인증
             }
@@ -68,7 +70,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       try {
-        const response = await fetch('http://localhost:4000/products/views');
+        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/products/views');
         if (response.ok) {
           const data = await response.json();
           setRelatedProducts(data);
@@ -85,7 +87,7 @@ const ProductDetail = () => {
 
   const handleChatButtonClick = async () => {
     try {
-      const response = await fetch(`http://localhost:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
       if (response.ok) {
         const existingChatRoom = await response.json();
         if (existingChatRoom) {
@@ -94,7 +96,7 @@ const ProductDetail = () => {
         }
       }
 
-      const createResponse = await fetch('http://localhost:4001/api/chat-rooms', {
+      const createResponse = await fetch('https://ec2caps.liroocapstone.shop:4001/api/chat-rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -118,7 +120,7 @@ const ProductDetail = () => {
 
   const handleToggleFavorite = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/products/toggleFavorite/${productId}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products/toggleFavorite/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -154,7 +156,7 @@ const ProductDetail = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -164,7 +166,7 @@ const ProductDetail = () => {
         setSearchError('');
 
         // Navigate to ResultPage with encoded searchTerm
-        navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
+        navigate(`/SearchResultsP/${encodeURIComponent(searchTerm)}`);
       } else {
         console.error('검색 오류:', response.status);
       }
@@ -182,7 +184,7 @@ const ProductDetail = () => {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('http://localhost:4000/searchHistory', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -200,10 +202,6 @@ const ProductDetail = () => {
   const handleChangeSearchTerm = (event) => {
     setSearchTerm(event.target.value);
     setSearchError('');
-  };
-
-  const handleShowWishlist = () => {
-    navigate('/ShowWishlist');
   };
 
   const handleKeywordManagement = () => {
@@ -235,6 +233,20 @@ const ProductDetail = () => {
     setShowNavMenu(false);
   };
 
+  const calculateTimeAgo = (date) => {
+    const today = new Date();
+    const registrationDate = new Date(date);
+    const diffTime = today.getTime() - registrationDate.getTime();
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+
+    if (diffHours < 24) {
+      return `${diffHours}시간 전`;
+    } else {
+      const diffDays = Math.ceil(diffHours / 24) - 1;
+      return `${diffDays}일 전`;
+    }
+  };
+
   const handleReport = () => {
     // 신고하기 핸들러
   };
@@ -246,7 +258,7 @@ const ProductDetail = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/${productId}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -270,12 +282,17 @@ const ProductDetail = () => {
   };
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (anchorEl === event.currentTarget) {
+      setAnchorEl(null);
+    } else {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
 
   return (
     <div className="container-main">
@@ -293,41 +310,48 @@ const ProductDetail = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
-        handleShowWishlist={handleShowWishlist}
       />
 
       <div className="product-detail">
-        <Card sx={{ display: 'flex', width: '100%' }}>
-          <CardMedia
-            component="img"
-            className="custom-card-media"
-            src={`http://localhost:4000/uploads/${product.image}`}
+        <div style={{ display: 'flex', width: '100%' }}>
+          <img
+            className="product-d-image"
+            src={`https://ec2caps.liroocapstone.shop:4000/uploads/${product.image}`}
             alt={product.name}
           />
-          <CardContent className="product-content">
-            <Typography gutterBottom variant="h5" component="div" className="product-d-name">
+          <div className="product-content">
+            <p className="product-d-name">
               {product.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-description">
-              상품정보: {product.description}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-price">
-              가격: {product.price}원
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-date">
-              등록일: {new Date(product.createdAt).toLocaleDateString()}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-views">
-              조회수: {product.views}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" className="product-d-availability">
-              판매상태: {availability}
-            </Typography>
-            <Button onClick={handleToggleFavorite} variant="contained" color={isFavorite ? 'secondary' : 'primary'} className="favorite-button">
+            </p>
+            <p className="product-d-price">
+              <span style={{ fontSize: '40px', fontWeight: 450 }}>{product.price}</span>원
+            </p>
+            <div className="product-info"
+              style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+              <p className="product-d-views">
+                <VisibilityIcon sx={{ fontSize: 20, marginRight: 0.5, marginBottom: -0.3 }} />
+                {product.views}
+              </p>
+              <span>|</span>
+              <p className="product-d-date">
+                {calculateTimeAgo(product.createdAt)}
+              </p>
+              <span>|</span>
+              <p className="product-d-availability">
+                {availability}
+              </p>
+            </div>
+            <Button
+              onClick={handleToggleFavorite}
+              variant="contained"
+              color={isFavorite ? 'secondary' : 'primary'}
+              className="favorite-button"
+            >
               {isFavorite ? <Favorite /> : <FavoriteBorder />}
               {isFavorite ? '찜 해제' : '찜하기'}
             </Button>
-            <Button onClick={handleChatButtonClick} variant="contained" className="chat-button">채팅하기</Button>
+
+            <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
             <Menu
               anchorEl={anchorEl}
@@ -337,25 +361,31 @@ const ProductDetail = () => {
               <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
+          </div>
+        </div>
+        <div className="product-d-description-container">
+          <p className="product-d-description-header">상품정보</p>
+          <p className="product-d-description">
+            {product.description}
+          </p>
+        </div>
 
-          </CardContent>
-        </Card>
         <MuiModal
           open={isChatModalOpen}
           onClose={() => setIsChatModalOpen(false)}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-          BackdropProps={{ style: { backgroundColor: 'rgba(255, 255, 255, 0.5)' } }} // 모달 배경색 투명도 조정
+          BackdropProps={{ style: { backgroundColor: 'rgba(255, 255, 255, 0.5)' } }}
           sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)', // 모달 내부 배경색 조정
-            backdropFilter: 'blur(5px)', // 배경에 블러 효과 추가
-            border: 'none', // 테두리 제거
-            boxShadow: 24, // 그림자 추가
-            p: 4, // 내부 패딩 추가
-            borderRadius: 2, // 모달 테두리 둥글게 조정
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(5px)',
+            border: 'none',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
           }}
         >
           <div>
@@ -365,7 +395,6 @@ const ProductDetail = () => {
         </MuiModal>
 
         <div className="related-products">
-          <h2>연관 상품</h2>
           <ViewsList />
         </div>
       </div>

@@ -15,7 +15,7 @@ const ChatComponent = () => {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    socket.current = io('http://localhost:4001/', {
+    socket.current = io('https://ec2caps.liroocapstone.shop:4001/', {
       query: { productId, receiver }
     });
 
@@ -60,7 +60,7 @@ const ChatComponent = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:4001/messages/${productId}`, {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }
@@ -84,7 +84,7 @@ const ChatComponent = () => {
   };
 
   const handlePayment = () => {
-    navigate('/PayMent');
+    navigate(`/sandbox?productId=${productId}&userId=${userId}`);
     console.log('결제 처리 로직을 추가하세요.');
   };
 

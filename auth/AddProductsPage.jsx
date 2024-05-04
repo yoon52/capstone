@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
@@ -11,6 +12,9 @@ function AddProducts() {
   const [image, setImage] = useState(null); // 이미지 파일 상태 추가
   const navigate = useNavigate();
 
+
+  
+  
   const handleAddProduct = async (event) => {
     event.preventDefault(); // 폼 제출의 기본 동작 방지
 
@@ -22,13 +26,15 @@ function AddProducts() {
       formData.append('price', price);
       formData.append('image', image); // 이미지 파일 추가
 
-      const response = await fetch('http://localhost:4000/addProduct', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/addProduct', {
         method: 'POST',
         headers: {
           'user_id': userId,
         },
         body: formData,
       });
+
+      
 
       if (response.ok) {
         // 상품 추가 성공 시 폼 초기화
@@ -64,7 +70,12 @@ function AddProducts() {
             <input type="text" placeholder="설명" value={description} onChange={(e) => setDescription(e.target.value)} required />
           </div>
           <div className="form-group">
-            <input type="text" placeholder="가격" value={price} onChange={(e) => setPrice(e.target.value)} required />
+            <input 
+            type="text" 
+            placeholder="가격" 
+            value={price} 
+            onChange={(e) => setPrice(e.target.value)} 
+            required />
           </div>
           <div className="form-group">
             <input type="file" onChange={(e) => setImage(e.target.files[0])} required /> {/* 이미지 파일 업로드 입력 필드 */}

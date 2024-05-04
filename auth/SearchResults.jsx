@@ -8,7 +8,7 @@ const SearchResults = ({ filteredProducts }) => {
   const handleProductClick = async (productId) => {
     try {
       // Update views count for the clicked product
-      await fetch(`http://localhost:4000/updateViews/${productId}`, {
+      await fetch(`https://ec2caps.liroocapstone.shop:4000/updateViews/${productId}`, {
         method: 'POST',
       });
 
@@ -26,7 +26,7 @@ const SearchResults = ({ filteredProducts }) => {
           <div className="product-image-container">
             {product.image && (
               <img
-                src={`http://localhost:4000/uploads/${extractImageFilename(product.image)}`}
+                src={`https://ec2caps.liroocapstone.shop:4000/uploads/${extractImageFilename(product.image)}`}
                 alt={product.name}
                 className="product-image"
               />

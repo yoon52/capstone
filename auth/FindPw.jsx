@@ -13,7 +13,7 @@ function FindPw() {
 
   const handleResetPassword = async () => {
     try {
-      const response = await fetch('http://localhost:4000/reset-password', {
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
