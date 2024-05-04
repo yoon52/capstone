@@ -1,3 +1,10 @@
+/* 조회수 상품 */
+.related-products {
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
 /* addproducts.css */
 
 .add-products-header {
@@ -47,52 +54,82 @@
 
 /* 디테일 컨테이너 */
 .product-detail {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  width: 1920px; /* 가로 최대 너비를 1960px로 지정 */ 
-  margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 조정 */
+  max-width: 1300px;
+  width: 1300px;
+  margin: 0 auto;
+  margin-top: -10px;
 }
 
 /* 상품 이미지 */
-.custom-card-media {
-  padding: 0px;
-  margin: 20px 20px 20px 20px;
-  max-width: 500px;
-  max-height: 500px;
-  width: 500px;
-  height: 500px;
-  border-radius: 15px;
-  object-fit: contain;
-}
-
-/* 상품 이름 */
-.product-d-name {
-  padding: 50px 10px 10px 100px;
-  font-size: 40px !important;
+.product-d-image {
+  max-width: 450px;
+  max-height: 450px;
+  width: 450px;
+  height: 450px;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-top: 70px;
+  margin-left: 50px;
 }
 
 /* 상품 정보 */
-.product-d-description,
-.product-d-price,
-.product-d-date,
-.product-d-views,
-.product-d-availability {
-  padding: 10px 10px 10px 100px;
-  font-size: 22px !important;
+.product-d-name {
+  font-size: 35px;
+  margin-left: 80px;
+  margin-top: 90px;
+}
+
+.product-d-price {
+  font-size: 30px;
+  font-weight: 450;
+  margin-left: 80px;
+  margin-top: 50px;
+}
+
+.product-info {
+  font-size: 20px;
+  width: 670px;
+  margin-left: 70px;
+  margin-top: 50px;
+  border-top: 1.5px solid black;
+
+}
+
+.product-info p {
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.product-d-description-container {
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  padding: 10px;
+  border-top: 1.5px solid black;
+}
+
+.product-d-description-header {
+  font-size: 25px;
+}
+
+.product-d-description {
+  padding: 20px 0px 0px 0px;
+  font-size: 18px;
+  margin-top: -15px;
 }
 
 /* 찜하기 */
 .favorite-button {
-  margin-top: 50px !important;
-  margin-left: 100px !important;
+  margin-top: 70px !important;
+  margin-left: 90px !important;
   background-color: #103260 !important;
   color: #ffffff !important;
-  border: 2px solid #103260 !important;
   border-radius: 5px !important;
   cursor: pointer !important;
   align-self: center !important;
-  font-size: 13px !important;
+  font-size: 16px !important;
+  height: 70px !important;
+  width: 260px !important;
   transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out !important;
 }
 
@@ -101,18 +138,28 @@
   box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260 !important;
 }
 
+.favorite-button .MuiSvgIcon-root {
+  margin-right: 8px;
+}
+
+.favorite-button .MuiButton-label {
+  display: flex;
+  align-items: center;
+}
+
 /* 채팅하기 */
 .chat-button {
-  margin-top: 50px !important;
-  margin-left: 30px !important;
+  margin-top: 70px !important;
+  margin-left: 50px !important;
   background-color: #103260 !important;
   color: #ffffff !important;
-  border: 2px solid #103260 !important;
   border-radius: 5px !important;
   cursor: pointer !important;
   align-self: center !important;
-  font-size: 13px !important;
-  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out !important;
+  font-size: 16px !important;
+  height: 70px !important;
+  width: 260px !important;
+  transition: box-shadow 100ms ease-in-out, color 100ms ease-in-out !important;
 }
 
 .chat-button:hover {
@@ -122,10 +169,14 @@
 
 /* 더보기 */
 .more-button {
-  margin-top: 50px !important;
-  margin-left: 10px !important;
-  color: #103260 !important;
+  margin-top: 70px !important;
+  margin-left: 30px !important;
+  color: #000000 !important;
+  cursor: pointer !important;
+  align-self: center !important;
+  font-size: 16px !important;
 }
+
 
 /*--------------------------------------------------------------------------------*/
 
@@ -133,40 +184,39 @@
 
 /* 상품 이름 */
 .product-name {
-  font-size: 25px;
+  font-size: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 20px;
+  margin-left: 15px;
 }
 
-/* 상품 설명 */
-.product-description,
-.product-price,
-.product-date,
-.product-views,
-.product-availability {
-  margin-bottom: 10px;
-  margin-left: 20px;
+/* 상품 가격 */
+.product-price {
+  font-size: 15px;
+  margin-bottom: 20px;
+  margin-left: 15px;
 }
 
-.product-info-container {
-  grid-template-columns: repeat(12, 1fr); /* 12단 그리드 설정 */
-  grid-template-rows: auto; /* 행의 크기는 자동으로 조정 */
-  gap: 20px; /* 그리드 간격 설정 */
+/* 상품 조회수 */
+.product-views {
+  font-size: 15px;
+  margin-left: 175px;
+  margin-top: -100px;
+  margin-bottom: 70px;
 }
 
-.product-info {
-  grid-template-columns: repeat(12, 1fr); /* 12단 그리드 설정 */
-  grid-template-rows: auto; /* 행의 크기는 자동으로 조정 */
-  gap: 20px; /* 그리드 간격 설정 */
-}
-
-.product-info .MuiCardContent-root {
-  padding: 16px;
-}
-
-.product-info p {
-  margin-bottom: 10px;
+/* 상품 시간 */
+.product-time {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  padding: 5px;
+  width: 55px;
+  border-radius: 5px;
+  margin-top: -50px;
+  margin-left: -10px;
 }
 
 .ReactModal__Overlay {
@@ -202,12 +252,8 @@
 }
 
 .product-list-container {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  max-width: 1960px; /* 가로 최대 너비를 1960px로 지정 */
-  margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 조정 */
-  
+  overflow-x: auto;
+  /* 가로 스크롤을 가능하게 함 */
 }
 
 .product-list-wrapper {
@@ -223,9 +269,11 @@
 }
 
 .product-item {
+  position: relative;
   flex: 0 0 auto;
-  margin-right: 37px;
-  border: 1px solid #5080c5;
+  margin-right: 25.5px;
+  /* 상품 리스트들 사이 간격 */
+  border: 1px solid #9a9a9a50;
   border-radius: 5px;
   overflow: hidden;
   transition: filter 0.3s;
@@ -239,16 +287,14 @@
   margin-right: 0;
 }
 
-.product-image-container {
-  overflow: hidden;
-}
-
 /* 상품 이미지 */
 .product-image {
-  max-width: 300px;
-  max-height: 300px;
-  width: 300px;
-  height: 300px;
+  max-width: 230px;
+  max-height: 230px;
+  width: 230px;
+  height: 230px;
+  border: none;
+  border-radius: 5px;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -263,12 +309,14 @@
 }
 
 .product-management-container {
-  flex-grow: 1;
+  max-width: 700px;
+  max-height: 600px;
+  margin: 0 auto;
   padding: 20px;
+  border: 2px solid #162b9150;
+  border-radius: 5px;
   overflow-y: auto;
-  max-width: 1960px; /* 가로 최대 너비를 1960px로 지정 */
-  margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 조정 */
-  
+  margin-bottom: 20px;
 }
 
 .management-list {
@@ -313,4 +361,47 @@
   box-shadow: 0 0 40px 40px #103260 inset;
 }
 
- 
+.container-search {
+  display: flex;
+  flex-direction: column;
+  max-width: 1300px;
+  padding-top: 120px;
+  margin: 0 auto;
+  margin-left: 196px;
+}
+
+/* 모달 스타일 */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 모달 내부 스타일 */
+.modal-content {
+  /* 내부 요소에 스타일을 적용할 수 있습니다. */
+}
+
+/* 닫기 버튼 스타일 */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* 모달 배경 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* 모달보다 뒤에 오도록 */
+}
