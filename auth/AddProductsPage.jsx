@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
-import logo from '../../image/logo.png';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import Header from './Header';
 
 function AddProducts() {
   const userId = sessionStorage.getItem('userId');
@@ -10,11 +11,44 @@ function AddProducts() {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null); // 이미지 파일 상태 추가
+  const [imagePreview, setImagePreview] = useState(null); // State for image preview
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [savedSearchTerm, setSavedSearchTerm] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showNavMenu, setShowNavMenu] = useState(false);
+  const [searchError, setSearchError] = useState('');
+
+  const searchInputRef = useRef(null);
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
+
   const navigate = useNavigate();
 
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
 
-  
-  
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handlePriceChange = (event) => {
+    setPrice(event.target.value);
+  };
+
+  const handleImageChange = (event) => {
+    const selectedImage = event.target.files[0];
+    setImage(selectedImage);
+    // Preview image
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(selectedImage);
+  };
+
+
+
   const handleAddProduct = async (event) => {
     event.preventDefault(); // 폼 제출의 기본 동작 방지
 
@@ -34,7 +68,7 @@ function AddProducts() {
         body: formData,
       });
 
-      
+
 
       if (response.ok) {
         // 상품 추가 성공 시 폼 초기화
@@ -55,30 +89,155 @@ function AddProducts() {
     }
   };
 
+  const handleSearchProduct = async () => {
+    if (!searchTerm) {
+      setSearchError('검색어를 입력하세요.');
+      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFilteredProducts(data);
+        setSavedSearchTerm(searchTerm);
+        saveSearchTerm(searchTerm);
+        setShowSearchResults(true);
+        setSearchError('');
+
+        // Navigate to the search results page
+        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
+
+      } else {
+        console.error('검색 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('검색 오류:', error);
+    }
+    // 검색어가 유효할 때 콘솔에 검색어 출력
+    console.log("검색어:", searchTerm);
+
+  };
+
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchProduct();
+    }
+  };
+
+  const saveSearchTerm = async (searchTerm) => {
+    try {
+      const userId = sessionStorage.getItem('userId');
+      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ searchTerm, userId })
+      });
+      if (!response.ok) {
+        console.error('검색어 저장 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('검색어 저장 오류:', error);
+    }
+  };
+
+  const handleChangeSearchTerm = (event) => {
+    setSearchTerm(event.target.value);
+    setSearchError('');
+  };
+
+  const handleKeywordManagement = () => {
+    navigate('/SearchKeyword');
+  };
+
+  const handleProductManagement = () => {
+    navigate('/ProductManagement');
+  };
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
+  const handleShowMyInfoPage = () => {
+    navigate('/MyInfo');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('userId');
+    navigate('/login');
+  };
+
+  const handleShowChatList = () => {
+    navigate('/ChatListComponent');
+  };
+
+  const toggleNavMenu = () => {
+    setShowNavMenu(!showNavMenu);
+  };
+
+  const closeNavMenu = () => {
+    setShowNavMenu(false);
+  };
+
   return (
-    <div>
-      <a href="/Main">
-        <img src={logo} id='logo' alt="로고" />
-      </a>
-      <h1 className="add-products-header">상품 추가</h1>
-      <div className="add-products-container">
+    <div className="container-main">
+
+      <Header
+        toggleNavMenu={toggleNavMenu}
+        showNavMenu={showNavMenu}
+        closeNavMenu={closeNavMenu}
+        handleAddProduct={handleAddProduct}
+        handleShowChatList={handleShowChatList}
+        handleShowMyInfoPage={handleShowMyInfoPage}
+        handleKeywordManagement={handleKeywordManagement}
+        handleProductManagement={handleProductManagement}
+        handleLogout={handleLogout}
+        searchTerm={searchTerm}
+        handleChangeSearchTerm={handleChangeSearchTerm}
+        handleEnterKeyPress={handleEnterKeyPress}
+        searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
+        setShowRecentSearches={setShowRecentSearches}
+        userInfo
+        onSearchSubmit={handleSearchProduct}
+        recentSearches={[]}
+      />
+      <div className="main-container1">
+        <h2>상품등록 페이지</h2>
         <form onSubmit={handleAddProduct}>
+          <div className="image-upload">
+            <label htmlFor="imageInput">
+              {imagePreview ? (
+                <img src={imagePreview} alt="Product Preview" className="preview-image" />
+              ) : (
+                <div className="no-image-preview">
+                  <CameraAltIcon fontSize="large" />
+                  <span>이미지를 선택하세요</span>
+                </div>
+              )}
+            </label>
+            <input type="file" onChange={handleImageChange} id="imageInput" accept="image/*" style={{ display: 'none' }} />
+          </div>
+
+
+
           <div className="form-group">
-            <input type="text" placeholder="상품명" value={name} onChange={(e) => setName(e.target.value)} required />
+            <label htmlFor="name">상품명:</label>
+            <input type="text" placeholder="상품명" value={name} onChange={handleNameChange} required />
           </div>
           <div className="form-group">
-            <input type="text" placeholder="설명" value={description} onChange={(e) => setDescription(e.target.value)} required />
+            <label htmlFor="description">설명:</label>
+            <textarea
+              id="description"
+              placeholder="설명"
+              value={description}
+              onChange={handleDescriptionChange}
+            />
           </div>
           <div className="form-group">
-            <input 
-            type="text" 
-            placeholder="가격" 
-            value={price} 
-            onChange={(e) => setPrice(e.target.value)} 
-            required />
-          </div>
-          <div className="form-group">
-            <input type="file" onChange={(e) => setImage(e.target.files[0])} required /> {/* 이미지 파일 업로드 입력 필드 */}
+            <label htmlFor="price">가격:</label>
+            <input type="text" placeholder="가격" value={price} onChange={handlePriceChange} required />
           </div>
           <button type="submit" className="add-product-button">추가</button>
         </form>
@@ -86,5 +245,6 @@ function AddProducts() {
     </div>
   );
 }
+
 
 export default AddProducts;

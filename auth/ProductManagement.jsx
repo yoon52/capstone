@@ -7,6 +7,7 @@ function ProductManagement() {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
@@ -52,6 +53,7 @@ function ProductManagement() {
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
     setEditingProduct({ ...product });
+    setIsModalOpen(true); // 모달 열기
   };
 
   const handleSaveEdit = async () => {
@@ -68,6 +70,7 @@ function ProductManagement() {
         setProducts(products.map(product => (product.id === editingProduct.id ? editingProduct : product)));
         setSelectedProduct(null);
         setEditingProduct(null);
+        setIsModalOpen(false); // 모달 닫기
       } else {
         console.error('상품 수정 실패:', response.status);
       }
@@ -102,44 +105,69 @@ function ProductManagement() {
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <img src={logo} id='logo' alt="로고" />
       <h1 className="product-management-header">상품 관리</h1>
       <div className="product-management-container">
-        <ul className="management-list">
-          {products.map(product => (
-            <li key={product.id} className="management-item">
-              {selectedProduct === product ? (
-                <>
-                  <input
-                    type="text"
-                    value={editingProduct.name}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                  />
-                  <input
-                    type="text"
-                    value={editingProduct.description}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                  />
-                  <input
-                    type="text"
-                    value={editingProduct.price}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                  />
-                  <button className="product-save" onClick={handleSaveEdit}>확인</button>
-                  <button className="product-cancel" onClick={() => setSelectedProduct(null)}>취소</button>
-                  <button className="product-delete" onClick={() => handleDeleteProduct(product.id)}>삭제</button>
-                </>
-              ) : (
-                <>
-                  <span className="management-text" onClick={() => navigateToProductDetail(product.id)}>{product.name}</span>
-                  <button className="product-edit" onClick={() => handleEditProduct(product)}>수정</button>
-                  {product.status !== '판매완료' && <button className="product-sell" onClick={() => handleSellProduct(product.id)}>판매완료</button>}
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
+        <table className="product-management-table">
+          <thead>
+            <tr>
+              <th>상품명</th>
+              <th>설명</th>
+              <th>가격</th>
+              <th>상태</th>
+              <th>작업</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map(product => (
+              <tr key={product.id}>
+                <td onClick={() => navigateToProductDetail(product.id)}>{product.name}</td>
+                <td>{product.description}</td>
+                <td>{product.price}</td>
+                <td>{product.status === 'available' ? '판매중' : product.status}</td>
+
+                <td>
+                  <button onClick={() => handleEditProduct(product)}>수정</button>
+                  <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+                  {product.status !== '판매완료' && <button onClick={() => handleSellProduct(product.id)}>판매완료</button>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      {isModalOpen && (
+        <div className="manage-modal">
+          <div className="manage-modal-content">
+            <label htmlFor="name">상품명:</label>
+            <input
+              id="name"
+              type="text"
+              value={editingProduct.name}
+              onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+            />
+            <label htmlFor="description">설명:</label>
+            <input
+              id="description"
+              type="text"
+              value={editingProduct.description}
+              onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+            />
+            <label htmlFor="price">가격:</label>
+            <input
+              id="price"
+              type="text"
+              value={editingProduct.price}
+              onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+            />
+            <button onClick={handleSaveEdit}>수정하기</button>
+            <button onClick={() => setIsModalOpen(false)}>수정 취소</button>
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }

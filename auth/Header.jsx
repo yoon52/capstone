@@ -134,6 +134,8 @@ const Header = ({
                 <p className="user-info">이름 : {userInfo.name}</p>
                 <p className="user-info">학과 : {userInfo.department}</p>
                 <p className="user-info">학년 : {userInfo.grade}</p>
+                <p className="user-info">매너 학점 : {userInfo.rates}</p>
+                <p className="user-info">잔액 : {userInfo && userInfo.total_sales}</p>
               </>
             )}
           </div>
@@ -144,6 +146,7 @@ const Header = ({
           <button type="button" className="main-nav-button" onClick={handleLogout}><FaSignOutAlt /> 로그아웃</button>
         </nav>
       </div>
+      {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
     </header>
   );
 };

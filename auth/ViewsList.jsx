@@ -24,6 +24,7 @@ function ViewsList() {
 
   return (
     <div className='h2-font'>
+      <h2>가장 많이 본 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>
   );

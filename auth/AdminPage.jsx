@@ -14,7 +14,6 @@ function AdminPage() {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
-  
 
 
   useEffect(() => {
@@ -24,13 +23,25 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/users');
-      const userData = await response.json();
-      setUsers(userData);
+        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/users');
+        if (response.status === 204) {
+            console.log('승인대기중인 사용자 정보가 없습니다.');
+            // 사용자 정보가 없는 경우 빈 배열을 설정
+            setUsers([]);
+            return;
+        }
+        if (!response.ok) {
+            throw new Error('사용자 정보를 가져오지 못했습니다.');
+        }
+        const userData = await response.json();
+        setUsers(userData);
     } catch (error) {
-      console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+        console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+        // 사용자 정보를 가져오는 데 실패한 경우, 빈 배열로 사용자 목록을 설정
+        setUsers([]);
     }
-  };
+};
+
 
   const fetchApprovedUsers = async () => {
     try {
@@ -160,13 +171,12 @@ function AdminPage() {
     }
   };
 
-
-
   return (
     <div className="admin-container">
       <h1>회원 정보 관리</h1>
       <button className="sidebar-toggle-button" onClick={toggleSidebar}>
         <MenuIcon style={{ fontSize: 30 }} />
+
       </button>
 
       <table className="user-table">
@@ -183,7 +193,7 @@ function AdminPage() {
           </tr>
         </thead>
         <tbody>
-        {(showApprovedUsers ? approvedUsers : users).map((user) => (
+          {(showApprovedUsers ? approvedUsers : users).map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
@@ -195,13 +205,13 @@ function AdminPage() {
                 <button onClick={() => handleAdminModalOpen(user)}>보기</button>
               </td>
               <td>
-              <div className="more-button-container">
+                <div className="more-button-container">
                   <button className="more-button" onClick={() => handleToggleOptions(user.id)}>
                     <MoreHorizIcon />
                   </button>
                   {showOptionsForUser === user.id && (
                     <div className="options-container">
-                      
+
                       <button onClick={() => handleDeleteUser(user.id)}>사용자 정보 삭제</button>
                     </div>
                   )}
@@ -243,8 +253,11 @@ function AdminPage() {
           <button onClick={handleApprovedUsersClick}>승인 완료된 사용자 보기</button>
           {/* <button onClick={handlereportedUsersClick}>신고내역</button> */}
         </div>
+
       )}
+      
     </div>
+
   );
 }
 

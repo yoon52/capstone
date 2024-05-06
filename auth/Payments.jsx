@@ -144,7 +144,7 @@ const Payments = () => {
 
 
   return (
-    <>
+    <div className='container-main'>
       <Header
         toggleNavMenu={toggleNavMenu}
         showNavMenu={showNavMenu}
@@ -191,7 +191,7 @@ const Payments = () => {
           </Table>
         )}
       </Container>
-    </>
+    </div>
   );
 };
 

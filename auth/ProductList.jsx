@@ -11,16 +11,16 @@ function ProductList({ filteredProducts }) {
     const formatDate = (createdAt) => {
       const currentTime = new Date();
       const productTime = new Date(createdAt);
-      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60 * 60)); // milliseconds to hours
-
-      if (timeDifference < 1) {
+      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60)); // milliseconds to minutes
+    
+      if (timeDifference < 30) {
         return '방금 전';
-      } else if (timeDifference < 24) {
-        return `${timeDifference}시간 전`;
-      } else if (timeDifference < 24 * 7) {
-        return `${Math.floor(timeDifference / 24)}일 전`;
-      } else if (timeDifference < 24 * 30) {
-        return `${Math.floor(timeDifference / (24 * 7))}주 전`;
+      } else if (timeDifference < 60 * 24) {
+        return `${Math.floor(timeDifference / 60)}시간 전`;
+      } else if (timeDifference < 60 * 24 * 7) {
+        return `${Math.floor(timeDifference / (60 * 24))}일 전`;
+      } else if (timeDifference < 60 * 24 * 30) {
+        return `${Math.floor(timeDifference / (60 * 24 * 7))}주 전`;
       } else {
         return '한달 ↑';
       }

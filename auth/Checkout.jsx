@@ -116,7 +116,7 @@ export function CheckoutPage() {
         customerMobilePhone: '01012341234',
         amount: price, // 숫자 형태의 가격을 전달
         successUrl: `${window.location.origin}/sandbox/success`,
-        failUrl: `${window.location.origin}/fail`,
+        failUrl: `${window.location.origin}/sandbox/fail`,
         productId: productId, // 상품 ID 전달
 
       });

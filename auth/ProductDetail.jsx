@@ -237,13 +237,18 @@ const ProductDetail = () => {
     const today = new Date();
     const registrationDate = new Date(date);
     const diffTime = today.getTime() - registrationDate.getTime();
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
-
-    if (diffHours < 24) {
-      return `${diffHours}시간 전`;
+    const diffMinutes = Math.floor(diffTime / (1000 * 60)); // milliseconds to minutes
+  
+    if (diffMinutes < 30) {
+      return '방금 전';
+    } else if (diffMinutes < 60 * 24) {
+      return `${Math.floor(diffMinutes / 60)}시간 전`;
+    } else if (diffMinutes < 60 * 24 * 7) {
+      return `${Math.floor(diffMinutes / (60 * 24))}일 전`;
+    } else if (diffMinutes < 60 * 24 * 30) {
+      return `${Math.floor(diffMinutes / (60 * 24 * 7))}주 전`;
     } else {
-      const diffDays = Math.ceil(diffHours / 24) - 1;
-      return `${diffDays}일 전`;
+      return '한달 ↑';
     }
   };
 
@@ -341,6 +346,7 @@ const ProductDetail = () => {
                 {availability}
               </p>
             </div>
+            
             <Button
               onClick={handleToggleFavorite}
               variant="contained"
@@ -352,12 +358,15 @@ const ProductDetail = () => {
             </Button>
 
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
+            
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
+            
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              
               <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
@@ -393,6 +402,12 @@ const ProductDetail = () => {
             <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
           </div>
         </MuiModal>
+        <div className="seller-profile">
+        <div style={{ display: 'flex', width: '100%' }}>
+          seller-profile
+          </div>
+        </div>
+        
 
         <div className="related-products">
           <ViewsList />
