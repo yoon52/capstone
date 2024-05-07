@@ -161,7 +161,6 @@ function AdminPage() {
       <button className="sidebar-toggle-button" onClick={toggleSidebar}>
         <MenuIcon style={{ fontSize: 30 }} />
       </button>
-
       <table className="user-table">
         <thead>
           <tr>
@@ -194,18 +193,15 @@ function AdminPage() {
                   </button>
                   {showOptionsForUser === user.id && (
                     <div className="options-container">
-
                       <button onClick={() => handleDeleteUser(user.id)}>사용자 정보 삭제</button>
                     </div>
                   )}
                 </div>
-
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
       {selectedUser && (
         <div className="admin-modal">
           <div className="modal-content">
