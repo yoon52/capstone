@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
 const ShowWishlist = () => {
+  const userId = sessionStorage.getItem('userId');
   const [wishlistItems, setWishlistItems] = useState([]);
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
       try {
-        const response = await fetch('http://localhost:4000/favorites');
+        const response = await fetch('http://localhost:4000/favorites', {
+          headers: {
+            'user_id': userId
+          }
+        });
+        
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -18,7 +24,7 @@ const ShowWishlist = () => {
     };
 
     fetchWishlistItems();
-  }, []);
+  }, [userId]);
 
   return (
     <div>

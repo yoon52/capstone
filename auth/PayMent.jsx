@@ -42,7 +42,7 @@ const Payment = () => {
       <div>
         {/* 만나서 결제 버튼 */}
         <button onClick={handleMeetupPayment}>만나서 결제</button>
-
+        
         {/* 카드 결제 폼 */}
         <PaymentForm onCardPayment={handleCardPayment} />
       </div>

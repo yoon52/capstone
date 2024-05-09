@@ -8,7 +8,7 @@ import ShowWishlist from './ShowWishlist';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../../styles/product.css';
 
-const SearchResultsPage = () => {
+const SearchResults = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [formattedProducts, setFormattedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,16 +48,16 @@ const SearchResultsPage = () => {
     const formatDate = (createdAt) => {
       const currentTime = new Date();
       const productTime = new Date(createdAt);
-      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60 * 60)); // milliseconds to hours
-
-      if (timeDifference < 1) {
+      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60));
+    
+      if (timeDifference < 30) {
         return '방금 전';
-      } else if (timeDifference < 24) {
-        return `${timeDifference}시간 전`;
-      } else if (timeDifference < 24 * 7) {
-        return `${Math.floor(timeDifference / 24)}일 전`;
-      } else if (timeDifference < 24 * 30) {
-        return `${Math.floor(timeDifference / (24 * 7))}주 전`;
+      } else if (timeDifference < 60 * 24) {
+        return `${Math.floor(timeDifference / 60)}시간 전`;
+      } else if (timeDifference < 60 * 24 * 7) {
+        return `${Math.floor(timeDifference / (60 * 24))}일 전`;
+      } else if (timeDifference < 60 * 24 * 30) {
+        return `${Math.floor(timeDifference / (60 * 24 * 7))}주 전`;
       } else {
         return '한달 ↑';
       }
@@ -154,7 +154,7 @@ const SearchResultsPage = () => {
   };
 
   return (
-    <div className="container-search">
+    <div className="container-main">
       <Header
         toggleNavMenu={toggleNavMenu}
         showNavMenu={showNavMenu}
@@ -222,7 +222,7 @@ const SearchResultsPage = () => {
         <Route path="/ProductManagement" element={<ProductManagement />} />
         <Route path="/ChatListComponent" element={<ChatListComponent />} />
         <Route path="/showWishlist" element={<ShowWishlist />} />
-        <Route path="/searchResultsP/:searchTerm/*" element={<SearchResultsPage />} />
+        <Route path="/searchResultsP/:searchTerm/*" element={<SearchResults />} />
       </Routes>
     </div>
   );
@@ -233,4 +233,4 @@ const extractImageFilename = (imageUrl) => {
   return parts[parts.length - 1];
 };
 
-export default SearchResultsPage;
+export default SearchResults;

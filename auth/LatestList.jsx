@@ -23,8 +23,8 @@ function LatestList() {
   }, []);
 
   return (
-    <div>
-      <h2>최신순 상품</h2>
+    <div className='h2-font'>
+      <h2>최근에 등록된 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>
   );

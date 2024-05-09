@@ -115,6 +115,9 @@ const ChatListComponent = () => {
   const handleProductManagement = () => {
     navigate('/ProductManagement');
   };
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
 
   const handleShowMyInfoPage = () => {
     navigate('/MyInfo');
@@ -153,6 +156,7 @@ const ChatListComponent = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
       />
       <div className="chatsidebar-container">
         <div className="chatsidebar">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
 import '../../styles/admin.css';
 
 function AdminPage() {
@@ -14,6 +15,7 @@ function AdminPage() {
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
 
+
   useEffect(() => {
     fetchUsers();
     fetchApprovedUsers();
@@ -21,13 +23,25 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:4000/users');
-      const userData = await response.json();
-      setUsers(userData);
+        const response = await fetch('http://localhost:4000/users');
+        if (response.status === 204) {
+            console.log('승인대기중인 사용자 정보가 없습니다.');
+            // 사용자 정보가 없는 경우 빈 배열을 설정
+            setUsers([]);
+            return;
+        }
+        if (!response.ok) {
+            throw new Error('사용자 정보를 가져오지 못했습니다.');
+        }
+        const userData = await response.json();
+        setUsers(userData);
     } catch (error) {
-      console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+        console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+        // 사용자 정보를 가져오는 데 실패한 경우, 빈 배열로 사용자 목록을 설정
+        setUsers([]);
     }
-  };
+};
+
 
   const fetchApprovedUsers = async () => {
     try {
@@ -140,6 +154,8 @@ function AdminPage() {
     }
   };
 
+
+
   const deleteUser = async (userId) => {
     try {
       const response = await fetch(`http://localhost:4000/deletefromadmin/${userId}`, {
@@ -160,7 +176,9 @@ function AdminPage() {
       <h1>회원 정보 관리</h1>
       <button className="sidebar-toggle-button" onClick={toggleSidebar}>
         <MenuIcon style={{ fontSize: 30 }} />
+
       </button>
+
       <table className="user-table">
         <thead>
           <tr>
@@ -193,15 +211,18 @@ function AdminPage() {
                   </button>
                   {showOptionsForUser === user.id && (
                     <div className="options-container">
+
                       <button onClick={() => handleDeleteUser(user.id)}>사용자 정보 삭제</button>
                     </div>
                   )}
                 </div>
+
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       {selectedUser && (
         <div className="admin-modal">
           <div className="modal-content">
@@ -232,8 +253,11 @@ function AdminPage() {
           <button onClick={handleApprovedUsersClick}>승인 완료된 사용자 보기</button>
           {/* <button onClick={handlereportedUsersClick}>신고내역</button> */}
         </div>
+
       )}
+      
     </div>
+
   );
 }
 

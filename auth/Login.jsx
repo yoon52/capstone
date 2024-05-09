@@ -15,10 +15,11 @@ function Login() {
 
   // 로그인 상태 관리
   const [loginSuccess, setLoginSuccess] = useState(true);
+  // 승인 대기 상태 관리
+  const [pendingUser, setPendingUser] = useState(false);
 
   // 페이지 이동 기능을 위한 navigate 함수 사용
   const navigate = useNavigate();
-
 
   // 입력 필드 값이 변경될 때마다 formData 객체 업데이트
   const handleChange = (e) => {
@@ -57,11 +58,14 @@ function Login() {
         setLoginSuccess(false);
         // 반려된 사용자일 경우
         if (response.status === 403) {
-          // 반려 사유 가져오기
-          if (response.status === 403) {
-            // 반려 사유 가져오기
-            const responseData = await response.json();
-            const rejectionReason = responseData.rejection_reason || '관리자에게 문의하세요.';
+          // 승인 대기 중인 사용자인 경우
+          const responseData = await response.json();
+          if (responseData.error === '승인 대기 중입니다. 관리자의 승인을 기다려주세요.') {
+            setPendingUser(true);
+            alert('승인 대기 중입니다. 관리자의 승인을 기다려주세요.');
+          } else {
+            // 반려된 사용자일 경우
+            const rejectionReason = responseData.rejectionReason || '관리자에게 문의하세요.';
             alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
           }
         }

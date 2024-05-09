@@ -6,8 +6,10 @@ const ChatPage = ({ chatRoomId, productId }) => {
   const userId = sessionStorage.getItem('userId');
   const userType = sessionStorage.getItem('userType');
   const receiver = userType === 'seller' ? 'buyer' : 'seller';
+
   const messageContainerRef = useRef(null);
   const socket = useRef(null);
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 

@@ -8,7 +8,8 @@ function MyInfo() {
   const [userInfo, setUserInfo] = useState(null);
   const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false);
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     try {
       const response = await fetch('http://localhost:4000/myinfo', {
         method: 'POST',
@@ -38,15 +39,16 @@ function MyInfo() {
       <h1 className="myinfo-header">내 정보</h1>
       <div className="myinfo-container">
         {!isPasswordConfirmed && (
-          <>
+          <form onSubmit={handleConfirm}> {/* Form element wrapping input and button */}
             <h3 className="input-password">비밀번호를 입력해주세요</h3>
-            <input type="password"
+            <input
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호"
             />
-            <button className="myinfo-button" onClick={handleConfirm}>확인</button>
-          </>
+            <button type="submit" className="myinfo-button">확인</button> {/* type="submit" for form submission */}
+          </form>
         )}
         {isPasswordConfirmed && userInfo && (
           <UserEdit userInfo={userInfo} />

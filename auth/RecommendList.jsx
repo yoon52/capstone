@@ -27,7 +27,7 @@ function RecommendList() {
   }, []);
 
   return (
-    <div>
+    <div className='h2-font'>
       <h2>추천 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>

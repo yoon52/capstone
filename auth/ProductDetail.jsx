@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, Routes, Route, useParams, Link } from 'react-router-dom';
 import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
 import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
 import Modal from 'react-modal';
+
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from './ChatComponent';
+import '../../styles/product.css';
 import Header from './Header';
 import ViewsList from './ViewsList';
-import '../../styles/product.css';
 
 Modal.setAppElement('#root');
 
@@ -203,16 +204,16 @@ const ProductDetail = () => {
     setSearchError('');
   };
 
-  const handleShowWishlist = () => {
-    navigate('/ShowWishlist');
-  };
-
   const handleKeywordManagement = () => {
     navigate('/SearchKeyword');
   };
 
   const handleProductManagement = () => {
     navigate('/ProductManagement');
+  };
+
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
   };
 
   const handleShowMyInfoPage = () => {
@@ -240,16 +241,16 @@ const ProductDetail = () => {
     const today = new Date();
     const registrationDate = new Date(date);
     const diffTime = today.getTime() - registrationDate.getTime();
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
-
-    if (diffHours < 1) {
+    const timeDifference = Math.floor(diffTime / (1000 * 60));
+  
+    if (timeDifference < 30) {
       return '방금 전';
-    } else if (diffHours < 24) {
-      return `${diffHours}시간 전`;
-    } else if (diffHours < 24 * 7) {
-      return `${Math.floor(diffHours / 24)}일 전`;
-    } else if (diffHours < 24 * 30) {
-      return `${Math.floor(diffHours / 24)}일 전`;
+    } else if (timeDifference < 60 * 24) {
+      return `${Math.floor(timeDifference / 60)}시간 전`;
+    } else if (timeDifference < 60 * 24 * 7) {
+      return `${Math.floor(timeDifference / (60 * 24))}일 전`;
+    } else if (timeDifference < 60 * 24 * 30) {
+      return `${Math.floor(timeDifference / (60 * 24 * 7))}주 전`;
     } else {
       return '한달 ↑';
     }
@@ -290,12 +291,17 @@ const ProductDetail = () => {
   };
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (anchorEl === event.currentTarget) {
+      setAnchorEl(null);
+    } else {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
 
   return (
     <div className="container-main">
@@ -313,6 +319,7 @@ const ProductDetail = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
       />
 
       <div className="product-detail">
@@ -344,6 +351,7 @@ const ProductDetail = () => {
                 {availability}
               </p>
             </div>
+            
             <Button
               onClick={handleToggleFavorite}
               variant="contained"
@@ -355,12 +363,15 @@ const ProductDetail = () => {
             </Button>
 
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
+            
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
+            
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              
               <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
@@ -396,7 +407,12 @@ const ProductDetail = () => {
             <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
           </div>
         </MuiModal>
-
+        <div className="seller-profile">
+        <div style={{ display: 'flex', width: '100%' }}>
+          seller-profile
+          </div>
+        </div>
+        
         <div className="related-products">
           <ViewsList />
         </div>

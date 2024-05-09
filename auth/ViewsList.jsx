@@ -23,8 +23,8 @@ function ViewsList() {
   }, []);
 
   return (
-    <div>
-      <h2>조회순 상품</h2>
+    <div className='h2-font'>
+      <h2>가장 많이 본 상품</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>
   );

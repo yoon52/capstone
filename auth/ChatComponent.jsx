@@ -84,7 +84,7 @@ const ChatComponent = () => {
   };
 
   const handlePayment = () => {
-    navigate('/PayMent');
+    navigate(`/sandbox?productId=${productId}&userId=${userId}`);
     console.log('결제 처리 로직을 추가하세요.');
   };
 

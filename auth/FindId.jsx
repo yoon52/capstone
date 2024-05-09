@@ -20,6 +20,7 @@ function FindId() {
     }));
   };
 
+  // 아이디 찾기 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -55,10 +56,7 @@ function FindId() {
   };
 
   return (
-    <div>
-      <a href="/Login">
-        <img src={logo} id='logo' alt="로고" />
-      </a>
+    <div><img src={logo} id='logo' alt="로고" />
       <h1 className="findid-header">아이디 찾기</h1>
       <div className="findid-container">
         <form onSubmit={handleSubmit}>
@@ -74,6 +72,7 @@ function FindId() {
             />
           </div>
 
+          {/* 학과/학년 선택 셀렉트 */}
           <div className="select-group">
             <select
               name="department"
@@ -118,7 +117,7 @@ function FindId() {
         {showFoundModal && (
           <div className="modal">
             <div className="modal-content">
-              <p className="found-id">아이디는 '{id}' 입니다.</p>
+              <p className="found-id">찾은 아이디 : {id}</p>
               <div className="findid-modal">
                 <button className="findid-login" onClick={navigateToLogin}>로그인 하기</button>
                 <button className="findid-fwfind" onClick={navigateToFindPw}>비밀번호 찾기</button>

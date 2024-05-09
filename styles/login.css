@@ -6,23 +6,27 @@ input[type="email"] {
   padding: 15px !important;
   border-radius: 5px !important;
   border: 1.5px solid #b0c4de !important;
-  font-size: 1rem !important;
+  font-size: 15px !important;
   box-sizing: border-box !important;
+  margin-top: 10px !important;
 }
 
 input[type="file"] {
+  width: calc(100% - 22px);
   font-size: 13px;
+  border-radius: 5px;
+  border: 1.5px solid #b0c4de;
   box-sizing: border-box;
   margin: 0 auto;
+  margin-top: 10px;
   color: gray;
 }
 
 /* 파일 선택 */
 input[type="file"]::file-selector-button {
-  padding: 12px 15px;
+  padding: 12px 10px;
   background-color: #5080c5;
   border: none;
-  border-radius: 5px;
   color: #ffffff;
   cursor: pointer;
   font-size: 13px;
@@ -37,8 +41,8 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .form-group {
-  margin-top: 30px !important;
-  margin-bottom: 30px !important;
+  margin-top: 10px !important;
+  margin-bottom: 20px !important;
 }
 
 /* 모달 */
@@ -123,8 +127,8 @@ input[type="file"]::file-selector-button:hover {
   padding: 15px 20px;
   transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
   width: 95%;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 5px;
 }
 
 .login-button:hover {
@@ -228,8 +232,8 @@ input[type="file"]::file-selector-button:hover {
 .login-failure-message {
   color: black;
   text-align: center;
-  margin-top: -20px;
-  margin-bottom: -1px;
+  margin-top: -14px;
+  margin-bottom: -7px;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -262,7 +266,8 @@ input[type="file"]::file-selector-button:hover {
   justify-content: space-around;
   width: 100%;
   height: 100%;
-  margin-top: 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 .select-group input,
@@ -276,7 +281,6 @@ input[type="file"]::file-selector-button:hover {
   border-radius: 5px;
   border: 1.5px solid #b0c4de;
 }
-
 /* 입력창 중복확인 그룹 */
 .id-group {
   display: flex;
@@ -328,7 +332,7 @@ input[type="file"]::file-selector-button:hover {
   padding: 15px 20px;
   transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
   width: 95%;
-  margin-top: 0px;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -460,8 +464,8 @@ input[type="file"]::file-selector-button:hover {
 /* 비밀번호 찾기 컨테이너 */
 .findpw-container {
   max-width: 500px;
-  height: 250px;
-  max-height: 250px;
+  height: 230px;
+  max-height: 230px;
   margin: 0 auto;
   padding: 10px;
   border: 2px solid #162b9150;
