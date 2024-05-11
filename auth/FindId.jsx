@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/login.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function FindId() {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ function FindId() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/find-id', {
+      const response = await fetch(`${serverHost}:4000/find-id`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

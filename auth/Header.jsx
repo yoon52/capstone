@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FaBars, FaPlus, FaComments, FaUser, FaTimes, FaCog, FaSignOutAlt, FaHeart, FaMoneyCheck } from 'react-icons/fa';
 import logo from '../../image/logo.png';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-
+import serverHost from '../../utils/host';
 
 const Header = ({
   toggleNavMenu,
@@ -40,7 +40,7 @@ const Header = ({
     const fetchUserInfo = async () => {
       try {
         // 서버에 해당 사용자 정보 요청
-        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/getUserInfo', {
+        const response = await fetch(`${serverHost}:4000/getUserInfo`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -65,15 +65,6 @@ const Header = ({
     setShowRecentSearches(false);
   };
 
-  const handleSearchSubmit = () => {
-    if (searchTerm.trim() !== '') {
-      // Call the onSearchSubmit handler with the searchTerm
-      onSearchSubmit(searchTerm);
-
-      // Navigate to SearchResultsPage with the encoded searchTerm
-      navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
-    }
-  };
 
   // 결제 내역 관리 페이지로 이동하는 함수
   const handlePayments = () => {

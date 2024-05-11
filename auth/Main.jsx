@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Routes, Route, Link } from 'react-router-dom';
-import RecommendList from './RecommendList';
+/* eslint-disable react/jsx-no-duplicate-props */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useState, useRef } from 'react';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import ViewsList from './ViewsList';
-import LatestList from './LatestList';
 import SearchResults from './SearchResults';
 import ProductDetail from './ProductDetail';
 import ProductManagement from './ProductManagement';
@@ -11,17 +11,18 @@ import Header from './Header';
 import ShowWishlist from './ShowWishlist';
 import '../../styles/main.css';
 import '../../styles/product.css';
+import serverHost from '../../utils/host';
 
 function Main() {
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [,setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [,setSavedSearchTerm] = useState('');
+  const [,setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [,setShowRecentSearches] = useState(false);
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -35,7 +36,7 @@ function Main() {
     }
 
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -67,7 +68,7 @@ function Main() {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
+      const response = await fetch(`${serverHost}:4000/searchHistory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -118,6 +119,10 @@ function Main() {
     setShowNavMenu(false);
   };
 
+  const handleMoreList = () => {
+    navigate('/LatestList');
+  }
+
   return (
     <div className="container-main">
       <Header
@@ -140,10 +145,28 @@ function Main() {
         onSearchSubmit={handleSearchProduct}
         recentSearches={[]}
       />
-      <div className="main-container">
-        <RecommendList />
-        <ViewsList />
-        <LatestList />
+      <div className="main">
+        <section className="fleamarket-cover">
+          <div className="cover-content">
+            <h1 className="cover-title">믿을만한<br />대학교 교내 중고거래</h1>
+            <span className="cover-description">학생들과 가깝고 따뜻한 거래를<br />지금 경험해보세요.</span>
+            <div className="cover-image">
+              <span className="fleamarket-cover-image">
+                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래"/>
+              </span>
+
+            </div>
+          </div>
+        </section>
+
+        <div className="list-container">
+          <ViewsList
+
+          />
+        </div>
+        <div className="more-list">
+          <button className="more-button" onClick={handleMoreList}>전체 상품 보기</button>
+        </div>
         <Routes>
           <Route path="/productDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />

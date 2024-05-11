@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/changepw.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function ChangePw() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,7 +24,7 @@ function ChangePw() {
       const userId = sessionStorage.getItem('userId');
 
       // 사용자 아이디를 포함하여 비밀번호 변경 API 호출
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/changepassword', {
+      const response = await fetch(`${serverHost}:4000/changepassword`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

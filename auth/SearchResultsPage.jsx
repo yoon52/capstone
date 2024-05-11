@@ -7,6 +7,7 @@ import ProductManagement from './ProductManagement';
 import ChatListComponent from './ChatListComponent';
 import ShowWishlist from './ShowWishlist';
 import '../../styles/product.css';
+import serverHost from '../../utils/host';
 
 const SearchResultsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -14,19 +15,17 @@ const SearchResultsPage = () => {
   const navigate = useNavigate();
   const { searchTerm: urlSearchTerm } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchError, setSearchError] = useState('');
+  const [,setSearchError] = useState('');
 
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
 
   const searchInputRef = useRef(null);
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
+
   
   const handleProductClick = async (productId) => {
     try {
       // Update views count for the clicked product
-      await fetch(`https://ec2caps.liroocapstone.shop:4000/updateViews/${productId}`, {
+      await fetch(`${serverHost}:4000/updateViews/${productId}`, {
         method: 'POST',
       });
 
@@ -42,12 +41,12 @@ const SearchResultsPage = () => {
       if (!urlSearchTerm) return; // URL 파라미터로 검색어가 없으면 아무 작업도 수행하지 않음
 
       try {
-        const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${urlSearchTerm}`);
+        const response = await fetch(`${serverHost}:4000/products?search=${urlSearchTerm}`);
         if (response.ok) {
           const data = await response.json();
           const updatedProducts = data.map(product => ({
             ...product,
-            imageUrl: `https://ec2caps.liroocapstone.shop:4000/uploads/${product.image}`
+            imageUrl: `http://localhost:4000/uploads/${product.image}`
           }));
 
           setFilteredProducts(updatedProducts);
@@ -72,12 +71,12 @@ const SearchResultsPage = () => {
     }
 
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         const updatedProducts = data.map(product => ({
           ...product,
-          imageUrl: `https://ec2caps.liroocapstone.shop:4000/uploads/${product.image}`
+          imageUrl: `http://localhost:4000/uploads/${product.image}`
         }));
 
         setFilteredProducts(updatedProducts);

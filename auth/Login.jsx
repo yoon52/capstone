@@ -4,6 +4,7 @@ import '../../styles/login.css';
 import naver from '../../image/naver.png';
 import kakao from '../../image/kakao.png';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 // Login 컴포넌트 정의
 function Login() {
@@ -16,7 +17,7 @@ function Login() {
   // 로그인 상태 관리
   const [loginSuccess, setLoginSuccess] = useState(true);
   // 승인 대기 상태 관리
-  const [pendingUser, setPendingUser] = useState(false);
+  const [, setPendingUser] = useState(false);
 
   // 페이지 이동 기능을 위한 navigate 함수 사용
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ function Login() {
     e.preventDefault();
     try {
       // 백엔드 서버로 로그인 요청 전송
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/login', {
+      const response = await fetch(`${serverHost}:4000/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -84,7 +85,7 @@ function Login() {
     sessionStorage.setItem('oauthState', state);
 
     // 네이버 OAuth 인증 요청 URL 생성
-    const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=https://ec2caps.liroocapstone.shop:4000/oauth/naver/callback&state=${state}`;
+    const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=${serverHost}:4000/oauth/naver/callback&state=${state}`;
 
     // OAuth 인증 요청
     window.location.href = naverOAuthUrl;
@@ -96,9 +97,9 @@ function Login() {
   };
 
 
-  const handleKakaoLogin = () => {
+    const handleKakaoLogin = () => {
     const clientId = '0bee6abe1a644025c9faedffda0ddd04';
-    const redirectUri = 'https://ec2caps.liroocapstone.shop:4000/oauth/kakao/callback';
+    const redirectUri = `${serverHost}:4000/oauth/kakao/callback`;
     const responseType = 'code';
 
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}`;
@@ -106,6 +107,7 @@ function Login() {
     // 리다이렉트하여 카카오 OAuth 인증 요청을 시작
     window.location.href = kakaoAuthUrl;
   };
+
 
   // 회원가입 버튼 클릭 시 호출되는 함수
   const handleSignup = () => {

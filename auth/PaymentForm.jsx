@@ -8,7 +8,7 @@ const PaymentForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // 여기에 결제 처리 로직을 구현합니다.
-    console.log('카드 정보:', { cardNumber, expiry, cvv });
+    console.log('카드 정보:`, { cardNumber, expiry, cvv });
   };
 
   return (

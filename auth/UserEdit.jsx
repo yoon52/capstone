@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import '../../styles/myinfo.css';
+import serverHost from '../../utils/host';
 
 Modal.setAppElement('#root');
 
@@ -17,7 +18,7 @@ function UserEdit({ userInfo }) {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/edituserinfo', {
+      const response = await fetch(`${serverHost}:4000/edituserinfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -42,7 +43,7 @@ function UserEdit({ userInfo }) {
 
   const confirmDeleteAccount = async () => {
     try {
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/deleteaccount', {
+      const response = await fetch(`${serverHost}:4000/deleteaccount`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -71,7 +72,7 @@ function UserEdit({ userInfo }) {
   return (
     <div>
       <h2>회원 정보 수정</h2>
-      <p className="user-id">ID : {userInfo.id}</p>
+      <p className="user-id">학번 : {userInfo.id}</p>
       <div className="form-group">
         <input type="text"
           value={editedUserInfo.name}

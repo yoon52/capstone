@@ -7,7 +7,7 @@ function RecommendList() {
   useEffect(() => {
     const fetchRecommendProducts = async () => {
       try {
-        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/products/recommendations', {
+        const response = await fetch(`${serverHost}:4000/products/recommendations`, {
           headers: {
             'user_id': sessionStorage.getItem('userId')
           }

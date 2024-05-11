@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
+import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import { nanoid } from "nanoid";
-
+import serverHost from "../../utils/host";
 // 구매자의 고유 아이디를 불러와서 customerKey로 설정하세요.
 // 이메일・전화번호와 같이 유추가 가능한 값은 안전하지 않습니다.
 const widgetClientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
@@ -26,7 +26,7 @@ export function CheckoutPage() {
       // 상품 정보 가져오기
       if (storedProductId) {
         try {
-          const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products/detail/${storedProductId}`);
+          const response = await fetch(`${serverHost}:4000/products/detail/${storedProductId}`);
           if (response.ok) {
             const productData = await response.json();
             // 서버에서 받은 가격 정보를 숫자로 변환하여 상태에 설정

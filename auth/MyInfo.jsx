@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/myinfo.css';
 import UserEdit from './UserEdit.jsx';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host.js';
 
 function MyInfo() {
   const [password, setPassword] = useState('');
@@ -11,7 +12,7 @@ function MyInfo() {
   const handleConfirm = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/myinfo', {
+      const response = await fetch(`${serverHost}:4000/myinfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

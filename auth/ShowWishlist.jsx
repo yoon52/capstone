@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import serverHost from '../../utils/host';
 
 const ShowWishlist = () => {
   const userId = sessionStorage.getItem('userId');
@@ -7,7 +8,7 @@ const ShowWishlist = () => {
   useEffect(() => {
     const fetchWishlistItems = async () => {
       try {
-        const response = await fetch('https://ec2caps.liroocapstone.shop:4000/favorites', {
+        const response = await fetch(`${serverHost}:4000/favorites`, {
           headers: {
             'user_id': userId
           }

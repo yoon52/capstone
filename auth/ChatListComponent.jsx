@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Routes, Route, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/chat.css';
 import '../../styles/chatList.css';
 import ChatModal from './ChatModal';
 import Header from './Header';
+import serverHost from '../../utils/host';
 
 const ChatListComponent = () => {
   const userId = sessionStorage.getItem('userId');
@@ -13,10 +14,10 @@ const ChatListComponent = () => {
   const [selectedRoomProductId, setSelectedRoomProductId] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const [, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
 
@@ -26,7 +27,7 @@ const ChatListComponent = () => {
 
   const fetchChatRooms = async () => {
     try {
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4001/myChatRooms', {
+      const response = await fetch(`${serverHost}:4001/myChatRooms`, {
         headers: {
           'user_id': userId,
           'user_type': userType
@@ -63,7 +64,7 @@ const ChatListComponent = () => {
       return;
     }
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -88,7 +89,7 @@ const ChatListComponent = () => {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
+      const response = await fetch(`${serverHost}:4000/searchHistory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

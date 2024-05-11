@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import SearchResultsPage from './SearchResultsPage';
-import ShowWishlist from './ShowWishlist';
-import ProductManagement from './ProductManagement';
-import ChatListComponent from './ChatListComponent';
+import serverHost from '../../utils/host';
+
 import '../../styles/payments.css';
 
 const Payments = () => {
@@ -13,20 +11,20 @@ const Payments = () => {
   const [isLoading, setIsLoading] = useState(true);
   const userId = sessionStorage.getItem('userId');
   const navigate = useNavigate();
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [ ,setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [ ,setSavedSearchTerm] = useState('');
+  const [ ,setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const [ ,setSearchError] = useState('');
 
   const searchInputRef = useRef(null);
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [,setShowRecentSearches] = useState(false);
 
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/payments/${userId}`);
+        const response = await fetch(`${serverHost}:4000/payments/${userId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch payments');
         }
@@ -97,7 +95,7 @@ const Payments = () => {
     }
 
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -127,7 +125,7 @@ const Payments = () => {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
+      const response = await fetch(`${serverHost}:4000/searchHistory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

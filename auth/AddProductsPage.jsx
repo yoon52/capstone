@@ -1,9 +1,10 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Header from './Header';
+import serverHost from '../../utils/host';
 
 function AddProducts() {
   const userId = sessionStorage.getItem('userId');
@@ -12,15 +13,15 @@ function AddProducts() {
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null); // 이미지 파일 상태 추가
   const [imagePreview, setImagePreview] = useState(null); // State for image preview
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [,setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [,setSavedSearchTerm] = useState('');
+  const [,setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const [,setSearchError] = useState('');
 
   const searchInputRef = useRef(null);
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [,setShowRecentSearches] = useState(false);
 
   const navigate = useNavigate();
 
@@ -29,8 +30,17 @@ function AddProducts() {
   };
 
   const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
+    // 엔터키 입력 감지
+    if (event.key === 'Enter') {
+      event.preventDefault(); // 기본 엔터키 동작 방지
+      // 현재 설명값에 엔터키 추가하여 설정
+      setDescription(prevDescription => prevDescription + '\n');
+    } else {
+      // 엔터키가 아닌 경우에는 설명값 업데이트
+      setDescription(event.target.value);
+    }
   };
+  
 
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
@@ -47,8 +57,6 @@ function AddProducts() {
     reader.readAsDataURL(selectedImage);
   };
 
-
-
   const handleAddProduct = async (event) => {
     event.preventDefault(); // 폼 제출의 기본 동작 방지
 
@@ -60,15 +68,13 @@ function AddProducts() {
       formData.append('price', price);
       formData.append('image', image); // 이미지 파일 추가
 
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/addProduct', {
+      const response = await fetch(`${serverHost}:4000/addProduct`, {
         method: 'POST',
         headers: {
           'user_id': userId,
         },
         body: formData,
       });
-
-
 
       if (response.ok) {
         // 상품 추가 성공 시 폼 초기화
@@ -97,7 +103,7 @@ function AddProducts() {
     }
 
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/products?search=${searchTerm}`);
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredProducts(data);
@@ -129,7 +135,7 @@ function AddProducts() {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('https://ec2caps.liroocapstone.shop:4000/searchHistory', {
+      const response = await fetch(`${serverHost}:4000/searchHistory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -180,6 +186,8 @@ function AddProducts() {
     setShowNavMenu(false);
   };
 
+  
+
   return (
     <div className="container-main">
 
@@ -203,7 +211,7 @@ function AddProducts() {
         onSearchSubmit={handleSearchProduct}
         recentSearches={[]}
       />
-      <div className="main-container1">
+      <div className="main-container">
         <h2>상품등록 페이지</h2>
         <form onSubmit={handleAddProduct}>
           <div className="image-upload">
@@ -220,23 +228,19 @@ function AddProducts() {
             <input type="file" onChange={handleImageChange} id="imageInput" accept="image/*" style={{ display: 'none' }} />
           </div>
 
-
-
           <div className="form-group">
-            <label htmlFor="name">상품명:</label>
+            <label htmlFor="name">상품명 :</label>
             <input type="text" placeholder="상품명" value={name} onChange={handleNameChange} required />
           </div>
           <div className="form-group">
-            <label htmlFor="description">설명:</label>
+            <label htmlFor="description">설명 :</label>
             <textarea
               id="description"
               placeholder="설명"
               value={description}
               onChange={handleDescriptionChange}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="price">가격:</label>
+            <label htmlFor="price">가격 :</label>
             <input type="text" placeholder="가격" value={price} onChange={handlePriceChange} required />
           </div>
           <button type="submit" className="add-product-button">추가</button>
@@ -245,6 +249,5 @@ function AddProducts() {
     </div>
   );
 }
-
 
 export default AddProducts;

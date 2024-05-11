@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [,setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage`, {
         headers: {
           'user_id': sessionStorage.getItem('userId')
         }
@@ -34,7 +35,7 @@ function ProductManagement() {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'user_id': sessionStorage.getItem('userId')
@@ -58,7 +59,7 @@ function ProductManagement() {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/${editingProduct.id}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,6 +71,7 @@ function ProductManagement() {
         setProducts(products.map(product => (product.id === editingProduct.id ? editingProduct : product)));
         setSelectedProduct(null);
         setEditingProduct(null);
+        alert('상품이 수정되었습니다.');
         setIsModalOpen(false); // 모달 닫기
       } else {
         console.error('상품 수정 실패:', response.status);
@@ -81,7 +83,7 @@ function ProductManagement() {
 
   const handleSellProduct = async (productId) => {
     try {
-      const response = await fetch(`https://ec2caps.liroocapstone.shop:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +128,6 @@ function ProductManagement() {
                 <td>{product.description}</td>
                 <td>{product.price}</td>
                 <td>{product.status === 'available' ? '판매중' : product.status}</td>
-
                 <td>
                   <button onClick={() => handleEditProduct(product)}>수정</button>
                   <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
