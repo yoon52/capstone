@@ -1,5 +1,6 @@
 .admin-container {
-  position: relative; /* 부모 요소를 상대 위치로 설정 */
+  position: relative;
+  /* 부모 요소를 상대 위치로 설정 */
   max-width: 800px;
   max-height: 480px;
   height: 480px;
@@ -184,9 +185,12 @@
   border: none;
   cursor: pointer;
   padding: 10px;
-  position: absolute; /* 절대 위치 설정 */
-  top: 20px; /* 상단 여백 조정 */
-  left: 0px; /* 왼쪽 여백 조정 */
+  position: absolute;
+  /* 절대 위치 설정 */
+  top: 20px;
+  /* 상단 여백 조정 */
+  left: 0px;
+  /* 왼쪽 여백 조정 */
 }
 
 
@@ -206,11 +210,16 @@
 
 /* Style for the container of the "More" button and options */
 .more-button-container {
-  position: relative; /* 상대 위치 설정 */
-  display: flex; /* 내부 요소들을 수평으로 배치하기 위해 flex 사용 */
-  justify-content: center; /* 가로 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  height: 100%; /* 컨테이너의 높이를 100%로 설정하여 컨테이너와 같은 높이로 만듭니다. */
+  position: relative;
+  /* 상대 위치 설정 */
+  display: flex;
+  /* 내부 요소들을 수평으로 배치하기 위해 flex 사용 */
+  justify-content: center;
+  /* 가로 중앙 정렬 */
+  align-items: center;
+  /* 세로 중앙 정렬 */
+  height: 100%;
+  /* 컨테이너의 높이를 100%로 설정하여 컨테이너와 같은 높이로 만듭니다. */
 }
 
 .more-button {
@@ -264,4 +273,12 @@
 .options-container button:hover {
   background-color: #ddd;
   /* Light gray background on hover */
+}
+
+.admin-viewbutton {
+  background-color: #103260; 
+  color: #ddd !important;
+  cursor: pointer !important;
+  align-self: center !important;
+  font-size: 16px !important;
 }
