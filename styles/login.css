@@ -11,6 +11,7 @@ input[type="email"] {
   margin-top: 10px !important;
 }
 
+/* 파일 선택 창 */
 input[type="file"] {
   width: calc(100% - 22px);
   font-size: 13px;
@@ -281,13 +282,14 @@ input[type="file"]::file-selector-button:hover {
   border-radius: 5px;
   border: 1.5px solid #b0c4de;
 }
+
 /* 입력창 중복확인 그룹 */
 .id-group {
   display: flex;
   align-items: center;
 }
 
-/* 아이디 입력 창 */
+/* 학번 입력 창 */
 .id-form {
   flex: 1;
 }
@@ -339,24 +341,6 @@ input[type="file"]::file-selector-button:hover {
 .signup-button:hover {
   outline: 0;
   box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
-}
-
-/* 학생증 미리보기 컨테이너 */
-.student-id-preview {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.student-id-preview h3 {
-  font-size: 20px;
-}
-
-.student-id-preview img {
-  max-width: 300px;
-  max-height: 300px;
-  margin-top: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -474,7 +458,6 @@ input[type="file"]::file-selector-button:hover {
   margin-top: 100px;
   margin-bottom: 20px;
 }
-
 
 /* 비밀번호 모달 */
 .found-pw {

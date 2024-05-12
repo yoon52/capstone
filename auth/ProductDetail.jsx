@@ -242,7 +242,7 @@ const ProductDetail = () => {
     const registrationDate = new Date(date);
     const diffTime = today.getTime() - registrationDate.getTime();
     const timeDifference = Math.floor(diffTime / (1000 * 60));
-  
+
     if (timeDifference < 30) {
       return '방금 전';
     } else if (timeDifference < 60 * 24) {
@@ -351,7 +351,7 @@ const ProductDetail = () => {
                 {availability}
               </p>
             </div>
-            
+
             <Button
               onClick={handleToggleFavorite}
               variant="contained"
@@ -363,15 +363,15 @@ const ProductDetail = () => {
             </Button>
 
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
-            
+
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
-            
+
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              
+
               <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
@@ -379,9 +379,10 @@ const ProductDetail = () => {
         </div>
         <div className="product-d-description-container">
           <p className="product-d-description-header">상품정보</p>
-          <p className="product-d-description">
-            {product.description}
-          </p>
+          {/* 설명칸의 내용을 div 태그로 감싸고 내용을 개행 문자(\n)를 기준으로 분할하여 각각의 div로 렌더링 */}
+          {product.description.split('\n').map((line, index) => (
+            <div key={index} className="product-d-description">{line}</div>
+          ))}
         </div>
 
         <MuiModal
@@ -408,11 +409,11 @@ const ProductDetail = () => {
           </div>
         </MuiModal>
         <div className="seller-profile">
-        <div style={{ display: 'flex', width: '100%' }}>
-          seller-profile
+          <div style={{ display: 'flex', width: '100%' }}>
+            seller-profile
           </div>
         </div>
-        
+
         <div className="related-products">
           <ViewsList />
         </div>

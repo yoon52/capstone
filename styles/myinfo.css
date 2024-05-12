@@ -79,7 +79,8 @@
 .right-align-buttons {
     display: flex;
     justify-content: flex-end;
-    margin-right: 10px;
+    margin-right: 13px;
+    margin-bottom: 10px;
 }
 
 /* 비밀번호 변경 버튼 */
@@ -104,57 +105,68 @@
 
 /* 회원 탈퇴 버튼 */
 .withdrawal {
-    color: #000000;
+    height: 40px;
+    width: 100px;
+    background-color: #c55050;
     border: none;
-    background: none;
+    border-radius: 5px;
+    color: #ffffff;
     cursor: pointer;
-    margin-top: 30px;
+    font-size: 13px;
+    margin-top: 20px;
+    margin-left: 10px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
 }
 
 .withdrawal:hover {
-    text-decoration: underline;
+    color: #ffffff;
+    outline: 0;
+    box-shadow: 0 0 40px 40px #b51e1e inset;
 }
 
 /* 회원 탈퇴 모달 */
 .withdrawl-modal {
     width: 500px;
-    height: 600px;
+    height: 550px;
     margin: 0 auto;
     padding: 10px;
     border: 2px solid #162b9150;
     border-radius: 5px;
     text-align: center;
-    margin-top: 120px;
+    margin-top: 213px;
     margin-bottom: 20px;
+    background-color: #ffffff;
 }
 
 .withdrawl-title {
     margin-top: 50px;
-    margin-bottom: 70px;
+    margin-bottom: 100px;
 }
 
-.withdrawl-form {
-    margin-top: 30px;
+.withdrawl-text {
+    padding : 0px 20px 0px 20px;
+    margin-bottom: 50px;
 }
 
 /* 확인 버튼 */
 .confirm {
     height: 45px;
     width: 80px;
-    background-color: #5080c5;
+    background-color: #c55050;
     border: none;
     border-radius: 5px;
     color: #ffffff;
     cursor: pointer;
     font-size: 13px;
     margin-right: 10px;
+    margin-top: 20px;
     transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
 }
 
 .confirm:hover {
     color: #ffffff;
     outline: 0;
-    box-shadow: 0 0 40px 40px #601010 inset;
+    box-shadow: 0 0 40px 40px #b51e1e inset;
 }
 
 /* 취소 버튼 */
@@ -167,7 +179,6 @@
     color: #ffffff;
     cursor: pointer;
     font-size: 13px;
-    margin-right: 10px;
     transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
 }
 
@@ -175,4 +186,46 @@
     color: #ffffff;
     outline: 0;
     box-shadow: 0 0 40px 40px #103260 inset;
+}
+
+/*--------------------------------------------------------------------------------*/
+
+/* changepw.css */
+
+.changepw-header {
+    font-size: 40px;
+    margin-top: 0px;
+    text-align: center;
+}
+
+.changepw-container {
+    max-width: 500px;
+    height: 350px;
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid #162b9150;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.changepw {
+    background-color: #103260;
+    color: #ffffff;
+    border: 2px solid #103260;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.changepw:hover {
+    outline: 0;
+    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
 }

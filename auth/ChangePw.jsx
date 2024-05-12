@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/changepw.css';
+import '../../styles/myinfo.css';
 import logo from '../../image/logo.png';
 
 function ChangePw() {

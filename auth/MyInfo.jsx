@@ -39,7 +39,7 @@ function MyInfo() {
       <h1 className="myinfo-header">내 정보</h1>
       <div className="myinfo-container">
         {!isPasswordConfirmed && (
-          <form onSubmit={handleConfirm}> {/* Form element wrapping input and button */}
+          <form onSubmit={handleConfirm}>
             <h3 className="input-password">비밀번호를 입력해주세요</h3>
             <input
               type="password"

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
@@ -10,18 +9,16 @@ function AddProducts() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [image, setImage] = useState(null); // 이미지 파일 상태 추가
-  const [imagePreview, setImagePreview] = useState(null); // State for image preview
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [savedSearchTerm, setSavedSearchTerm] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [searchError, setSearchError] = useState('');
-
   const searchInputRef = useRef(null);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
-
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -29,7 +26,12 @@ function AddProducts() {
   };
 
   const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setDescription(prevDescription => prevDescription + '\n');
+    } else {
+      setDescription(event.target.value);
+    }
   };
 
   const handlePriceChange = (event) => {
@@ -38,25 +40,28 @@ function AddProducts() {
 
   const handleImageChange = (event) => {
     const selectedImage = event.target.files[0];
-    setImage(selectedImage);
-    // Preview image
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(selectedImage);
+    if (selectedImage) {
+      setImage(selectedImage);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(selectedImage);
+    } else {
+      // 이미지가 선택되지 않은 경우
+      setImage(null);
+      setImagePreview(null);
+    }
   };
 
   const handleAddProduct = async (event) => {
-    event.preventDefault(); // 폼 제출의 기본 동작 방지
-
-    // 상품 추가 요청
+    event.preventDefault();
     try {
       const formData = new FormData();
       formData.append('name', name);
       formData.append('description', description);
       formData.append('price', price);
-      formData.append('image', image); // 이미지 파일 추가
+      formData.append('image', image);
 
       const response = await fetch('http://localhost:4000/addProduct', {
         method: 'POST',
@@ -67,20 +72,16 @@ function AddProducts() {
       });
 
       if (response.ok) {
-        // 상품 추가 성공 시 폼 초기화
         setName('');
         setDescription('');
         setPrice('');
-        setImage(null); // 이미지 파일 초기화
-        // 상품 추가 후 메인 페이지로 이동
+        setImage(null);
         navigate('/Main');
-        console.log('상품이 추가되었습니다.');
+        alert('상품이 추가되었습니다.');
       } else {
-        // 상품 추가 실패 시 오류 메시지 출력
         console.error('상품 추가 실패:', response.statusText);
       }
     } catch (error) {
-      // 네트워크 오류 등의 문제 발생 시 오류 메시지 출력
       console.error('상품 추가 오류:', error);
     }
   };
@@ -88,7 +89,7 @@ function AddProducts() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      console.log('touch');
       return;
     }
 
@@ -102,18 +103,14 @@ function AddProducts() {
         setShowSearchResults(true);
         setSearchError('');
 
-        // Navigate to the search results page
         navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
-
       } else {
         console.error('검색 오류:', response.status);
       }
     } catch (error) {
       console.error('검색 오류:', error);
     }
-    // 검색어가 유효할 때 콘솔에 검색어 출력
     console.log("검색어:", searchTerm);
-
   };
 
   const handleEnterKeyPress = (event) => {
@@ -178,7 +175,6 @@ function AddProducts() {
 
   return (
     <div className="container-main">
-
       <Header
         toggleNavMenu={toggleNavMenu}
         showNavMenu={showNavMenu}
@@ -199,17 +195,19 @@ function AddProducts() {
         onSearchSubmit={handleSearchProduct}
         recentSearches={[]}
       />
-      <div className="main-container">
-        <h2>상품등록 페이지</h2>
+      <div className="add-container">
         <form onSubmit={handleAddProduct}>
           <div className="image-upload">
+            <label htmlFor="image" style={{ marginBottom: '10px' }}>상품 이미지</label>
             <label htmlFor="imageInput">
               {imagePreview ? (
-                <img src={imagePreview} alt="Product Preview" className="preview-image" />
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="Product Preview" className="preview-image" />
+                </div>
               ) : (
                 <div className="no-image-preview">
                   <CameraAltIcon fontSize="large" />
-                  <span>이미지를 선택하세요</span>
+                  <span>이미지 등록</span>
                 </div>
               )}
             </label>
@@ -217,19 +215,24 @@ function AddProducts() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="name">상품명 :</label>
-            <input type="text" placeholder="상품명" value={name} onChange={handleNameChange} required />
+            <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
+            <input type="text" placeholder="상품명을 입력해 주세요." value={name} onChange={handleNameChange} required />
           </div>
           <div className="form-group">
-            <label htmlFor="description">설명 :</label>
+            <label htmlFor="description" style={{ marginTop: '30px' }}>설명</label>
             <textarea
               id="description"
-              placeholder="설명"
+              placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
               value={description}
               onChange={handleDescriptionChange}
             />
-            <label htmlFor="price">가격 :</label>
-            <input type="text" placeholder="가격" value={price} onChange={handlePriceChange} required />
+          </div>
+          <div className="form-group">
+            <label htmlFor="price">가격</label>
+            <div className="price-input">
+              <input type="price" placeholder="가격을 입력해 주세요." value={price} onChange={handlePriceChange} required />
+              <span>원</span>
+            </div>
           </div>
           <button type="submit" className="add-product-button">추가</button>
         </form>
