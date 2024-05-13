@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import '../../styles/searchkeyword.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function SearchKeyword() {
   const [searchKeywords, setSearchKeywords] = useState([]);
@@ -15,7 +16,7 @@ function SearchKeyword() {
   // 검색어 목록을 서버로부터 가져오는 함수
   const fetchSearchKeywords = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:4000/SearchKeywords/${userId}`);
+      const response = await fetch(`${serverHost}:4000/SearchKeywords/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setSearchKeywords(data);
@@ -30,7 +31,7 @@ function SearchKeyword() {
   // 검색어 삭제 함수
   const deleteKeyword = async (keywordId) => {
     try {
-      const response = await fetch(`http://localhost:4000/SearchKeywords/delete/${keywordId}`, {
+      const response = await fetch(`${serverHost}:4000/SearchKeywords/delete/${keywordId}`, {
         method: 'DELETE'
       });
       if (response.ok) {

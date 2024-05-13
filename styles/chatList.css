@@ -1,7 +1,7 @@
 /* 사이드바 스타일 */
 .chatsidebar-container {
   display: flex;
-  height: calc(100vh - 20px);
+  height: calc(100vh - 120px);
   overflow-y: auto;
   background-color: #ffffff;
   border: none;

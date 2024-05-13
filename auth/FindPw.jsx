@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/login.css';
 import logo from '../../image/logo.png';
-
+import serverHost from '../../utils/host';
 function FindPw() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -13,7 +13,7 @@ function FindPw() {
 
   const handleResetPassword = async () => {
     try {
-      const response = await fetch('http://localhost:4000/reset-password', {
+      const response = await fetch(`${serverHost}:4000/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

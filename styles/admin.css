@@ -13,6 +13,7 @@
   margin-bottom: 20px;
 }
 
+
 .admin-header {
   font-size: 40px;
   margin-top: -20px;
@@ -162,6 +163,7 @@
   margin-bottom: 10px;
   background-color: #333;
   color: #fff;
+  /* White text color */
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -170,6 +172,7 @@
 
 .admin-sidebar button:hover {
   background-color: #0056b3;
+  /* Darker blue color on hover */
 }
 
 .sidebar p {
@@ -183,28 +186,40 @@
   cursor: pointer;
   padding: 10px;
   position: absolute;
+  /* 절대 위치 설정 */
   top: 20px;
+  /* 상단 여백 조정 */
   left: 0px;
+  /* 왼쪽 여백 조정 */
 }
+
+
+
 
 .sidebar-toggle-button:hover {
   background-color: #ddd;
+  /* 마우스 호버 시 배경색 변경 */
 }
 
 .sidebar-toggle-button:focus {
   outline: none;
+  /* 포커스 시 윤곽선 제거 */
 }
-
-/*--------------------------------------------------------------------------------*/
 
 /* admin.css */
 
+/* Style for the container of the "More" button and options */
 .more-button-container {
   position: relative;
+  /* 상대 위치 설정 */
   display: flex;
+  /* 내부 요소들을 수평으로 배치하기 위해 flex 사용 */
   justify-content: center;
+  /* 가로 중앙 정렬 */
   align-items: center;
+  /* 세로 중앙 정렬 */
   height: 100%;
+  /* 컨테이너의 높이를 100%로 설정하여 컨테이너와 같은 높이로 만듭니다. */
 }
 
 .more-button {
@@ -214,29 +229,56 @@
   color: black;
 }
 
+/* Style for the options container */
 .options-container {
   position: absolute;
+  /* Position absolute to overlay options */
   top: 30px;
+  /* Position the options below the button */
   right: 0;
+  /* Align the options to the right side */
   background-color: #f9f9f9;
+  /* Light background color */
   min-width: 120px;
+  /* Minimum width of the options container */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Box shadow for a subtle effect */
   z-index: 1;
+  /* Ensure the options appear above other elements */
   padding: 8px;
+  /* Padding inside the options container */
 }
 
+/* Style for the options buttons inside the options container */
 .options-container button {
   display: block;
+  /* Display as block for full width */
   width: 100%;
+  /* Full width */
   padding: 8px 0;
+  /* Padding top and bottom */
   text-align: left;
+  /* Align text to the left */
   border: none;
-
+  /* No border */
   background-color: transparent;
+  /* Transparent background */
   cursor: pointer;
+  /* Pointer cursor on hover */
   color: black;
+  /* Set text color to black */
 }
 
+/* Style for the options buttons on hover */
 .options-container button:hover {
   background-color: #ddd;
+  /* Light gray background on hover */
+}
+
+.admin-viewbutton {
+  background-color: #103260; 
+  color: #ddd !important;
+  cursor: pointer !important;
+  align-self: center !important;
+  font-size: 16px !important;
 }

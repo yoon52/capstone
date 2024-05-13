@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import ProductList from './ProductList';
+import DetailProductList from './Detail';
 import serverHost from '../../utils/host';
-
-function ViewsList() {
+function DetailList() {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
@@ -24,11 +23,11 @@ function ViewsList() {
   }, []);
 
   return (
-    <div className='h2-font'>
-      <h2 className='text-center article-list-title' >중고거래 인기 매물</h2>
-      <ProductList filteredProducts={filteredProducts} />
+    <div className='h2-font-1'>
+      <h2>다른 상품</h2>
+      <DetailProductList filteredProducts={filteredProducts} />
     </div>
   );
 }
 
-export default ViewsList;
+export default DetailList;

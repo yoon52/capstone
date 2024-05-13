@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../../styles/login.css';
+import '../../styles/main.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function Signup() {
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -14,15 +15,16 @@ function Signup() {
     email: '',
     department: '',
     grade: '',
-    studentIdImage: null
+    studentIdImage: null  // New state to store the uploaded image
   });
-  const [idAvailability, setIdAvailability] = useState(null);
+  const [, setIdAvailability] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
 
+    // If the input type is file, handle it separately
     if (type === 'file') {
       setFormData(prevState => ({
         ...prevState,
@@ -36,16 +38,21 @@ function Signup() {
     }
   };
 
+  // 함수를 사용하여 이미지 파일 이름을 생성합니다.
   const getImageFileName = (userId, file) => {
+    // 파일 확장자를 가져옵니다.
     const extension = file.name.split('.').pop();
+    // 파일 이름을 사용자 ID와 확장자를 결합하여 반환합니다.
     return `${userId}.${extension}`;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 이미지 파일 이름을 생성합니다.
     const imageFileName = getImageFileName(formData.id, formData.studentIdImage);
 
+    // 이미지를 포함한 FormData 생성
     const formDataWithImage = new FormData();
     formDataWithImage.append('id', formData.id);
     formDataWithImage.append('name', formData.name);
@@ -54,24 +61,24 @@ function Signup() {
     formDataWithImage.append('email', formData.email);
     formDataWithImage.append('department', formData.department);
     formDataWithImage.append('grade', formData.grade);
-    formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName);
+    formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName); // 이미지 추가 및 파일 이름 설정
 
     try {
-      const response = await fetch('http://localhost:4000/signup', {
+      const response = await fetch(`${serverHost}:4000/signup`, {
         method: 'POST',
-        body: formDataWithImage
+        body: formDataWithImage // FormData 전송
       });
       if (response.ok) {
         handleSignupSuccess();
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.error);
-        setIsModalOpen(true);
+        setIsModalOpen(true); // 에러 발생 시 모달 열기
       }
     } catch (error) {
       console.error('Error:', error);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
-      setIsModalOpen(true);
+      setIsModalOpen(true); // 에러 발생 시 모달 열기
     }
   };
 
@@ -88,7 +95,7 @@ function Signup() {
 
   const handleCheckAvailability = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/checkUser?id=${formData.id}`);
+      const response = await fetch(`${serverHost}:4000/checkUser?id=${formData.id}`);
       if (response.ok) {
         const data = await response.json();
         setIdAvailability(data.available);
@@ -97,16 +104,15 @@ function Signup() {
       } else {
         setIdAvailability(null);
         setErrorMessage('아이디 중복 확인 중 오류가 발생했습니다.');
-        setIsModalOpen(true);
+        setIsModalOpen(true); // Open modal on error
       }
     } catch (error) {
       console.error('Error:', error);
       setIdAvailability(null);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
-      setIsModalOpen(true);
+      setIsModalOpen(true); // Open modal on error
     }
   };
-
   return (
     <div>
       <a href="/Login">

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
 import { FaBars, FaPlus, FaComments, FaUser, FaTimes, FaCog, FaSignOutAlt, FaHeart, FaMoneyCheck } from 'react-icons/fa';
 import logo from '../../image/logo.png';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import serverHost from '../../utils/host';
 
 const Header = ({
   toggleNavMenu,
@@ -13,12 +15,12 @@ const Header = ({
   handleKeywordManagement,
   handleProductManagement,
   handleLogout,
-  handleShowWishlist,
+  handleShowWishlist, // 찜목록 표시 핸들러 추가
   searchTerm,
   handleChangeSearchTerm,
   handleEnterKeyPress,
   searchInputRef,
-  onSearchSubmit
+  onSearchSubmit // 검색 제출 핸들러 추가
 
 }) => {
   const [showRecentSearches, setShowRecentSearches] = useState(false);
@@ -30,13 +32,15 @@ const Header = ({
 
   const handleSearchInputFocus = () => {
     console.log('Input clicked'); // 검색 인풋창 클릭시 "Input clicked"를 콘솔에 출력
+
   };
+
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         // 서버에 해당 사용자 정보 요청
-        const response = await fetch('http://localhost:4000/getUserInfo', {
+        const response = await fetch(`${serverHost}:4000/getUserInfo`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -56,25 +60,20 @@ const Header = ({
     fetchUserInfo();
   }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 설정
 
+
   const handleSearchInputBlur = () => {
     setShowRecentSearches(false);
   };
 
-  const handleSearchSubmit = () => {
-    if (searchTerm.trim() !== '') {
-      // Call the onSearchSubmit handler with the searchTerm
-      onSearchSubmit(searchTerm);
-
-      // Navigate to SearchResultsPage with the encoded searchTerm
-      navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
-    }
-  };
 
   // 결제 내역 관리 페이지로 이동하는 함수
   const handlePayments = () => {
     // '/payments' 경로로 이동합니다. 원하는 경로로 수정 가능합니다.
     navigate('/payments');
   };
+
+
+
 
   return (
     <header className="header-main">
@@ -114,6 +113,7 @@ const Header = ({
           <button className="header-button" onClick={handleShowWishlist}>
             <FaHeart />
           </button>
+          {/* 찜목록 표시 버튼 */}
 
         </div>
       </div>

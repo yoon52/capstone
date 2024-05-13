@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/myinfo.css';
 import UserEdit from './UserEdit.jsx';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host.js';
 
 function MyInfo() {
   const [password, setPassword] = useState('');
@@ -11,7 +12,7 @@ function MyInfo() {
   const handleConfirm = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch('http://localhost:4000/myinfo', {
+      const response = await fetch(`${serverHost}:4000/myinfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,7 +40,7 @@ function MyInfo() {
       <h1 className="myinfo-header">내 정보</h1>
       <div className="myinfo-container">
         {!isPasswordConfirmed && (
-          <form onSubmit={handleConfirm}>
+          <form onSubmit={handleConfirm}> {/* Form element wrapping input and button */}
             <h3 className="input-password">비밀번호를 입력해주세요</h3>
             <input
               type="password"

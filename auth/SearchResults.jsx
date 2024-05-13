@@ -7,6 +7,7 @@ import ChatListComponent from './ChatListComponent';
 import ShowWishlist from './ShowWishlist';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../../styles/product.css';
+import serverHost from '../../utils/host';
 
 const SearchResults = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -15,7 +16,7 @@ const SearchResults = () => {
   const navigate = useNavigate();
   const { searchTerm: urlSearchTerm } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchError, setSearchError] = useState('');
+  const [, setSearchError] = useState('');
   const [showNavMenu, setShowNavMenu] = useState(false);
   const searchInputRef = useRef(null);
 
@@ -23,12 +24,12 @@ const SearchResults = () => {
     const fetchSearchResults = async () => {
       if (!urlSearchTerm) return;
       try {
-        const response = await fetch(`http://localhost:4000/products?search=${urlSearchTerm}`);
+        const response = await fetch(`${serverHost}:4000/products?search=${urlSearchTerm}`);
         if (response.ok) {
           const data = await response.json();
           const updatedProducts = data.map(product => ({
             ...product,
-            imageUrl: `http://localhost:4000/uploads/${product.image}`
+            imageUrl: `${serverHost}:4000/uploads/${product.image}`
           }));
           setFilteredProducts(updatedProducts);
           setLoading(false);
@@ -72,7 +73,7 @@ const SearchResults = () => {
 
   const handleProductClick = async (productId) => {
     try {
-      await fetch(`http://localhost:4000/updateViews/${productId}`, {
+      await fetch(`${serverHost}:4000/updateViews/${productId}`, {
         method: 'POST',
       });
       navigate(`/ProductDetail/${productId}`);
@@ -87,12 +88,12 @@ const SearchResults = () => {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:4000/products?search=${searchTerm}`);
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
         const data = await response.json();
         const updatedProducts = data.map(product => ({
           ...product,
-          imageUrl: `http://localhost:4000/uploads/${product.image}`
+          imageUrl: `${serverHost}:4000/uploads/${product.image}`
         }));
         setFilteredProducts(updatedProducts);
         setLoading(false);
@@ -191,7 +192,7 @@ const SearchResults = () => {
                       <div className="product-image-container">
                         {product.image && (
                           <img
-                            src={`http://localhost:4000/uploads/${extractImageFilename(product.image)}`}
+                            src={`${serverHost}:4000/uploads/${extractImageFilename(product.image)}`}
                             alt={product.name}
                             className="product-image"
                           />

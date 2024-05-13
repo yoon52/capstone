@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/alt-text */
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Modal from "react-modal";
+import serverHost from "../../utils/host";
 
 export function SuccessPage() {
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -17,7 +21,7 @@ export function SuccessPage() {
 
   async function confirmPayment() {
     try {
-      const response = await fetch('http://localhost:4000/confirm', {
+      const response = await fetch(`${serverHost}:4000/confirm`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -51,7 +55,7 @@ export function SuccessPage() {
   // 상품의 판매 상태를 업데이트하는 함수
   const handleSellProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,15 +76,15 @@ export function SuccessPage() {
   // Function to update the seller rating
   const updateSellerRating = async () => {
     try {
-      const sellerId = sessionStorage.getItem('userId'); // 판매자의 ID 가져오기
+      
       // 판매자 평점을 서버로 전송
-      const response = await fetch('http://localhost:4000/ratings', {
+      const response = await fetch(`${serverHost}:4000/ratings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          sellerId: sellerId,
+          
           productId,
           rating: rating // 현재 선택된 평점을 전송합니다.
         })
@@ -109,10 +113,7 @@ export function SuccessPage() {
     setRating(roundedValue);
   };
 
-  // Function to handle modal open
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  
 
   // Function to handle modal close
   const closeModal = () => {
@@ -171,7 +172,7 @@ export function SuccessPage() {
                 className="btn w-100"
                 href="https://docs.tosspayments.com/guides/payment-widget/integration"
                 target="_blank"
-                rel="noopner noreferer"
+                rel="noopner noreferer noreferrer"
               >
                 결제 연동 문서가기
               </a>

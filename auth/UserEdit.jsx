@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import '../../styles/myinfo.css';
+import serverHost from '../../utils/host';
 
 Modal.setAppElement('#root');
 
@@ -17,7 +18,7 @@ function UserEdit({ userInfo }) {
 
   const handleSave = async () => {
     try {
-      const response = await fetch('http://localhost:4000/edituserinfo', {
+      const response = await fetch(`${serverHost}:4000/edituserinfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -42,7 +43,7 @@ function UserEdit({ userInfo }) {
 
   const confirmDeleteAccount = async () => {
     try {
-      const response = await fetch('http://localhost:4000/deleteaccount', {
+      const response = await fetch(`${serverHost}:4000/deleteaccount`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -71,7 +72,7 @@ function UserEdit({ userInfo }) {
   return (
     <div>
       <h2>회원 정보 수정</h2>
-      <p className="user-id">ID : {userInfo.id}</p>
+      <p className="user-id">학번 : {userInfo.id}</p>
       <div className="form-group">
         <input type="text"
           value={editedUserInfo.name}
@@ -119,20 +120,20 @@ function UserEdit({ userInfo }) {
       </div>
       <div className="right-align-buttons">
         <button className="changepw-button" onClick={handleChangePassword}>비밀번호 변경</button>
+      </div>
+      <div className="right-align-buttons">
         <button className="withdrawal" onClick={handleDeleteAccount}>회원 탈퇴</button>
       </div>
 
 
       {/* 모달 */}
       <Modal className="withdrawl-modal" isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
-        <h1 className="withdrawl-title"> 탈퇴 전 유의사항</h1>
-        <h3 className="withdrawl-text">
-          탈퇴 후 7일간 재가입이 불가능합니다. <br />
-          탈퇴 시, 계정의 모든 정보(상품, 찜목록)는<br />
-          삭제되며 재가입 시에도 복구되지 않습니다. <br />
-        </h3>
+        <h2 className="withdrawl-title"> 회원 탈퇴</h2>
+        <h3>회원 탈퇴와 함께 K'du-re 에 등록된 모든 개인정보는</h3>
+        <h3>삭제, 폐기 처리되며 복구되지 않습니다.</h3>
         <div className="form-group">
           <input type="password"
+            className='withdrawl-form'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="회원탈퇴를 원하시면 비밀번호를 입력해주시길 바랍니다."

@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton, Menu, MenuItem } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import '../../styles/product.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [,setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // 메뉴의 anchor 요소
-
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage`, {
         headers: {
           'user_id': sessionStorage.getItem('userId')
         }
@@ -38,7 +35,7 @@ function ProductManagement() {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'user_id': sessionStorage.getItem('userId')
@@ -57,12 +54,12 @@ function ProductManagement() {
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
     setEditingProduct({ ...product });
-    setIsModalOpen(true);
+    setIsModalOpen(true); // 모달 열기
   };
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/${editingProduct.id}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +71,8 @@ function ProductManagement() {
         setProducts(products.map(product => (product.id === editingProduct.id ? editingProduct : product)));
         setSelectedProduct(null);
         setEditingProduct(null);
-        setIsModalOpen(false);
+        alert('상품이 수정되었습니다.');
+        setIsModalOpen(false); // 모달 닫기
       } else {
         console.error('상품 수정 실패:', response.status);
       }
@@ -85,7 +83,7 @@ function ProductManagement() {
 
   const handleSellProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +91,8 @@ function ProductManagement() {
         }
       });
       if (response.ok) {
-        setProducts(products.map(product => (product.id === productId ? { ...product, status: '판매완료' } : product)));
+        setProducts(products.map(product => (product.id === productId ? { ...product, status: '판매완료' } : product))); // 상태 업데이트
+        // 알림 표시
         alert('상품이 판매되었습니다.');
       } else {
         console.error('상품 판매완료 처리 실패:', response.status);
@@ -107,19 +106,9 @@ function ProductManagement() {
     navigate(`/productDetail/${productId}`);
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <div>
-      <a href="/main">
-        <img src={logo} id='logo' alt="로고" />
-      </a>
+      <img src={logo} id='logo' alt="로고" />
       <h1 className="product-management-header">상품 관리</h1>
       <div className="product-management-container">
         <table className="product-management-table">
@@ -136,29 +125,13 @@ function ProductManagement() {
             {products.map(product => (
               <tr key={product.id}>
                 <td onClick={() => navigateToProductDetail(product.id)}>{product.name}</td>
-                <td className="description-cell">
-                  <div className="description-content" title={product.description}>
-                    {product.description.length > 18 ? `${product.description.slice(0, 18)}...` : product.description}
-                  </div>
-                </td>
+                <td>{product.description}</td>
                 <td>{product.price}</td>
                 <td>{product.status === 'available' ? '판매중' : product.status}</td>
-
                 <td>
-                  <IconButton onClick={handleClick} >
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    <MenuItem onClick={() => handleEditProduct(product)}>수정</MenuItem>
-                    <MenuItem onClick={() => handleDeleteProduct(product.id)}>삭제</MenuItem>
-                    {product.status !== '판매완료' && (
-                      <MenuItem onClick={() => handleSellProduct(product.id)}>판매완료</MenuItem>
-                    )}
-                  </Menu>
+                  <button onClick={() => handleEditProduct(product)}>수정</button>
+                  <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
+                  {product.status !== '판매완료' && <button onClick={() => handleSellProduct(product.id)}>판매완료</button>}
                 </td>
               </tr>
             ))}
@@ -169,7 +142,7 @@ function ProductManagement() {
       {isModalOpen && (
         <div className="manage-modal">
           <div className="manage-modal-content">
-            <label htmlFor="name">상품명:</label>
+            <label htmlFor="name">상품명 :</label>
             <input
               id="name"
               type="text"
@@ -193,6 +166,7 @@ function ProductManagement() {
             <button onClick={handleSaveEdit}>수정하기</button>
             <button onClick={() => setIsModalOpen(false)}>수정 취소</button>
           </div>
+
         </div>
       )}
     </div>

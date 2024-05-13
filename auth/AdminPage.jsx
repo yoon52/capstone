@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
+import serverHost from '../../utils/host';
 import '../../styles/admin.css';
 
 function AdminPage() {
@@ -15,7 +15,6 @@ function AdminPage() {
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
 
-
   useEffect(() => {
     fetchUsers();
     fetchApprovedUsers();
@@ -23,7 +22,7 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-        const response = await fetch('http://localhost:4000/users');
+        const response = await fetch(`${serverHost}:4000/users`);
         if (response.status === 204) {
             console.log('승인대기중인 사용자 정보가 없습니다.');
             // 사용자 정보가 없는 경우 빈 배열을 설정
@@ -45,7 +44,7 @@ function AdminPage() {
 
   const fetchApprovedUsers = async () => {
     try {
-      const response = await fetch('http://localhost:4000/users/approved');
+      const response = await fetch(`${serverHost}:4000/users/approved`);
       const approvedUserData = await response.json();
       setApprovedUsers(approvedUserData);
     } catch (error) {
@@ -60,7 +59,7 @@ function AdminPage() {
         bodyData = { ...bodyData, rejectionReason };
       }
 
-      const response = await fetch(`http://localhost:4000/users/${userId}/approval`, {
+      const response = await fetch(`${serverHost}:4000/users/${userId}/approval`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -89,7 +88,7 @@ function AdminPage() {
 
   const sendImageForOCR = async (userId, imageUrl) => {
     try {
-      const response = await fetch('http://localhost:4000/api/verify', {
+      const response = await fetch(`${serverHost}:4000/api/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -158,7 +157,7 @@ function AdminPage() {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:4000/deletefromadmin/${userId}`, {
+      const response = await fetch(`${serverHost}:4000/deletefromadmin/${userId}`, {
         method: 'DELETE'
       });
       if (response.ok) {
@@ -226,9 +225,9 @@ function AdminPage() {
       {selectedUser && (
         <div className="admin-modal">
           <div className="modal-content">
-            <img src={`http://localhost:4000/uploads_id/${selectedUser.id}.jpg`} alt="학생증 이미지" />
+            <img src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`} alt="학생증 이미지" />
             {verificationResult && <p>{verificationResult}</p>}
-            <button onClick={() => handleDetailModalOpen(selectedUser.id, `http://localhost:4000/uploads_id/${selectedUser.id}.jpg`)}>
+            <button onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>
               상세 정보 보기
             </button>
             <button onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>승인</button>

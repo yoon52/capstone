@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
+import serverHost from '../../utils/host';
 
 const ChatComponent = () => {
   const userId = sessionStorage.getItem('userId');
@@ -15,7 +16,7 @@ const ChatComponent = () => {
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    socket.current = io('http://localhost:4001/', {
+    socket.current = io(`${serverHost}:4001/`, {
       query: { productId, receiver }
     });
 
@@ -60,7 +61,7 @@ const ChatComponent = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:4001/messages/${productId}`, {
+      const response = await fetch(`${serverHost}:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }

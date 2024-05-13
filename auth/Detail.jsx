@@ -4,7 +4,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
 
-function ProductList({ filteredProducts }) {
+function Detail({ filteredProducts }) {
   const navigate = useNavigate();
   const [formattedProducts, setFormattedProducts] = useState([]);
 
@@ -12,7 +12,7 @@ function ProductList({ filteredProducts }) {
     const formatDate = (createdAt) => {
       const currentTime = new Date();
       const productTime = new Date(createdAt);
-      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60)); // milliseconds to minutes
+      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60));
 
       if (timeDifference < 30) {
         return '방금 전';
@@ -61,33 +61,41 @@ function ProductList({ filteredProducts }) {
     }
   };
 
+
   return (
-    <div className="cards-wrap">
-      {formattedProducts.map((product) => (
-        <article className="card-top" key={product.id} onClick={() => handleProductClick(product.id)}>
-          <a className="card-link" href={`/ProductDetail/${product.id}`} data-event-label={product.id}>
-            <div className="card-photo">
-              <img
-                src={`http://localhost:4000/uploads/${product.image}`}
-                alt={product.title}
-              />
-            </div>
-            <div className="card-desc">
-              <h2 className="card-title">상품명 : {product.name}</h2>
-              <div className="card-price">가격 : {product.price}원</div>
-              <div className="product-info1">
-                <div className="product-views-L">
-                  <VisibilityIcon style={{ marginRight: '5px' }} />
+    <div className="product-list-container-1">
+      <div className="product-list-wrapper-1">
+        <div className="product-grid-1">
+          {formattedProducts.map((product) => (
+            <div
+              key={product.id}
+              className="product-item-1"
+              onClick={() => handleProductClick(product.id)}
+            >
+              <div className="product-image-container-1">
+                <img
+                  src={`${serverHost}:4000/uploads/${product.image}`}
+                  alt="Product"
+                  className="product-image"
+                />
+              </div>
+              <div className="product-details-1">
+                <p className="product-name-1">{product.name}</p>
+                <p className="product-price-1">
+                  <span style={{ fontSize: '20px', fontWeight: 550 }}>{product.price}</span> 원
+                </p>
+                <div className="product-views">
+                  <VisibilityIcon sx={{ fontSize: 15, marginRight: 0.5, marginBottom: -0.3 }} />
                   {product.views}
+                  <p className="product-time"> {product.formattedCreatedAt}</p>
                 </div>
-                <p className="product-time-L">{product.formattedCreatedAt}</p>
               </div>
             </div>
-          </a>
-        </article>
-      ))}
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
-export default ProductList;
+export default Detail;
