@@ -361,7 +361,7 @@ const ProductDetail = () => {
         <div style={{ display: 'flex', width: '100%' }}>
           <img
             className="product-d-image"
-            src={`http://localhost:4000/uploads/${product.image}`}
+            src={`${serverHost}:4000/uploads/${product.image}`}
             alt={product.name}
           />
           <div className="product-content">
@@ -420,6 +420,7 @@ const ProductDetail = () => {
           ))}
         </div>
 
+
         <MuiModal
           open={isChatModalOpen}
           onClose={() => setIsChatModalOpen(false)}
@@ -448,10 +449,12 @@ const ProductDetail = () => {
           <div className="seller-profile">
             <div>
               <div id="article-profile-image">
+
                 <img src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png" />
                 <div className="article-profile-left">
                   <div className="space-between">
                     <p>학번: {sellerId}</p>
+
                   </div>
                   <p>이름: {sellerName}</p>
                 </div>

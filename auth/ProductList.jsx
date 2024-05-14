@@ -68,13 +68,13 @@ function ProductList({ filteredProducts }) {
           <a className="card-link" href={`/ProductDetail/${product.id}`} data-event-label={product.id}>
             <div className="card-photo">
               <img
-                src={`http://localhost:4000/uploads/${product.image}`}
+                src={`${serverHost}:4000/uploads/${product.image}`}
                 alt={product.title}
               />
             </div>
             <div className="card-desc">
-              <h2 className="card-title">상품명 : {product.name}</h2>
-              <div className="card-price">가격 : {product.price}원</div>
+              <h2 className="card-title">상품명: {product.name}</h2>
+              <div className="card-price">가격: {product.price}원</div>
               <div className="product-info1">
                 <div className="product-views-L">
                   <VisibilityIcon style={{ marginRight: '5px' }} />

@@ -32,7 +32,8 @@ function LatestList() {
     };
 
     fetchLatestProducts();
-  }, []);
+  }, []); // filteredProducts 상태가 변경될 때만 실행
+
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -219,8 +220,8 @@ function LatestList() {
                   />
                 </div>
                 <div className="card-desc">
-                  <h2 className="card-title">상품명 : {product.name}</h2>
-                  <div className="card-price">가격 : {product.price}원</div>
+                  <h2 className="card-title">상품명: {product.name}</h2>
+                  <div className="card-price">가격: {product.price}원</div>
                   <div className="product-info1">
                     <div className="product-views-L">
                       <VisibilityIcon style={{ marginRight: '5px' }} />

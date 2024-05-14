@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/login.css';
 import logo from '../../image/logo.png';
 import serverHost from '../../utils/host';
+
 function FindPw() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -44,27 +45,29 @@ function FindPw() {
   };
 
   return (
-
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Login">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="findpw-header">비밀번호 찾기</h1>
       <div className="findpw-container">
         <form onSubmit={(e) => { e.preventDefault(); handleResetPassword(); }}>
-        <div className="form-group">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="이메일을 입력하세요"
-            required
-          />
+          <div className="form-group">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="이메일을 입력하세요"
+              required
+            />
           </div>
           <button type="submit" className="findpw-button">비밀번호 찾기</button>
         </form>
 
         {showModal && (
-          <div className="modal">
+          <div className="modal-overlay">
             <div className="modal-content">
               <p className="found-pw">{message}</p>
               <div className="pwfind-modal">

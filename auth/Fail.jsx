@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { useSearchParams } from "react-router-dom";
 
 export function FailPage() {

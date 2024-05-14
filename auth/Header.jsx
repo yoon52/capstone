@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState, useEffect } from 'react';
 
 import { FaBars, FaPlus, FaComments, FaUser, FaTimes, FaCog, FaSignOutAlt, FaHeart, FaMoneyCheck } from 'react-icons/fa';
@@ -61,6 +62,7 @@ const Header = ({
   }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 설정
 
 
+
   const handleSearchInputBlur = () => {
     setShowRecentSearches(false);
   };
@@ -122,14 +124,18 @@ const Header = ({
           <div className="sidebar-item">
             {userInfo && (
               <>
-                <p className="user-info">이름 : {userInfo.name}</p>
-                <p className="user-info">학과 : {userInfo.department}</p>
-                <p className="user-info">학년 : {userInfo.grade}</p>
-                <p className="user-info">매너 학점 : {userInfo.rates}</p>
-                <p className="user-info">잔액 : {userInfo && userInfo.total_sales}</p>
+                <div className="image-container">
+                  <img src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png" />
+                </div>
+                <div className="user-info-container">
+                  <p className="user-info">이름: {userInfo.name}</p>
+                  <p className="user-info">매너 학점: {userInfo.rates}</p>
+                  <p className="user-info">잔액: {userInfo && userInfo.total_sales}</p>
+                </div>
               </>
             )}
           </div>
+
           <button type="button" className="close-menu-btn" onClick={closeNavMenu}><FaTimes /></button>
           <button type="button" className="main-nav-button" onClick={handleKeywordManagement}><FaCog /> 검색어 관리</button>
           <button type="button" className="main-nav-button" onClick={handleProductManagement}><FaCog /> 상품 관리</button>

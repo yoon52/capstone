@@ -51,12 +51,16 @@ function FindId() {
   const navigateToLogin = () => {
     window.location.href = '/Login';
   };
+
   const navigateToFindPw = () => {
     window.location.href = '/FindPw';
   };
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Login">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="findid-header">아이디 찾기</h1>
       <div className="findid-container">
         <form onSubmit={handleSubmit}>
@@ -106,7 +110,7 @@ function FindId() {
         </form>
 
         {showNotFoundModal && (
-          <div className="modal">
+          <div className="modal-overlay">
             <div className="modal-content">
               <p className="not-found">아이디를 찾을 수 없습니다.</p>
               <button className="modal-close" onClick={handleCloseNotFoundModal}>확인</button>
@@ -115,7 +119,7 @@ function FindId() {
         )}
 
         {showFoundModal && (
-          <div className="modal">
+          <div className="modal-overlay">
             <div className="modal-content">
               <p className="found-id">찾은 아이디 : {id}</p>
               <div className="findid-modal">
