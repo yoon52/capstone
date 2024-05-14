@@ -117,14 +117,6 @@
   /* 배경에 투명도를 주어 모달이 나타날 때 뒷 배경이 어둡게 보이도록 합니다. */
 }
 
-.modal-content {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  /* 그림자 효과를 줍니다. */
-}
-
 .modal-content img {
   max-width: 100%;
   /* 이미지가 모달 내에서 너무 크게 보이지 않도록 최대 너비를 설정합니다. */

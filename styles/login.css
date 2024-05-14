@@ -13,14 +13,14 @@ input[type="email"] {
 
 /* 파일 선택 창 */
 input[type="file"] {
-  width: calc(100% - 22px);
-  font-size: 13px;
-  border-radius: 5px;
-  border: 1.5px solid #b0c4de;
-  box-sizing: border-box;
-  margin: 0 auto;
-  margin-top: 10px;
-  color: gray;
+  width: calc(100% - 22px) !important;
+  font-size: 13px !important;
+  border-radius: 5px !important;
+  border: 1.5px solid #b0c4de !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+  margin-top: 10px !important;
+  color: gray !important;
 }
 
 /* 파일 선택 */
@@ -47,12 +47,8 @@ input[type="file"]::file-selector-button:hover {
 }
 
 /* 모달 */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,6 +63,7 @@ input[type="file"]::file-selector-button:hover {
   width: 300px;
   max-width: 90%;
   height: auto;
+  opacity: 1;
 }
 
 .modal-close {
@@ -313,6 +310,7 @@ input[type="file"]::file-selector-button:hover {
   cursor: pointer;
   font-size: 13px;
   margin-right: 10px;
+  margin-top: 10px;
   transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
 }
 

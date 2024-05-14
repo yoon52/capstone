@@ -558,12 +558,6 @@ textarea {
   margin-left: 15px;
 }
 
-.h2-font {
-  display: grid;
-  place-items: center;
-  text-align: center;
-}
-
 .seller-profile {
   margin-top: 50px;
   margin-left: 50px;
@@ -607,20 +601,8 @@ textarea {
   top: 0;
 }
 
-.face-03 {
-  background-position: -0px -75px;
-  width: 24px;
-  height: 24px;
-  display: inline-block;
-  overflow: hidden;
-  text-indent: -9999px;
-  text-align: left;
-  background: url(https://d1unjqcospf8gs.cloudfront.net/assets/home/articles/face-icon-set-0cffc52….png) no-repeat;
-  background-size: 29px 147px;
-}
-
 .bar {
-  height: 10px;
+  height: 5px;
   background-color: #ddd;
 }
 
