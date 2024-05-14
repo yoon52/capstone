@@ -111,7 +111,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       try {
-        const response = await fetch(`${serverHost}:4000/products/latest`);
+        const response = await fetch(`${serverHost}:4000/products`);
         if (response.ok) {
           const data = await response.json();
           setRelatedProducts(data);
@@ -124,7 +124,7 @@ const ProductDetail = () => {
     };
 
     fetchRelatedProducts();
-  });
+  }, []);
 
   const handleChatButtonClick = async () => {
     try {
@@ -361,7 +361,7 @@ const ProductDetail = () => {
         <div style={{ display: 'flex', width: '100%' }}>
           <img
             className="product-d-image"
-            src={`http://localhost:4000/uploads/${product.image}`}
+            src={`${serverHost}:4000/uploads/${product.image}`}
             alt={product.name}
           />
           <div className="product-content">

@@ -68,7 +68,7 @@ function ProductList({ filteredProducts }) {
           <a className="card-link" href={`/ProductDetail/${product.id}`} data-event-label={product.id}>
             <div className="card-photo">
               <img
-                src={`http://localhost:4000/uploads/${product.image}`}
+                src={`${serverHost}:4000/uploads/${product.image}`}
                 alt={product.title}
               />
             </div>

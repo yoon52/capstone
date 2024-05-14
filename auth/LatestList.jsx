@@ -32,7 +32,8 @@ function LatestList() {
     };
 
     fetchLatestProducts();
-  }, []);
+  }, []); // filteredProducts 상태가 변경될 때만 실행
+
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
