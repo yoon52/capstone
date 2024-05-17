@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, Routes, Route, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
 import serverHost from '../../utils/host';

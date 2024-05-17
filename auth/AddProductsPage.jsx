@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import Header from './Header';
+import Header from '../header/Header';
 import serverHost from '../../utils/host';
 
 function AddProducts() {
@@ -13,15 +13,15 @@ function AddProducts() {
   const [price, setPrice] = useState('');
   const [image, setImage] = useState(null); // 이미지 파일 상태 추가
   const [imagePreview, setImagePreview] = useState(null); // State for image preview
-  const [,setFilteredProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [,setSearchError] = useState('');
+  const [, setSearchError] = useState('');
 
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [, setShowRecentSearches] = useState(false);
 
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ function AddProducts() {
       setDescription(event.target.value);
     }
   };
-  
+
 
   const handlePriceChange = (event) => {
     setPrice(event.target.value);
@@ -186,7 +186,7 @@ function AddProducts() {
     setShowNavMenu(false);
   };
 
-  
+
 
   return (
     <div className="container-main">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/chat.css';
 import '../../styles/chatList.css';
 import ChatModal from './ChatModal';
-import Header from './Header';
+import Header from '../header/Header';
 import serverHost from '../../utils/host';
 
 const ChatListComponent = () => {
@@ -137,7 +137,7 @@ const ChatListComponent = () => {
   const closeNavMenu = () => {
     setShowNavMenu(false);
   };
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   return (
     <div className="container-main">
       <Header

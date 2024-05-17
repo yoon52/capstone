@@ -97,7 +97,7 @@ function Login() {
   };
 
 
-    const handleKakaoLogin = () => {
+  const handleKakaoLogin = () => {
     const clientId = '0bee6abe1a644025c9faedffda0ddd04';
     const redirectUri = `${serverHost}:4000/oauth/kakao/callback`;
     const responseType = 'code';

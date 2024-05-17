@@ -8,9 +8,9 @@ import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추
 import Modal from 'react-modal';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import ChatComponent from './ChatComponent';
+import ChatComponent from '../messages/ChatComponent';
 import '../../styles/product.css';
-import Header from './Header';
+import Header from '../header/Header';
 import DetailList from './DetailList';
 import serverHost from '../../utils/host';
 
@@ -294,7 +294,7 @@ const ProductDetail = () => {
   };
 
   const handleReport = () => {
-    // 신고하기 핸들러
+    navigate('/report');
   };
 
   const handleDelete = async () => {

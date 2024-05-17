@@ -21,7 +21,6 @@ const Header = ({
   handleChangeSearchTerm,
   handleEnterKeyPress,
   searchInputRef,
-  onSearchSubmit // 검색 제출 핸들러 추가
 
 }) => {
   const [showRecentSearches, setShowRecentSearches] = useState(false);

@@ -2,18 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import serverHost from '../../utils/host';
-import Header from './Header';
+import Header from '../header/Header';
 
 function LatestList() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [, setShowRecentSearches] = useState(false);
   const [formattedProducts, setFormattedProducts] = useState([]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function LatestList() {
         setSearchError('');
 
         // Navigate to the search results page
-        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
+        navigate(`/SearchResults/${encodeURIComponent(searchTerm)}`);
 
       } else {
         console.error('검색 오류:', response.status);

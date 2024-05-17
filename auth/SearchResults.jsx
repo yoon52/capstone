@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Route, Routes, useParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
-import ProductDetail from './ProductDetail';
-import ProductManagement from './ProductManagement';
-import ChatListComponent from './ChatListComponent';
-import ShowWishlist from './ShowWishlist';
+import ProductManagement from '../products/ProductManagementForm';
+import ChatListComponent from '../messages/ChatListComponent';
+import ShowWishlist from '../products/ShowWishlist';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
@@ -50,7 +49,7 @@ const SearchResults = () => {
       const currentTime = new Date();
       const productTime = new Date(createdAt);
       const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60));
-    
+
       if (timeDifference < 30) {
         return '방금 전';
       } else if (timeDifference < 60 * 24) {
@@ -219,7 +218,7 @@ const SearchResults = () => {
         )}
       </div>
       <Routes>
-        <Route path="/productDetail/:productId" element={<ProductDetail />} />
+        
         <Route path="/ProductManagement" element={<ProductManagement />} />
         <Route path="/ChatListComponent" element={<ChatListComponent />} />
         <Route path="/showWishlist" element={<ShowWishlist />} />

@@ -2,27 +2,27 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useRef } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import ViewsList from './ViewsList';
-import SearchResults from './SearchResults';
-import ProductDetail from './ProductDetail';
-import ProductManagement from './ProductManagement';
-import ChatListComponent from './ChatListComponent';
-import Header from './Header';
-import ShowWishlist from './ShowWishlist';
+import ViewsList from '../products/ViewsList';
+import SearchResults from '../header/SearchResults';
+import ProductDetail from '../products/ProductDetail';
+import ProductManagement from '../products/ProductManagementForm';
+import ChatListComponent from '../messages/ChatListComponent';
+import Header from '../header/Header';
+import ShowWishlist from '../products/ShowWishlist';
 import '../../styles/main.css';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
 
 function Main() {
-  const [,setFilteredProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [, setShowRecentSearches] = useState(false);
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -152,7 +152,7 @@ function Main() {
             <span className="cover-description">학생들과 가깝고 따뜻한 거래를<br />지금 경험해보세요.</span>
             <div className="cover-image">
               <span className="fleamarket-cover-image">
-                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래"/>
+                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래" />
               </span>
 
             </div>

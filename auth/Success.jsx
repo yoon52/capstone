@@ -76,7 +76,7 @@ export function SuccessPage() {
   // Function to update the seller rating
   const updateSellerRating = async () => {
     try {
-      
+
       // 판매자 평점을 서버로 전송
       const response = await fetch(`${serverHost}:4000/ratings`, {
         method: 'POST',
@@ -84,7 +84,7 @@ export function SuccessPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          
+
           productId,
           rating: rating // 현재 선택된 평점을 전송합니다.
         })
@@ -113,7 +113,7 @@ export function SuccessPage() {
     setRating(roundedValue);
   };
 
-  
+
 
   // Function to handle modal close
   const closeModal = () => {

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
 import serverHost from '../../utils/host';
@@ -12,7 +13,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-
+  const navigate = useNavigate();
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
       query: { productId, receiver }
@@ -79,6 +80,11 @@ const ChatPage = ({ chatRoomId, productId }) => {
     }
   };
 
+  const handlePayment = () => {
+    navigate(`/sandbox?productId=${productId}&userId=${userId}`);
+    console.log('결제 처리 로직을 추가하세요.');
+  };
+
   const isCurrentUser = (senderId) => senderId === userId;
 
   return (
@@ -103,6 +109,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
           placeholder="메시지를 입력하세요."
         />
         <button type="submit">전송</button>
+        <button onClick={handlePayment}>결제하기</button>
       </form>
     </div>
   );

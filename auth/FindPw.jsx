@@ -49,16 +49,16 @@ function FindPw() {
       <h1 className="findpw-header">비밀번호 찾기</h1>
       <div className="findpw-container">
         <form onSubmit={(e) => { e.preventDefault(); handleResetPassword(); }}>
-        <div className="form-group">
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="이메일을 입력하세요"
-            required
-          />
+          <div className="form-group">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="이메일을 입력하세요"
+              required
+            />
           </div>
           <button type="submit" className="findpw-button">비밀번호 찾기</button>
         </form>

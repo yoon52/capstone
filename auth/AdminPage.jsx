@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import serverHost from '../../utils/host';
@@ -15,7 +16,7 @@ function AdminPage() {
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
 
-
+  const navigate = useNavigate
   useEffect(() => {
     fetchUsers();
     fetchApprovedUsers();
@@ -23,24 +24,24 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-        const response = await fetch(`${serverHost}:4000/users`);
-        if (response.status === 204) {
-            console.log('승인대기중인 사용자 정보가 없습니다.');
-            // 사용자 정보가 없는 경우 빈 배열을 설정
-            setUsers([]);
-            return;
-        }
-        if (!response.ok) {
-            throw new Error('사용자 정보를 가져오지 못했습니다.');
-        }
-        const userData = await response.json();
-        setUsers(userData);
-    } catch (error) {
-        console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
-        // 사용자 정보를 가져오는 데 실패한 경우, 빈 배열로 사용자 목록을 설정
+      const response = await fetch(`${serverHost}:4000/users`);
+      if (response.status === 204) {
+        console.log('승인대기중인 사용자 정보가 없습니다.');
+        // 사용자 정보가 없는 경우 빈 배열을 설정
         setUsers([]);
+        return;
+      }
+      if (!response.ok) {
+        throw new Error('사용자 정보를 가져오지 못했습니다.');
+      }
+      const userData = await response.json();
+      setUsers(userData);
+    } catch (error) {
+      console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+      // 사용자 정보를 가져오는 데 실패한 경우, 빈 배열로 사용자 목록을 설정
+      setUsers([]);
     }
-};
+  };
 
 
   const fetchApprovedUsers = async () => {
@@ -112,10 +113,6 @@ function AdminPage() {
     await sendImageForOCR(userId, imageUrl);
   };
 
-  const handleDetailModalClose = () => {
-    setVerificationResult('');
-  };
-
   const handleRejectButton = (userId) => {
     setIsRejectionFormOpen(true);
     setSelectedUser({ id: userId });
@@ -170,6 +167,10 @@ function AdminPage() {
       console.error('사용자 삭제 중 오류 발생:', error);
     }
   };
+
+  const handleReport = async () => {
+    navigate('/ReportList')
+  }
 
   return (
     <div className="admin-container">
@@ -251,11 +252,12 @@ function AdminPage() {
       {isSidebarOpen && (
         <div className="admin-sidebar">
           <button onClick={handleApprovedUsersClick}>승인 완료된 사용자 보기</button>
+          <button onClick={handleReport}>신고 처리 내역 보기</button>
           {/* <button onClick={handlereportedUsersClick}>신고내역</button> */}
         </div>
 
       )}
-      
+
     </div>
 
   );

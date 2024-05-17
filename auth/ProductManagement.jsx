@@ -1,15 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/product.css';
-import logo from '../../image/logo.png';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import serverHost from '../../utils/host';
+import Header from '../header/Header';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
-  const [,setSelectedProduct] = useState(null);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+  const [, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
+  const [showNavMenu, setShowNavMenu] = useState(false);
+  const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
+  const searchInputRef = useRef(null);
+  const [, setShowRecentSearches] = useState(false);
+  const [, setFormattedProducts] = useState([]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -29,148 +39,189 @@ function ProductManagement() {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
-  const handleDeleteProduct = async (productId) => {
+
+
+
+  const handleAddProduct = () => {
+    navigate('/AddProducts');
+  };
+
+  const handleSearchProduct = async () => {
+    if (!searchTerm) {
+      setSearchError('검색어를 입력하세요.');
+      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      return;
+    }
+
     try {
-      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          'user_id': sessionStorage.getItem('userId')
-        }
-      });
+      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
-        setProducts(products.filter(product => product.id !== productId));
+        const data = await response.json();
+        setFilteredProducts(data);
+        setSavedSearchTerm(searchTerm);
+        saveSearchTerm(searchTerm);
+        setShowSearchResults(true);
+        setSearchError('');
+
+        // Navigate to the search results page
+        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
+
       } else {
-        console.error('상품 삭제 오류:', response.status);
+        console.error('검색 오류:', response.status);
       }
     } catch (error) {
-      console.error('상품 삭제 오류:', error);
+      console.error('검색 오류:', error);
+    }
+    // 검색어가 유효할 때 콘솔에 검색어 출력
+    console.log("검색어:", searchTerm);
+
+  };
+
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSearchProduct();
     }
   };
 
-  const handleEditProduct = (product) => {
-    setSelectedProduct(product);
-    setEditingProduct({ ...product });
-    setIsModalOpen(true); // 모달 열기
-  };
 
-  const handleSaveEdit = async () => {
+
+  const saveSearchTerm = async (searchTerm) => {
     try {
-      const response = await fetch(`${serverHost}:4000/productsmanage/${editingProduct.id}`, {
-        method: 'PUT',
+      const userId = sessionStorage.getItem('userId');
+      const response = await fetch(`${serverHost}:4000/searchHistory`, {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'user_id': sessionStorage.getItem('userId')
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(editingProduct)
+        body: JSON.stringify({ searchTerm, userId })
       });
-      if (response.ok) {
-        setProducts(products.map(product => (product.id === editingProduct.id ? editingProduct : product)));
-        setSelectedProduct(null);
-        setEditingProduct(null);
-        alert('상품이 수정되었습니다.');
-        setIsModalOpen(false); // 모달 닫기
-      } else {
-        console.error('상품 수정 실패:', response.status);
+      if (!response.ok) {
+        console.error('검색어 저장 오류:', response.status);
       }
     } catch (error) {
-      console.error('상품 수정 실패:', error);
+      console.error('검색어 저장 오류:', error);
     }
   };
 
-  const handleSellProduct = async (productId) => {
-    try {
-      const response = await fetch(`${serverHost}:4000/productsmanage/sold/${productId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'user_id': sessionStorage.getItem('userId')
-        }
-      });
-      if (response.ok) {
-        setProducts(products.map(product => (product.id === productId ? { ...product, status: '판매완료' } : product))); // 상태 업데이트
-        // 알림 표시
-        alert('상품이 판매되었습니다.');
-      } else {
-        console.error('상품 판매완료 처리 실패:', response.status);
-      }
-    } catch (error) {
-      console.error('상품 판매완료 처리 실패:', error);
-    }
+  const handleChangeSearchTerm = (event) => {
+    setSearchTerm(event.target.value);
+    setSearchError('');
   };
 
-  const navigateToProductDetail = (productId) => {
-    navigate(`/productDetail/${productId}`);
+  const handleKeywordManagement = () => {
+    navigate('/SearchKeyword');
   };
+
+  const handleProductManagement = () => {
+    navigate('/ProductManagement');
+  };
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
+  const handleShowMyInfoPage = () => {
+    navigate('/MyInfo');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('userId');
+    navigate('/login');
+  };
+
+  const handleShowChatList = () => {
+    navigate('/ChatListComponent');
+  };
+
+  const toggleNavMenu = () => {
+    setShowNavMenu(!showNavMenu);
+  };
+
+  const closeNavMenu = () => {
+    setShowNavMenu(false);
+  };
+
+  useEffect(() => {
+    const formatDate = (createdAt) => {
+      const currentTime = new Date();
+      const productTime = new Date(createdAt);
+      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60)); // milliseconds to minutes
+
+      if (timeDifference < 30) {
+        return '방금 전';
+      } else if (timeDifference < 60 * 24) {
+        return `${Math.floor(timeDifference / 60)}시간 전`;
+      } else if (timeDifference < 60 * 24 * 7) {
+        return `${Math.floor(timeDifference / (60 * 24))}일 전`;
+      } else if (timeDifference < 60 * 24 * 30) {
+        return `${Math.floor(timeDifference / (60 * 24 * 7))}주 전`;
+      } else {
+        return '한달 ↑';
+      }
+    };
+
+    const formatted = products.map(product => ({
+      ...product,
+      formattedCreatedAt: formatDate(product.createdAt),
+    }));
+    setFormattedProducts(formatted);
+  }, [products]);
+
 
   return (
-    <div>
-      <img src={logo} id='logo' alt="로고" />
-      <h1 className="product-management-header">상품 관리</h1>
-      <div className="product-management-container">
-        <table className="product-management-table">
-          <thead>
-            <tr>
-              <th>상품명</th>
-              <th>설명</th>
-              <th>가격</th>
-              <th>상태</th>
-              <th>작업</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product.id}>
-                <td onClick={() => navigateToProductDetail(product.id)}>{product.name}</td>
-                <td>{product.description}</td>
-                <td>{product.price}</td>
-                <td>{product.status === 'available' ? '판매중' : product.status}</td>
-                <td>
-                  <button onClick={() => handleEditProduct(product)}>수정</button>
-                  <button onClick={() => handleDeleteProduct(product.id)}>삭제</button>
-                  {product.status !== '판매완료' && <button onClick={() => handleSellProduct(product.id)}>판매완료</button>}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {isModalOpen && (
-        <div className="manage-modal">
-          <div className="manage-modal-content">
-            <label htmlFor="name">상품명:</label>
-            <input
-              id="name"
-              type="text"
-              value={editingProduct.name}
-              onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-            />
-            <label htmlFor="description">설명:</label>
-            <input
-              id="description"
-              type="text"
-              value={editingProduct.description}
-              onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-            />
-            <label htmlFor="price">가격:</label>
-            <input
-              id="price"
-              type="text"
-              value={editingProduct.price}
-              onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-            />
-            <button onClick={handleSaveEdit}>수정하기</button>
-            <button onClick={() => setIsModalOpen(false)}>수정 취소</button>
-          </div>
-
+    <div className="container-main">
+      <Header
+        toggleNavMenu={toggleNavMenu}
+        showNavMenu={showNavMenu}
+        closeNavMenu={closeNavMenu}
+        handleAddProduct={handleAddProduct}
+        handleShowChatList={handleShowChatList}
+        handleShowMyInfoPage={handleShowMyInfoPage}
+        handleKeywordManagement={handleKeywordManagement}
+        handleProductManagement={handleProductManagement}
+        handleLogout={handleLogout}
+        searchTerm={searchTerm}
+        handleChangeSearchTerm={handleChangeSearchTerm}
+        handleEnterKeyPress={handleEnterKeyPress}
+        searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
+        setShowRecentSearches={setShowRecentSearches}
+        userInfo
+        onSearchSubmit={handleSearchProduct}
+        recentSearches={[]}
+      />
+      <div className='h2-font'>
+        <h2>내가 등록한 상품</h2>
+        <div className="cards-wrap1">
+          {products.map((product) => (
+            <article className="card-top" key={product.id}>
+              <a className="card-link" href={`/ProductManagementForm/${product.id}`} data-event-label={product.id}>
+                <div className="card-photo">
+                  <img
+                    src={`${serverHost}:4000/uploads/${product.image}`}
+                    alt={product.title}
+                  />
+                </div>
+                <div className="card-desc">
+                  <h2 className="card-title">상품명: {product.name}</h2>
+                  <div className="card-price">가격: {product.price}원</div>
+                  <div className="product-info1">
+                    <div className="product-views-L">
+                      <VisibilityIcon style={{ marginRight: '5px' }} />
+                      {product.views}
+                    </div>
+                    <p className="product-time-L">{product.formattedCreatedAt}</p>
+                  </div>
+                </div>
+              </a>
+            </article>
+          ))}
         </div>
+      </div>
+      {searchError && (
+        <p className="search-error">{searchError}</p>
       )}
     </div>
   );
 }
 
-export default ProductManagement;
+export default ProductManagement

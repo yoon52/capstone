@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
+import Header from '../header/Header';
 import serverHost from '../../utils/host';
 
 import '../../styles/payments.css';
@@ -11,15 +11,15 @@ const Payments = () => {
   const [isLoading, setIsLoading] = useState(true);
   const userId = sessionStorage.getItem('userId');
   const navigate = useNavigate();
-  const [ ,setFilteredProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [ ,setSavedSearchTerm] = useState('');
-  const [ ,setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [ ,setSearchError] = useState('');
+  const [, setSearchError] = useState('');
 
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [, setShowRecentSearches] = useState(false);
 
   useEffect(() => {
     const fetchPayments = async () => {
