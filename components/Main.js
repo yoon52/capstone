@@ -1,32 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SearchInput from './SearchInput';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { TextInput } from 'react-native-paper'; // TextInput을 추가로 import합니다.
+import { Ionicons } from '@expo/vector-icons'; // 검색 아이콘을 추가로 import합니다.
 import SortSelect from './SortSelect';
 import ProductList from './ProductList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddProducts from './Addproducts'; // AddProducts 컴포넌트를 import합니다.
+import ChatList from './ChatList'; // ChatList 컴포넌트를 import합니다.
+import Sidebar from './SideBar'; // 사이드바 컴포넌트를 추가로 import합니다.
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
-function Main() {
+function MainScreen() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortType, setSortType] = useState('recommend');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 사이드바 열기/닫기 상태를 관리합니다.
+
   const navigation = useNavigation();
+
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = 'http://172.30.1.96:4000/products';
+        let url = 'http://172.30.1.19:4000/products';
         if (sortType === 'latest') {
-          url = 'http://172.30.1.96:4000/products/latest';
+          url = 'http://172.30.1.19:4000/products/latest';
         } else if (sortType === 'recommend') {
-          url = 'http://172.30.1.96:4000/products/recommendations';
+          url = 'http://172.30.1.19:4000/products/latest';
         } else if (sortType === 'views') {
-          url = 'http://172.30.1.96:4000/products/views';
+          url = 'http://172.30.1.19:4000/products/views';
         }
         const userId = await AsyncStorage.getItem('userId');
         const response = await fetch(url, {
@@ -55,27 +61,17 @@ function Main() {
   };
 
   const handleSearchProduct = () => {
-    const filtered = products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredProducts(filtered);
+    navigation.navigate('SearchPage');
   };
 
   const handleChangeSearchTerm = (value) => {
     setSearchTerm(value);
   };
 
-  const handleSortChange = (value) => {
-    setSortType(value);
-  };
-
   const handleKeywordManagement = () => {
     navigation.navigate('search-keyword');
   };
-  
-  const handleProductManagement = () => {
-    navigation.navigate('ProductManagement');
-  };
+
 
   const handleMyProfile = () => {
     navigation.navigate('MyInfo');
@@ -85,60 +81,106 @@ function Main() {
     // 로그아웃 액션 수행
     navigation.navigate('Login');
   };
-
-  return (
-    <ScrollView style={styles.mainContainer}>
-      <View style={styles.navigationButtons}>
-        <TouchableOpacity onPress={handleKeywordManagement} style={styles.managementButton}>
-          <Text>검색어 관리</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleProductManagement} style={styles.managementButton}>
-        </TouchableOpacity>
-      </View>
-      <SearchInput
-        searchTerm={searchTerm}
-        handleChangeSearchTerm={handleChangeSearchTerm}
-        handleSearchProduct={handleSearchProduct}
-      />
-      <SortSelect sortType={sortType} handleSortChange={handleSortChange} />
-      <ProductList filteredProducts={filteredProducts} />
-      
-    </ScrollView>
-  );
-}
-
-function ProductManagement() {
-  const navigation = useNavigation();
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+    console.log('touched')
+  };
 
   return (
     <View style={styles.container}>
-      <Text>Product Management Screen</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={toggleSidebar} style={styles.menuButton}>
+          <Ionicons name="menu" size={24} color="#103260" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.searchContainer}>
+        
+        <TouchableOpacity onPress={handleSearchProduct} style={styles.searchButton}>
+          <Ionicons name="search" size={24} color="#103260" />
+        </TouchableOpacity>
+      </View>
+      <ScrollView style={styles.productContainer}>
+        
+        <ProductList filteredProducts={filteredProducts} />
+      </ScrollView>
+      {isSidebarOpen && <Sidebar onClose={toggleSidebar} />}
     </View>
   );
 }
 
+
+
 const BottomTabNavigator = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Main" component={Main} />
-      <Tab.Screen name="AddProducts" component={AddProducts} />
-      <Tab.Screen name="ProductManagement" component={ProductManagement} />
+    <Tab.Navigator
+      shifting={true} // 탭이 스와이프되는 동안 색상이 변경되도록 설정
+      barStyle={{ backgroundColor: 'white' }} // 탭 바의 배경색 설정
+    >
+      <Tab.Screen
+        name="MainScreen"
+        component={MainScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="list" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddProduct"
+        component={AddProducts}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="add-circle" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ChatList"
+        component={ChatList}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="chatbubbles" size={24} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
-    
   );
-}
+};
+
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  container: {
+    marginTop: 50,
     flex: 1,
-    padding: 20,
   },
-  navigationButtons: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 0,
+    backgroundColor: '#f4f4f4',
+    
   },
-  
+  menuButton: {},
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#f4f4f4',
+  },
+  searchButton: {
+    borderRadius: 10,
+    marginLeft: '85%',
+    marginTop: -35,
+    marginBottom: -20,
+    
+  },
+  productContainer: {
+    marginTop: 5,
+    flex: 1,
+    paddingVertical: 10, // 위아래 패딩
+    paddingHorizontal: 20, // 양 옆 패딩
+  },
 });
 
 export default BottomTabNavigator;
