@@ -168,7 +168,7 @@ function Main() {
           <button className="more-button" onClick={handleMoreList}>전체 상품 보기</button>
         </div>
         <Routes>
-          <Route path="/productDetail/:productId" element={<ProductDetail />} />
+          <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />

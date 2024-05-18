@@ -266,6 +266,10 @@ const ProductDetail = () => {
     navigate('/ChatListComponent');
   };
 
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
+
   const toggleNavMenu = () => {
     setShowNavMenu(!showNavMenu);
   };
@@ -355,6 +359,9 @@ const ProductDetail = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
+        onSearchSubmit={handleSearchProduct}
+        recentSearches={[]}
       />
 
       <div className="product-detail">
@@ -448,16 +455,15 @@ const ProductDetail = () => {
         <section id="article-profile">
           <div className="seller-profile">
             <div>
-              <div id="article-profile-image">
-
+              <div>
                 <img src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png" />
-                <div className="article-profile-left">
-                  <div className="space-between">
-                    <p>학번: {sellerId}</p>
 
-                  </div>
-                  <p>이름: {sellerName}</p>
+              </div>
+              <div className="article-profile-left">
+                <div className="space-between">
+                  <p>학번: {sellerId}</p>
                 </div>
+                <p>이름: {sellerName}</p>
               </div>
             </div>
             <div id="article-profile-right">

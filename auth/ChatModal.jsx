@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
 import serverHost from '../../utils/host';
-const ChatPage = ({ chatRoomId, productId }) => {
+
+const ChatPage = ({ productId }) => {
   const userId = sessionStorage.getItem('userId');
   const userType = sessionStorage.getItem('userType');
   const receiver = userType === 'seller' ? 'buyer' : 'seller';
@@ -13,10 +14,13 @@ const ChatPage = ({ chatRoomId, productId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
+  const [sellerId, setSellerId] = useState([]);
+
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
       query: { productId, receiver }
     });
+
 
     socket.current.on('newMessage', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
@@ -26,7 +30,9 @@ const ChatPage = ({ chatRoomId, productId }) => {
     socket.current.on('connect', () => {
       console.log('Client reconnected');
       fetchMessages();
+      fetchSellerId(); // 판매자 ID 가져오기
     });
+
 
     return () => {
       socket.current.disconnect();
@@ -79,11 +85,25 @@ const ChatPage = ({ chatRoomId, productId }) => {
     }
   };
 
+  const fetchSellerId = async () => {
+    try {
+      const response = await fetch(`${serverHost}:4001/product/sellerId/${productId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch seller ID');
+      }
+      const data = await response.json();
+      setSellerId(data.sellerId); // 판매자 ID 설정
+    } catch (error) {
+      console.error('Error fetching seller ID:', error);
+    }
+  };
+
+
   const isCurrentUser = (senderId) => senderId === userId;
 
   return (
     <div className="chat-page">
-      <h2>채팅방 번호 : {chatRoomId}</h2>
+      <h2>판매자 : {sellerId}</h2>
       <div ref={messageContainerRef} className="chat-messages">
         {messages.map((message, index) => (
           <div
@@ -102,7 +122,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="메시지를 입력하세요."
         />
-        <button type="submit">전송</button>
+        <button type="submit" className="submit-button">전송</button>
       </form>
     </div>
   );

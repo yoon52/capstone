@@ -145,6 +145,33 @@ app.get('/myChatRooms', async (req, res) => {
   }
 });
 
+// 사용자 ID에 해당하는 상품의 판매자 ID를 가져오는 엔드포인트
+app.get('/product/sellerId/:productId', async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    // MySQL 풀에서 연결을 가져옴
+    const connection = await pool.getConnection();
+
+    // 쿼리 작성 및 실행
+    const query = 'SELECT user_id FROM products WHERE id = ?';
+    const [rows] = await connection.execute(query, [productId]);
+
+    connection.release(); // 연결 반환
+
+    if (rows.length === 0) {
+      // 해당 상품이 없는 경우
+      res.status(404).json({ error: 'Product not found' });
+    } else {
+      // 결과 반환 (판매자 ID)
+      const sellerId = rows[0].user_id;
+      res.json({ sellerId });
+    }
+  } catch (error) {
+    console.error('Error fetching user_id:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 const PORT = process.env.PORT || 4001;
 server.listen(PORT, () => {

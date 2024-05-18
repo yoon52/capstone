@@ -1,6 +1,5 @@
 .admin-container {
   position: relative;
-  /* 부모 요소를 상대 위치로 설정 */
   max-width: 800px;
   max-height: 480px;
   height: 480px;

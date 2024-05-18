@@ -17,8 +17,8 @@
 
 /* 대화 메시지 영역 */
 .chat-messages {
-  height: 520px;
-  max-height: 520px;
+  height: 540px;
+  max-height: 540px;
   overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 10px;

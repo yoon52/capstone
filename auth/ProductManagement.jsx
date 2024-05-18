@@ -6,7 +6,7 @@ import serverHost from '../../utils/host';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
-  const [,setSelectedProduct] = useState(null);
+  const [, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
   const navigate = useNavigate();
@@ -103,12 +103,14 @@ function ProductManagement() {
   };
 
   const navigateToProductDetail = (productId) => {
-    navigate(`/productDetail/${productId}`);
+    navigate(`/ProductDetail/${productId}`);
   };
 
   return (
     <div>
-      <img src={logo} id='logo' alt="로고" />
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="product-management-header">상품 관리</h1>
       <div className="product-management-container">
         <table className="product-management-table">

@@ -51,13 +51,13 @@ function Detail({ filteredProducts }) {
         sessionStorage.setItem(viewedProductKey, 'true');
 
         // 상품 상세 페이지로 이동
-        navigate(`/productDetail/${productId}`);
+        navigate(`/ProductDetail/${productId}`);
       } catch (error) {
         console.error('Error updating views:', error);
       }
     } else {
       // 이미 조회한 상품인 경우, 상품 상세 페이지로 이동만 수행
-      navigate(`/productDetail/${productId}`);
+      navigate(`/ProductDetail/${productId}`);
     }
   };
 

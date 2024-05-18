@@ -128,9 +128,9 @@ const Header = ({
                   <img src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png" />
                 </div>
                 <div className="user-info-container">
-                  <p className="user-info">이름: {userInfo.name}</p>
-                  <p className="user-info">매너 학점: {userInfo.rates}</p>
-                  <p className="user-info">잔액: {userInfo && userInfo.total_sales}</p>
+                  <p className="user-info">이름 : {userInfo.name}</p>
+                  <p className="user-info">매너 학점 : {userInfo.rates}</p>
+                  <p className="user-info">잔액 : {userInfo && userInfo.total_sales}</p>
                 </div>
               </>
             )}

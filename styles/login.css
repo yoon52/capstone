@@ -446,8 +446,8 @@ input[type="file"]::file-selector-button:hover {
 /* 비밀번호 찾기 컨테이너 */
 .findpw-container {
   max-width: 500px;
-  height: 230px;
-  max-height: 230px;
+  height: 200px;
+  max-height: 200px;
   margin: 0 auto;
   padding: 10px;
   border: 2px solid #162b9150;
@@ -484,7 +484,7 @@ input[type="file"]::file-selector-button:hover {
   padding: 15px 20px;
   transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
   width: 95%;
-  margin-top: 60px;
+  margin-top: 30px;
   margin-bottom: 15px;
 }
 

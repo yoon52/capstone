@@ -56,7 +56,10 @@ function SearchKeyword() {
   }, [userId, fetchSearchKeywords]);
 
   return (
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Main">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="search-keyword-header">검색 기록</h1>
       <div className="search-keyword-container">
         {searchKeywords.map((keyword) => (

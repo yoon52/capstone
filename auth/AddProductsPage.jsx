@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
@@ -9,6 +9,7 @@ function AddProducts() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [priceError, setPriceError] = useState('');
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -19,6 +20,7 @@ function AddProducts() {
   const [searchError, setSearchError] = useState('');
   const searchInputRef = useRef(null);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [descriptionCharCount, setDescriptionCharCount] = useState(0);
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -29,13 +31,24 @@ function AddProducts() {
     if (event.key === 'Enter') {
       event.preventDefault();
       setDescription(prevDescription => prevDescription + '\n');
+      setDescriptionCharCount(prevCount => prevCount + 1);
     } else {
-      setDescription(event.target.value);
+      const newDescription = event.target.value;
+      if (newDescription.length <= 1000) {
+        setDescription(newDescription);
+        setDescriptionCharCount(newDescription.length);
+      }
     }
   };
 
   const handlePriceChange = (event) => {
-    setPrice(event.target.value);
+    const value = event.target.value;
+    if (/^\d*$/.test(value) && value.length <= 8) {
+      setPrice(value);
+      setPriceError('');
+    } else {
+      setPriceError('가격은 숫자 8자리까지만 입력 가능합니다.');
+    }
   };
 
   const handleImageChange = (event) => {
@@ -48,7 +61,6 @@ function AddProducts() {
       };
       reader.readAsDataURL(selectedImage);
     } else {
-      // 이미지가 선택되지 않은 경우
       setImage(null);
       setImagePreview(null);
     }
@@ -56,6 +68,10 @@ function AddProducts() {
 
   const handleAddProduct = async (event) => {
     event.preventDefault();
+    if (priceError) {
+      alert('가격 입력을 확인해 주세요.');
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append('name', name);
@@ -63,7 +79,7 @@ function AddProducts() {
       formData.append('price', price);
       formData.append('image', image);
 
-      const response = await fetch('http://localhost:4000/addProduct', {
+      const response = await fetch('http://localhost:4000/AddProduct', {
         method: 'POST',
         headers: {
           'user_id': userId,
@@ -89,7 +105,6 @@ function AddProducts() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch');
       return;
     }
 
@@ -110,7 +125,6 @@ function AddProducts() {
     } catch (error) {
       console.error('검색 오류:', error);
     }
-    console.log("검색어:", searchTerm);
   };
 
   const handleEnterKeyPress = (event) => {
@@ -122,7 +136,7 @@ function AddProducts() {
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
-      const response = await fetch('http://localhost:4000/searchHistory', {
+      const response = await fetch('http://localhost:4000/SearchHistory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -158,7 +172,7 @@ function AddProducts() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -226,13 +240,21 @@ function AddProducts() {
               value={description}
               onChange={handleDescriptionChange}
             />
+            <p className="char-count">{descriptionCharCount} / 1000</p> {/* Character count display */}
           </div>
           <div className="form-group">
             <label htmlFor="price">가격</label>
             <div className="price-input">
-              <input type="price" placeholder="가격을 입력해 주세요." value={price} onChange={handlePriceChange} required />
+              <input
+                type="price"
+                placeholder="가격을 입력해 주세요."
+                value={price}
+                onChange={handlePriceChange}
+                required
+              />
               <span>원</span>
             </div>
+            {priceError && <p className="error-message">{priceError}</p>}
           </div>
           <button type="submit" className="add-product-button">추가</button>
         </form>

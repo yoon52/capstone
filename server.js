@@ -8,7 +8,7 @@ const crypto = require('crypto');
 const got = require("got");
 
 const { performOCR, calculateSimilarity } = require('./ocr');
-const { handleNaverCallback } = require('./naverOAuth');
+const { handleNaverCallback } = require('./NaverOAuth.js');
 const { handleKakaoCallback } = require('./kakaoOAuth');
 
 require('./chat.js')
@@ -72,98 +72,6 @@ app.use(
 );
 
 //로그인, 회원가입 관련
-//네이버 로그인 엔드포인트
-app.get('/oauth/naver/callback', async (req, res) => {
-  const { code, state } = req.query;
-
-  try {
-    // 네이버 OAuth 모듈을 통해 사용자 정보 및 액세스 토큰을 가져옵니다.
-    const { userId, accessToken } = await handleNaverCallback(code, state);
-
-    // 여기서부터는 데이터베이스 처리 로직입니다.
-    // 사용자 정보를 데이터베이스에서 조회하거나 저장하는 작업을 수행합니다.
-    const sqlFindUser = 'SELECT * FROM social_logins WHERE user_id = ?';
-    const [rows] = await pool.query(sqlFindUser, [userId]);
-
-    if (rows.length > 0) {
-      // 이미 존재하는 사용자인 경우 로그인 처리 등을 수행
-      console.log('User already exists. Perform login actions...');
-      // 여기에서 로그인 처리 로직을 추가할 수 있습니다.
-      // 예: 세션 설정 등
-
-      // 성공 시 클라이언트로 리다이렉트
-      return res.redirect('http://localhost:3000/Main');
-    } else {
-      // 새로운 사용자인 경우 데이터베이스에 저장
-      const userData = {
-        user_id: userId,
-        social_token: accessToken,
-        token_type: 'naver',
-        expires_at: null, // Optional: Set token expiration datetime if needed
-        created_at: new Date().toISOString().slice(0, 19).replace('T', ' ') // 변환된 DATETIME 형식
-      };
-
-      // MySQL에 삽입 쿼리 실행
-      const sqlInsertUser = 'INSERT INTO social_logins SET ?';
-      await pool.query(sqlInsertUser, userData);
-
-      console.log('New Naver User Profile saved to database:', userData);
-
-      // 성공 시 클라이언트로 리다이렉트
-      return res.redirect('http://localhost:3000/Main');
-    }
-  } catch (error) {
-    console.error('Naver OAuth Error:', error);
-    res.status(500).send('Naver OAuth Error');
-  }
-});
-//카카오 로그인 엔드포인트
-app.get('/oauth/kakao/callback', async (req, res) => {
-  const { code } = req.query;
-
-  try {
-    // 카카오 OAuth 모듈을 통해 사용자 정보 및 액세스 토큰을 가져옵니다.
-    const { userId, accessToken } = await handleKakaoCallback(code);
-
-    // 여기서부터는 데이터베이스 처리 로직입니다.
-    // 사용자 정보를 데이터베이스에서 조회하거나 저장하는 작업을 수행합니다.
-    const sqlFindUser = 'SELECT * FROM social_logins WHERE user_id = ?';
-    const [rows] = await pool.query(sqlFindUser, [userId]);
-
-    if (rows.length > 0) {
-      // 이미 존재하는 사용자인 경우 로그인 처리 등을 수행
-      console.log('User already exists. Perform login actions...');
-      // 여기에서 로그인 처리 로직을 추가할 수 있습니다.
-      // 예: 세션 설정 등
-
-      // 성공 시 클라이언트로 리다이렉트
-      return res.redirect('http://localhost:3000/Main');
-    } else {
-      // 새로운 사용자인 경우 데이터베이스에 저장
-      const userData = {
-        user_id: userId,
-        social_token: accessToken,
-        token_type: 'kakao',
-        expires_at: null, // Optional: Set token expiration datetime if needed
-        created_at: new Date().toISOString().slice(0, 19).replace('T', ' ') // 변환된 DATETIME 형식
-      };
-
-      // MySQL에 삽입 쿼리 실행
-      const sqlInsertUser = 'INSERT INTO social_logins SET ?';
-      await pool.query(sqlInsertUser, userData);
-
-      console.log('New Kakao User Profile saved to database:', userData);
-
-      // 성공 시 클라이언트로 리다이렉트
-      return res.redirect('http://localhost:3000/Main');
-    }
-  } catch (error) {
-    console.error('Kakao OAuth Error:', error);
-    res.status(500).send('Kakao OAuth Error');
-  }
-});
-
-
 // 사용자 등록 엔드포인트
 app.post('/signup', uploadId.single('studentIdImage'), async (req, res) => {
   const { id, password, email, department, grade, name } = req.body;
@@ -217,6 +125,11 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ error: '사용자가 존재하지 않습니다.' });
     }
 
+    if (user.admin === 'pending') {
+      // 승인 대기 중인 사용자인 경우
+      return res.status(403).json({ error: '승인 대기 중입니다. 관리자의 승인을 기다려주세요.' });
+    }
+
     // 비밀번호 비교
     const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -241,6 +154,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: '로그인에 실패했습니다.' });
   }
 });
+
 
 // 아이디 찾기 엔드포인트
 app.post('/find-id', async (req, res) => {
@@ -291,7 +205,7 @@ app.post('/reset-password', async (req, res) => {
     // 데이터베이스에 새로운 비밀번호가 업데이트되었는지 확인
     if (result.affectedRows > 0) {
       // 임시 비밀번호와 함께 성공 메시지 응답 전송
-      res.status(200).json({ message: `임시 비밀번호는 ${temporaryPassword} 입니다. 로그인 후에 비밀번호를 변경해주세요.` });
+      res.status(200).json({ message: `임시 비밀번호는'${temporaryPassword}'입니다. 로그인 후 비밀번호 변경해주세요.` });
     } else {
       res.status(404).json({ error: '해당 이메일을 가진 사용자를 찾을 수 없습니다.' });
     }
@@ -489,24 +403,27 @@ app.post('/changepassword', async (req, res) => {
 });
 
 
-// 모든 승인되지 않은 사용자 정보 가져오는 엔드포인트
 app.get('/users', async (req, res) => {
   try {
     // 모든 승인되지 않은 사용자 정보를 가져오는 쿼리 실행
-    const query = `SELECT id, name, password, email, department, grade, student_id_image_url, admin FROM users WHERE admin != 'admin' AND admin != 'approved'`;
+    const query = `SELECT id, name, email, department, grade, student_id_image_url, admin FROM users WHERE admin != 'admin' AND admin != 'approved'`;
     const [rows] = await pool.query(query);
 
-    // admin 컬럼을 가진 사용자가 없는 경우에만 데이터를 반환
+    // 반환된 사용자 목록이 비어있는지 확인
     if (rows.length === 0) {
-      res.status(404).json({ error: 'No users found without admin role.' });
+      // 비어있는 경우 204 No Content 상태 코드 반환
+      res.status(204).send();
     } else {
+      // 사용자 정보가 있는 경우 200 OK 상태 코드와 함께 데이터 반환
       res.status(200).json(rows);
     }
   } catch (error) {
+    // 오류 발생 시 500 Internal Server Error 상태 코드 반환
     console.error('사용자 정보를 가져오는 중에 오류가 발생했습니다:', error);
     res.status(500).json({ error: '사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
   }
 });
+
 
 // DELETE 엔드포인트 - /deletefromadmin/:userId
 app.delete('/deletefromadmin/:userId', async (req, res) => {
@@ -540,7 +457,7 @@ app.get('/getUserInfo', async (req, res) => {
     }
 
     // 데이터베이스에서 해당 사용자 정보 가져오기
-    const query = `SELECT id, name, department, grade FROM users WHERE id = ?`;
+    const query = `SELECT id, name, department, grade, rates FROM users WHERE id = ?`;
     const [rows] = await pool.query(query, [userId]);
 
     // 사용자 정보가 없으면 사용자를 찾을 수 없음(404) 응답 보내기
@@ -562,15 +479,233 @@ app.get('/getUserInfo', async (req, res) => {
     // 매핑된 학과명으로 변경
     userInfo.department = departmentMap[userInfo.department];
 
-    res.json(userInfo);
+    // 사용자의 결제 내역을 가져와서 총 판매액을 계산
+    const [sales] = await pool.execute('SELECT IFNULL(SUM(p.amount), 0) AS total_sales FROM products pr JOIN payments p ON pr.id = p.product_id WHERE pr.user_id = ?', [userId]);
+    const totalSales = sales[0].total_sales;
+
+    // 사용자 정보에 총 판매액 정보를 추가하여 클라이언트에 응답
+    const userInfoWithSales = {
+      ...userInfo,
+      total_sales: totalSales
+    };
+    res.json(userInfoWithSales);
   } catch (error) {
     console.error('사용자 정보를 가져오는 중에 오류가 발생했습니다:', error);
     res.status(500).json({ error: '사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
   }
 });
 
+//네이버 로그인 엔드포인트
+app.get('/oauth/naver/callback', async (req, res) => {
+  const { code, state } = req.query;
+
+  try {
+    // 네이버 OAuth 모듈을 통해 사용자 정보 및 액세스 토큰을 가져옵니다.
+    const { userId, accessToken } = await handleNaverCallback(code, state);
+
+    // 여기서부터는 데이터베이스 처리 로직입니다.
+    // 사용자 정보를 데이터베이스에서 조회하거나 저장하는 작업을 수행합니다.
+    const sqlFindUser = 'SELECT * FROM social_logins WHERE user_id = ?';
+    const [rows] = await pool.query(sqlFindUser, [userId]);
+
+    if (rows.length > 0) {
+      // 이미 존재하는 사용자인 경우 로그인 처리 등을 수행
+      console.log('User already exists. Perform login actions...');
+      // 여기에서 로그인 처리 로직을 추가할 수 있습니다.
+      // 예: 세션 설정 등
+
+      // 성공 시 클라이언트로 리다이렉트
+      return res.redirect('http://localhost:3000/Main');
+    } else {
+      // 새로운 사용자인 경우 데이터베이스에 저장
+      const userData = {
+        user_id: userId,
+        social_token: accessToken,
+        token_type: 'naver',
+        expires_at: null, // Optional: Set token expiration datetime if needed
+        created_at: new Date().toISOString().slice(0, 19).replace('T', ' ') // 변환된 DATETIME 형식
+      };
+
+      // MySQL에 삽입 쿼리 실행
+      const sqlInsertUser = 'INSERT INTO social_logins SET ?';
+      await pool.query(sqlInsertUser, userData);
+
+      console.log('New Naver User Profile saved to database:', userData);
+
+      // 성공 시 클라이언트로 리다이렉트
+      return res.redirect('http://localhost:3000/Main');
+    }
+  } catch (error) {
+    console.error('Naver OAuth Error:', error);
+    res.status(500).send('Naver OAuth Error');
+  }
+});
+//카카오 로그인 엔드포인트
+app.get('/oauth/kakao/callback', async (req, res) => {
+  const { code } = req.query;
+
+  try {
+    // 카카오 OAuth 모듈을 통해 사용자 정보 및 액세스 토큰을 가져옵니다.
+    const { userId, accessToken } = await handleKakaoCallback(code);
+
+    // 여기서부터는 데이터베이스 처리 로직입니다.
+    // 사용자 정보를 데이터베이스에서 조회하거나 저장하는 작업을 수행합니다.
+    const sqlFindUser = 'SELECT * FROM social_logins WHERE user_id = ?';
+    const [rows] = await pool.query(sqlFindUser, [userId]);
+
+    if (rows.length > 0) {
+      // 이미 존재하는 사용자인 경우 로그인 처리 등을 수행
+      console.log('User already exists. Perform login actions...');
+      // 여기에서 로그인 처리 로직을 추가할 수 있습니다.
+      // 예: 세션 설정 등
+
+      // 성공 시 클라이언트로 리다이렉트
+      return res.redirect('http://localhost:3000/Main');
+    } else {
+      // 새로운 사용자인 경우 데이터베이스에 저장
+      const userData = {
+        user_id: userId,
+        social_token: accessToken,
+        token_type: 'kakao',
+        expires_at: null, // Optional: Set token expiration datetime if needed
+        created_at: new Date().toISOString().slice(0, 19).replace('T', ' ') // 변환된 DATETIME 형식
+      };
+
+      // MySQL에 삽입 쿼리 실행
+      const sqlInsertUser = 'INSERT INTO social_logins SET ?';
+      await pool.query(sqlInsertUser, userData);
+
+      console.log('New Kakao User Profile saved to database:', userData);
+
+      // 성공 시 클라이언트로 리다이렉트
+      return res.redirect('http://localhost:3000/Main');
+    }
+  } catch (error) {
+    console.error('Kakao OAuth Error:', error);
+    res.status(500).send('Kakao OAuth Error');
+  }
+});
 
 //상품 관련
+
+
+
+// 결제 완료 후 요청 처리 엔드포인트
+app.post("/confirm", async function (req, res) {
+  const { paymentKey, orderId, amount, userId, productId } = req.body;
+
+  const widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
+  const encryptedSecretKey = "Basic " + Buffer.from(widgetSecretKey + ":").toString("base64");
+
+  try {
+    // 토스페이먼츠 API를 사용하여 결제 승인 요청
+    const response = await got.post("https://api.tosspayments.com/v1/payments/confirm", {
+      headers: {
+        Authorization: encryptedSecretKey,
+        "Content-Type": "application/json",
+      },
+      json: {
+        orderId: orderId,
+        amount: amount,
+        paymentKey: paymentKey,
+
+      },
+      responseType: "json",
+    });
+
+    // 결제 성공 시 데이터베이스에 결제 정보 저장
+    const { statusCode, body } = response;
+    await savePaymentInfo(orderId, amount, paymentKey, userId, productId);
+
+    // 클라이언트에 응답 반환
+    res.status(statusCode).json(body);
+  } catch (error) {
+    // 결제 실패 시 에러 처리
+    console.error('Payment confirmation failed:', error);
+    res.status(error.response?.statusCode || 500).json(error.response?.body || { error: 'Payment failed' });
+  }
+});
+
+// 결제 엔드포인트 수정
+app.get('/payments/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    // 해당 사용자의 결제 내역을 가져옵니다.
+    const [rows] = await pool.query('SELECT * FROM payments WHERE user_id = ?', [userId]);
+
+    // 각 결제 항목에 대한 상품 이름을 가져옵니다.
+    const paymentsWithProductNames = await Promise.all(
+      rows.map(async (payment) => {
+        const productName = await getProductNameByPaymentId(payment.id);
+        return { ...payment, productName }; // 각 결제 항목에 상품 이름을 추가하여 반환
+      })
+    );
+
+    res.json(paymentsWithProductNames); // 해당 사용자의 결제 내역과 각 결제 항목에 대한 상품 이름을 JSON 형태로 응답합니다.
+  } catch (error) {
+    console.error('Error fetching payments:', error);
+    res.status(500).json({ error: 'Failed to fetch payments' });
+  }
+});
+
+
+// Get product name by payment ID
+const getProductNameByPaymentId = async (paymentId) => {
+  try {
+    const [rows] = await pool.query('SELECT p.name AS productName FROM payments py JOIN products p ON py.product_id = p.id WHERE py.id = ?', [paymentId]);
+    if (rows.length > 0) {
+      return rows[0].productName;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching product name by payment ID:', error);
+    throw error;
+  }
+};
+
+// 결제 정보를 데이터베이스에 저장하는 함수
+const savePaymentInfo = async (orderId, amount, paymentKey, userId, productId) => {
+  const connection = await pool.getConnection();
+
+  try {
+    // 결제 정보 삽입 쿼리
+    const insertQuery = `
+  INSERT INTO payments (orderId, amount, paymentKey, createdAt, user_id, product_id)
+  VALUES (?, ?, ?, NOW(), ?, ?)
+`;
+    const [result] = await connection.execute(insertQuery, [orderId, amount, paymentKey, userId, productId]);
+    connection.release(); // 연결 해제
+    return result.insertId; // 삽입된 레코드의 ID 반환
+  } catch (error) {
+    console.error('Error saving payment information:', error);
+    throw error;
+  }
+};
+
+// 클라이언트가 보낸 상품 ID를 이용하여 상품 정보를 반환하는 엔드포인트
+app.get('/payedcon/:productId', async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    const connection = await pool.getConnection();
+    const [product] = await connection.query(
+      'SELECT * FROM products WHERE id = ?',
+      [productId]
+    );
+    connection.release();
+
+    if (product.length > 0) {
+      res.json(product[0]); // 상품 정보 반환
+    } else {
+      res.status(404).json({ error: '상품을 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    res.status(500).json({ error: '서버 오류 발생' });
+  }
+});
 
 // 상품 검색 및 검색어 저장 엔드포인트
 app.get('/products', async (req, res) => {
@@ -756,84 +891,15 @@ app.get('/searchHistory', async (req, res) => {
   }
 });
 
-
-// 최근 검색된 검색어와 조회수, 최근 등록 상품을 기반으로 상품 검색하는 엔드포인트
-app.get('/products/recommendations', async (req, res) => {
-  const userId = req.headers.user_id; // 로그인된 사용자의 ID를 헤더에서 가져옵니다.
-
-  try {
-    // 최근에 로그인된 사용자가 검색한 검색어를 가져오는 쿼리
-    const recentSearchQuery = `
-      SELECT search_term
-      FROM search_history
-      WHERE user_id = ?
-      ORDER BY search_date DESC
-      LIMIT 1
-    `;
-
-    // 최근 검색된 검색어 가져오기
-    const [searchRows] = await pool.execute(recentSearchQuery, [userId]);
-
-    let recentSearchTerm = ''; // 최근 검색어를 초기화합니다.
-
-    if (searchRows.length > 0) {
-      recentSearchTerm = searchRows[0].search_term; // 최근 검색어를 설정합니다.
-    }
-
-    // 최근에 등록된 상품을 가져오는 쿼리
-    const recentProductsQuery = `
-      SELECT *
-      FROM products
-      ORDER BY createdAt DESC
-      LIMIT 10
-    `;
-
-    // 최근 등록된 상품 가져오기
-    const [recentProductsRows] = await pool.execute(recentProductsQuery);
-
-    // 검색어를 포함하는 상품을 검색하는 쿼리
-    const productsQuery = `
-      SELECT p.*, 
-      CASE WHEN sh.search_term IS NOT NULL THEN 1 ELSE 0 END AS recent_search_weight,
-      p.views AS view_count,
-      ((CASE WHEN sh.search_term IS NOT NULL THEN 1 ELSE 0 END * 0.5) + (p.views * 0.1) + (rp.recent_product_weight * 0.2)) AS relevance
-      FROM products p
-      LEFT JOIN (
-        SELECT search_term
-        FROM search_history
-        WHERE user_id = ?
-        ORDER BY search_date DESC
-        LIMIT 1
-      ) sh ON p.name LIKE CONCAT('%', sh.search_term, '%')
-      LEFT JOIN (
-        SELECT id, 1 AS recent_product_weight
-        FROM products
-        ORDER BY createdAt DESC
-        LIMIT 10
-      ) rp ON p.id = rp.id
-      ORDER BY relevance DESC;
-    `;
-
-    // 검색어를 적용하여 상품 검색
-    const [productRows] = await pool.execute(productsQuery, [userId, userId]);
-
-    res.json(productRows);
-  } catch (error) {
-    console.error('Error searching products for recommendations:', error);
-    res.status(500).json({ error: '상품을 추천하는 중에 오류가 발생했습니다.' });
-  }
-});
-
-
 // products/latest 엔드포인트를 만듭니다.
 app.get('/products/latest', async (req, res) => {
   try {
     // 최신순으로 상품을 조회하는 쿼리를 실행합니다.
     const latestProductsQuery = `
-      SELECT *
-      FROM products
-      ORDER BY createdAt desc
-    `;
+        SELECT *
+        FROM products
+        ORDER BY createdAt desc
+      `;
     // 쿼리를 실행하여 최신순으로 정렬된 상품 목록을 가져옵니다.
     const [latestProductsRows] = await pool.execute(latestProductsQuery);
 
@@ -854,10 +920,10 @@ app.get('/products/detail/:productId', async (req, res) => {
   try {
     // 데이터베이스에서 상품을 조회합니다.
     const productDetailQuery = `
-    SELECT *
-    FROM products
-    WHERE id = ?
-  `;
+      SELECT *
+      FROM products
+      WHERE id = ?
+    `;
 
     const [productDetailRows] = await pool.execute(productDetailQuery, [productId]);
 
@@ -1064,18 +1130,40 @@ app.put('/products/toggleFavorite/:productId', async (req, res) => {
   }
 });
 
+app.post('/favorites/deleteSelectedItems', async (req, res) => {
+  const { selectedItems } = req.body;
+
+  try {
+    const connection = await pool.getConnection();
+
+    await Promise.all(selectedItems.map(async (productId) => {
+      await connection.execute('DELETE FROM favorites WHERE id = ?', [productId]);
+    }));
+
+    connection.release();
+
+    res.status(200).json({ success: true, message: '선택된 상품들이 삭제되었습니다.' });
+  } catch (error) {
+    console.error('상품 삭제 오류:', error);
+    res.status(500).json({ error: '상품 삭제 중 오류가 발생했습니다.' });
+  }
+});
+
+
+  
+
 
 // 즐겨찾기 목록 조회 API 엔드포인트
 app.get('/favorites', async (req, res) => {
   try {
     // favorites 테이블과 products 테이블을 조인하여 즐겨찾기 목록과 해당 제품 정보를 가져옴
     const [rows] = await pool.query(`
-      SELECT f.id, f.user_id, f.product_id, f.created_at,
-             p.name AS product_name, p.description, p.price, p.createdAt AS product_created_at,
-             p.image
-      FROM favorites f
-      JOIN products p ON f.product_id = p.id
-    `);
+        SELECT f.id, f.user_id, f.product_id, f.created_at,
+               p.name AS product_name, p.description, p.price, p.createdAt AS product_created_at,
+               p.image
+        FROM favorites f
+        JOIN products p ON f.product_id = p.id
+      `);
 
     // 쿼리 결과를 클라이언트에 반환
     res.json(rows);
@@ -1085,24 +1173,621 @@ app.get('/favorites', async (req, res) => {
   }
 });
 
-// 결제 정보를 데이터베이스에 저장하는 함수
-const savePaymentInfo = async (orderId, amount, paymentKey) => {
-  const connection = await pool.getConnection();
+
+// 사용자의 rates 업데이트 함수
+async function updateRates(userId) {
+  try {
+    // 해당 사용자가 등록한 상품들의 평균 평점을 계산
+    const query = `SELECT AVG(rating) AS averageRating FROM product_ratings WHERE user_id = ?`;
+    const [rows] = await pool.query(query, [userId]);
+    const averageRating = rows[0].averageRating || 0; // 만약 등록된 상품이 없다면 기본값으로 0을 사용
+
+    // 계산된 평균 평점을 사용자의 rates 열에 업데이트
+    const updateQuery = `UPDATE users SET rates = ? WHERE id = ?`;
+    await pool.query(updateQuery, [averageRating, userId]);
+
+    console.log(`Updated rates for user ${userId} to ${averageRating}`);
+  } catch (error) {
+    console.error(`Error updating rates for user ${userId}:`, error);
+  }
+}
+
+// ratings 엔드포인트 처리
+app.post('/ratings', async (req, res) => {
+  try {
+    // 클라이언트에서 전송한 데이터 가져오기
+    const { sellerId, productId, rating } = req.body;
+
+    // 판매자 평점을 데이터베이스에 저장
+    const query = `INSERT INTO product_ratings (user_id, product_id, rating) VALUES (?, ?, ?)`;
+    await pool.query(query, [sellerId, productId, rating]);
+
+    console.log('Seller rating inserted successfully.');
+
+    // 해당 사용자의 rates 업데이트
+    await updateRates(sellerId);
+
+    res.status(200).json({ success: true, message: 'Seller rating inserted successfully.' });
+  } catch (error) {
+    // 오류 처리
+    console.error('Error handling seller rating:', error);
+    res.status(500).json({ success: false, message: 'Failed to handle seller rating.' });
+  }
+});
+
+
+
+// 사용자가 즐겨찾기한 상품을 가져오는 함수
+async function getFavoriteProducts(userId, pool) {
+  try {
+    const favoriteProductsQuery = `
+            SELECT p.*
+            FROM products p
+            JOIN favorites f ON p.id = f.product_id
+            WHERE f.user_id = ?
+            ORDER BY f.created_at DESC
+            LIMIT 10
+        `;
+
+    const [favoriteProductsRows] = await pool.execute(favoriteProductsQuery, [userId]);
+    return favoriteProductsRows;
+  } catch (error) {
+    console.error('Error fetching favorite products:', error);
+    throw new Error('즐겨찾기한 상품을 가져오는 중에 오류가 발생했습니다.');
+  }
+}
+
+async function getPurchasedProducts(userId, pool) {
+  try {
+    const purchasedProductsQuery = `
+            SELECT p.*
+            FROM products p
+            JOIN payments pm ON p.id = pm.product_id
+            WHERE pm.user_id = ?
+            ORDER BY pm.createdAt DESC
+            LIMIT 10
+        `;
+
+    const [purchasedProductsRows] = await pool.execute(purchasedProductsQuery, [userId]);
+    return purchasedProductsRows;
+  } catch (error) {
+    console.error('Error fetching purchased products:', error);
+    throw new Error('구매한 상품을 가져오는 중에 오류가 발생했습니다.');
+  }
+}
+
+
+
+async function getRecommendedProducts(userId, pool) {
+  try {
+    // 최근에 로그인된 사용자가 검색한 검색어를 가져오는 쿼리
+    const recentSearchQuery = `
+            SELECT search_term
+            FROM search_history
+            WHERE user_id = ?
+            ORDER BY search_date DESC
+            LIMIT 1
+        `;
+
+    // 최근 검색된 검색어 가져오기
+    const [searchRows] = await pool.execute(recentSearchQuery, [userId]);
+
+    let recentSearchTerm = ''; // 최근 검색어를 초기화합니다.
+
+    if (searchRows.length > 0) {
+      recentSearchTerm = searchRows[0].search_term; // 최근 검색어를 설정합니다.
+    }
+
+    // 최근에 등록된 상품을 가져오는 쿼리
+    const recentProductsQuery = `
+            SELECT *
+            FROM products
+            ORDER BY createdAt DESC
+            LIMIT 10
+        `;
+
+    // 최근 등록된 상품 가져오기
+    const [recentProductsRows] = await pool.execute(recentProductsQuery);
+
+    // 사용자가 즐겨찾기한 상품 가져오기
+    const favoriteProducts = await getFavoriteProducts(userId, pool);
+
+    // 사용자가 구매한 상품 가져오기
+    const purchasedProducts = await getPurchasedProducts(userId, pool);
+
+    // 검색어를 포함하는 상품을 검색하는 쿼리
+    const productsQuery = `
+            SELECT p.*, 
+            CASE WHEN sh.search_term IS NOT NULL THEN 1 ELSE 0 END AS recent_search_weight,
+            p.views AS view_count,
+            ((CASE WHEN sh.search_term IS NOT NULL THEN 1 ELSE 0 END * 0.5) + (p.views * 0.1) + (rp.recent_product_weight * 0.2)) AS relevance
+            FROM products p
+            LEFT JOIN (
+            SELECT search_term
+            FROM search_history
+            WHERE user_id = ?
+            ORDER BY search_date DESC
+            LIMIT 1
+            ) sh ON p.name LIKE CONCAT('%', sh.search_term, '%')
+            LEFT JOIN (
+            SELECT id, 1 AS recent_product_weight
+            FROM products
+            ORDER BY createdAt DESC
+            LIMIT 10
+            ) rp ON p.id = rp.id
+            ORDER BY relevance DESC;
+        `;
+
+    // 검색어를 적용하여 상품 검색
+    const [productRows] = await pool.execute(productsQuery, [userId, userId]);
+
+    // 로그로 추천 상품 결과 출력
+    console.log('Recommended Products:');
+    productRows.forEach(product => {
+      console.log(`Product ID: ${product.id}, Relevance: ${product.relevance}`);
+    });
+
+    return productRows;
+  } catch (error) {
+    console.error('Error searching products for recommendations:', error);
+    throw new Error('상품을 추천하는 중에 오류가 발생했습니다.');
+  }
+}
+
+// 사용 예시:
+app.get('/products/recommendations', async (req, res) => {
+  const userId = req.headers.user_id; // 로그인된 사용자의 ID를 헤더에서 가져옵니다.
+  try {
+    const recommendedProducts = await getRecommendedProducts(userId, pool);
+    res.json(recommendedProducts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 사용자 등록 엔드포인트
+app.post('/signup', uploadId.single('studentIdImage'), async (req, res) => {
+  const { id, password, email, department, grade, name } = req.body;
+
+  // 비밀번호 확인
+  if (password !== req.body.confirmPassword) {
+    return res.status(400).json({ error: '비밀번호와 비밀번호 재입력이 일치하지 않습니다.' });
+  }
+
+  // 비밀번호 유효성 검사
+  const isValidPassword = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{10,16}$/.test(password);
+  if (!isValidPassword) {
+    return res.status(400).json({ error: '비밀번호는 영문, 숫자, 특수문자를 조합하여 10~16자로 입력해주세요.' });
+  }
 
   try {
-    // 결제 정보 삽입 쿼리
-    const insertQuery = `
-      INSERT INTO payments (orderId, amount, paymentKey, createdAt)
-      VALUES (?, ?, ?, NOW())
-    `;
-    const [result] = await connection.execute(insertQuery, [orderId, amount, paymentKey]);
-    connection.release(); // 연결 해제
-    return result.insertId; // 삽입된 레코드의 ID 반환
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 이미지 URL 처리
+    const studentIdImageUrl = req.file ? req.file.filename : null;
+
+    // 사용자 추가 쿼리 실행
+    const addUserQuery = `
+        INSERT INTO users (id, password, email, department, grade, name, student_id_image_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+
+    // 사용자 등록
+    await pool.execute(addUserQuery, [id, hashedPassword, email, department, grade, name, studentIdImageUrl]);
+
+    // 사용자 등록 성공 응답
+    res.status(201).json({ message: '사용자 등록 성공' });
   } catch (error) {
-    console.error('Error saving payment information:', error);
-    throw error;
+    console.error('사용자 등록 오류:', error);
+    res.status(500).json({ error: '사용자 등록에 실패했습니다.' });
   }
-};
+});
+
+// 사용자 로그인 엔드포인트
+app.post('/login', async (req, res) => {
+  const { id, password } = req.body;
+
+  try {
+    // 사용자 조회
+    const [userRows] = await pool.execute('SELECT * FROM users WHERE id = ?', [id]);
+    const user = userRows[0];
+
+    if (!user) {
+      // 사용자가 존재하지 않는 경우
+      return res.status(401).json({ error: '사용자가 존재하지 않습니다.' });
+    }
+
+    if (user.admin === 'pending') {
+      // 승인 대기 중인 사용자인 경우
+      return res.status(403).json({ error: '승인 대기 중입니다. 관리자의 승인을 기다려주세요.' });
+    }
+
+    // 비밀번호 비교
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      // 비밀번호 불일치
+      return res.status(401).json({ error: '비밀번호가 잘못되었습니다.' });
+    }
+
+    if (user.admin === 'rejected') {
+      // 반려된 사용자인 경우
+      const rejectionReason = user.rejection_reason || '관리자에게 문의하세요.';
+      return res.status(403).json({ error: '승인이 거절되었습니다.', rejectionReason });
+    }
+
+    // 로그인 성공
+    const isAdmin = user.admin === 'admin';
+    const message = isAdmin ? '관리자로 로그인 되었습니다.' : '로그인 성공';
+    res.status(200).json({ message, id: user.id, isAdmin });
+
+  } catch (error) {
+    console.error('로그인 오류:', error);
+    res.status(500).json({ error: '로그인에 실패했습니다.' });
+  }
+});
+
+
+// 아이디 찾기 엔드포인트
+app.post('/find-id', async (req, res) => {
+  try {
+    const { email, department, grade } = req.body;
+
+    // MySQL 쿼리 실행
+    const connection = await pool.getConnection();
+    const [rows] = await connection.execute(
+      'SELECT id FROM users WHERE email = ? AND department = ? AND grade = ?',
+      [email, department, grade]
+    );
+    connection.release();
+
+    // 결과가 있는 경우
+    if (rows.length > 0) {
+      res.status(200).json({ id: rows[0].id });
+    } else {
+      res.status(404).json({ error: '아이디를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('아이디 찾기 오류:', error);
+    res.status(500).json({ error: '서버 오류' });
+  }
+});
+
+
+
+
+// 사용자의 승인 상태를 업데이트하는 API 엔드포인트
+app.put('/users/:userId/approval', async (req, res) => {
+  const { userId } = req.params;
+  const { approvalStatus, rejectionReason } = req.body;
+
+  try {
+    // 사용자의 승인 상태 업데이트
+    await pool.query('UPDATE users SET admin = ?, rejection_reason = ? WHERE id = ?', [approvalStatus, rejectionReason, userId]);
+    res.status(200).json({ message: '사용자 승인 상태가 업데이트되었습니다.' });
+  } catch (error) {
+    console.error('사용자 승인 상태 업데이트 오류:', error);
+    res.status(500).json({ error: '사용자 승인 상태를 업데이트하는 중에 오류가 발생했습니다.' });
+  }
+});
+
+
+// 승인 완료된 사용자 정보 가져오는 엔드포인트
+app.get('/users/approved', async (req, res) => {
+  try {
+    // 승인 완료된 사용자 정보를 가져오는 쿼리 실행
+    const query = `SELECT id, name, email, department, grade, student_id_image_url, admin FROM users WHERE admin = 'approved'`;
+    const [rows] = await pool.query(query);
+
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('승인된 사용자 정보를 가져오는 중에 오류가 발생했습니다:', error);
+    res.status(500).json({ error: '승인된 사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
+  }
+});
+
+
+// 중복 확인 엔드포인트
+app.get('/checkUser', async (req, res) => {
+  const userId = req.query.id; // 클라이언트로부터 요청된 아이디를 가져옵니다.
+
+  try {
+    // 사용자 조회 쿼리 실행
+    const findUserQuery = `SELECT * FROM users WHERE id = ?`;
+    const [rows] = await pool.execute(findUserQuery, [userId]); // 사용자 ID를 쿼리 매개변수로 전달합니다.
+
+    if (rows.length > 0) {
+      // 사용자가 이미 존재할 경우
+      res.status(200).json({ available: false });
+    } else {
+      // 사용자가 존재하지 않을 경우
+      res.status(200).json({ available: true });
+    }
+  } catch (error) {
+    console.error('사용자 조회 오류:', error);
+    res.status(500).json({ error: '사용자 조회 중 오류가 발생했습니다.' });
+  }
+});
+//내정보 엔드포인트
+app.post('/myinfo', async (req, res) => {
+  const { userId, password } = req.body;
+
+  try {
+    // 사용자 조회 쿼리 실행
+    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+    if (rows.length > 0) {
+      // 사용자가 존재할 경우 비밀번호 확인
+      const user = rows[0];
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        // 비밀번호가 일치할 경우 사용자 정보 응답
+        res.status(200).json({
+          id: user.id,
+          name: user.name,
+          grade: user.grade,
+          department: user.department,
+          email: user.email
+        });
+      } else {
+        // 비밀번호가 일치하지 않을 경우 에러 응답
+        res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
+      }
+    } else {
+      // 사용자가 존재하지 않을 경우 에러 응답
+      res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('내 정보 확인 오류:', error);
+    res.status(500).json({ error: '내 정보를 가져오는 중 오류가 발생했습니다.' });
+  }
+});
+
+// 회원 탈퇴 엔드포인트
+app.post('/deleteaccount', async (req, res) => {
+  const { userId, password } = req.body;
+
+  try {
+    // 사용자 조회 쿼리 실행
+    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+    if (rows.length > 0) {
+      // 사용자가 존재할 경우 비밀번호 확인
+      const user = rows[0];
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        // 비밀번호가 일치할 경우 사용자 삭제
+        await pool.execute('DELETE FROM users WHERE id = ?', [userId]);
+        res.status(200).json({ message: '회원 탈퇴가 완료되었습니다.' });
+      } else {
+        // 비밀번호가 일치하지 않을 경우 에러 응답
+        res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
+      }
+    } else {
+      // 사용자가 존재하지 않을 경우 에러 응답
+      res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('회원 탈퇴 오류:', error);
+    res.status(500).json({ error: '회원 탈퇴 중 오류가 발생했습니다.' });
+  }
+});
+
+// 사용자 정보 수정 엔드포인트
+app.post('/edituserinfo', async (req, res) => {
+  const { userId, editedUserInfo } = req.body;
+
+  try {
+    // 사용자 조회 쿼리 실행
+    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+    if (rows.length > 0) {
+      // 사용자가 존재할 경우 사용자 정보 업데이트
+      const user = rows[0];
+      const updatedUserInfo = { ...user, ...editedUserInfo };
+
+      // 사용자 정보 업데이트 쿼리 실행
+      await pool.execute(
+        'UPDATE users SET name = ?, grade = ?, department = ?, email = ? WHERE id = ?',
+        [updatedUserInfo.name, updatedUserInfo.grade, updatedUserInfo.department, updatedUserInfo.email, userId]
+      );
+
+      res.status(200).json({ message: '사용자 정보가 성공적으로 수정되었습니다.' });
+    } else {
+      // 사용자가 존재하지 않을 경우 에러 응답
+      res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('사용자 정보 수정 오류:', error);
+    res.status(500).json({ error: '사용자 정보를 수정하는 중 오류가 발생했습니다.' });
+  }
+});
+// 비밀번호 변경 엔드포인트
+app.post('/changepassword', async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  if (!userId || !currentPassword || !newPassword) {
+    return res.status(400).json({ error: '모든 필드를 입력해주세요.' });
+  }
+
+  try {
+    // 사용자 조회 쿼리 실행
+    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
+
+    if (rows.length > 0) {
+      // 사용자가 존재할 경우 현재 비밀번호 확인
+      const user = rows[0];
+      const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+      if (passwordMatch) {
+        // 비밀번호가 일치할 경우 새로운 비밀번호 해싱
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // 새로운 비밀번호로 사용자 정보 업데이트
+        await pool.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
+
+        res.status(200).json({ message: '비밀번호가 성공적으로 변경되었습니다.' });
+      } else {
+        // 현재 비밀번호가 일치하지 않을 경우 에러 응답
+        res.status(401).json({ error: '현재 비밀번호가 일치하지 않습니다.' });
+      }
+    } else {
+      // 사용자가 존재하지 않을 경우 에러 응답
+      res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('비밀번호 변경 오류:', error);
+    res.status(500).json({ error: '비밀번호를 변경하는 중 오류가 발생했습니다.' });
+  }
+});
+
+
+app.get('/users', async (req, res) => {
+  try {
+    // 모든 승인되지 않은 사용자 정보를 가져오는 쿼리 실행
+    const query = `SELECT id, name, email, department, grade, student_id_image_url, admin FROM users WHERE admin != 'admin' AND admin != 'approved'`;
+    const [rows] = await pool.query(query);
+
+    // 반환된 사용자 목록이 비어있는지 확인
+    if (rows.length === 0) {
+      // 비어있는 경우 204 No Content 상태 코드 반환
+      res.status(204).send();
+    } else {
+      // 사용자 정보가 있는 경우 200 OK 상태 코드와 함께 데이터 반환
+      res.status(200).json(rows);
+    }
+  } catch (error) {
+    // 오류 발생 시 500 Internal Server Error 상태 코드 반환
+    console.error('사용자 정보를 가져오는 중에 오류가 발생했습니다:', error);
+    res.status(500).json({ error: '사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
+  }
+});
+
+
+// DELETE 엔드포인트 - /deletefromadmin/:userId
+app.delete('/deletefromadmin/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const connection = await pool.getConnection();
+    const [results, fields] = await connection.query('DELETE FROM users WHERE id = ?', [userId]);
+    connection.release();
+
+    if (results.affectedRows > 0) {
+      res.status(200).json({ message: '사용자 삭제 성공' });
+    } else {
+      res.status(404).json({ error: '해당 사용자를 찾을 수 없음' });
+    }
+  } catch (error) {
+    console.error('사용자 삭제 중 오류 발생:', error);
+    res.status(500).json({ error: '서버 오류 발생' });
+  }
+});
+
+// 세션에 저장된 사용자 ID를 기반으로 사용자 정보를 반환하는 엔드포인트
+app.get('/getUserInfo', async (req, res) => {
+  try {
+    // 세션에서 사용자 ID 가져오기
+    const userId = req.headers.user_id; // 사용자 ID는 요청 헤더에서 가져옵니다.
+
+    // 사용자 ID가 없으면 권한 없음(401) 응답 보내기
+    if (!userId) {
+      return res.status(401).send('Unauthorized');
+    }
+
+    // 데이터베이스에서 해당 사용자 정보 가져오기
+    const query = `SELECT id, name, department, grade, rates FROM users WHERE id = ?`;
+    const [rows] = await pool.query(query, [userId]);
+
+    // 사용자 정보가 없으면 사용자를 찾을 수 없음(404) 응답 보내기
+    if (rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+
+    // 사용자 정보 반환
+    let userInfo = rows[0];
+    // 학과명을 매핑하기 위한 객체
+    const departmentMap = {
+      'software_engineering': '소프트웨어학과',
+      'computer_science': '컴퓨터공학과',
+      'design': '디자인학과',
+      'business-administration': '경영학과'
+      // 필요에 따라 추가적인 부서를 매핑할 수 있습니다.
+    };
+
+    // 매핑된 학과명으로 변경
+    userInfo.department = departmentMap[userInfo.department];
+
+    // 사용자의 결제 내역을 가져와서 총 판매액을 계산
+    const [sales] = await pool.execute('SELECT IFNULL(SUM(p.amount), 0) AS total_sales FROM products pr JOIN payments p ON pr.id = p.product_id WHERE pr.user_id = ?', [userId]);
+    const totalSales = sales[0].total_sales;
+
+    // 사용자 정보에 총 판매액 정보를 추가하여 클라이언트에 응답
+    const userInfoWithSales = {
+      ...userInfo,
+      total_sales: totalSales
+    };
+    res.json(userInfoWithSales);
+  } catch (error) {
+    console.error('사용자 정보를 가져오는 중에 오류가 발생했습니다:', error);
+    res.status(500).json({ error: '사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
+  }
+});
+
+// products/latest 엔드포인트를 만듭니다.
+app.get('/products/latest', async (req, res) => {
+  try {
+      // 최신순으로 상품을 조회하는 쿼리를 실행합니다.
+      const latestProductsQuery = `
+      SELECT *
+      FROM products
+      ORDER BY createdAt desc
+    `;
+      // 쿼리를 실행하여 최신순으로 정렬된 상품 목록을 가져옵니다.
+      const [latestProductsRows] = await pool.execute(latestProductsQuery);
+
+      // 최신순으로 정렬된 상품 목록을 클라이언트에 응답합니다.
+      res.json(latestProductsRows);
+  } catch (error) {
+      console.error('Error fetching latest products:', error);
+      // 오류가 발생한 경우 500 상태 코드와 오류 메시지를 클라이언트에 응답합니다.
+      res.status(500).json({ error: 'Failed to fetch latest products' });
+  }
+});
+
+app.get('/products/seller/:productId', async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+    // 데이터베이스 연결 풀에서 연결을 가져옵니다.
+    const connection = await pool.getConnection();
+
+    // 상품의 판매자 정보를 가져오기 위한 쿼리 작성
+    const [productRows] = await connection.execute('SELECT p.user_id, u.name, u.rates FROM products p INNER JOIN users u ON p.user_id = u.id WHERE p.id = ?', [productId]);
+
+    // 연결 반환
+    connection.release();
+
+    // 결과 확인
+    if (productRows.length === 0) {
+      return res.status(404).json({ error: '상품을 찾을 수 없습니다.' });
+    }
+
+    const sellerInfo = {
+      sellerId: productRows[0].user_id,
+      sellerName: productRows[0].name,
+      rates: productRows[0].rates
+    };
+
+    res.status(200).json(sellerInfo);
+  } catch (error) {
+    console.error('상품 정보 조회 오류:', error);
+    res.status(500).json({ error: '서버 오류: 상품 정보를 가져올 수 없습니다.' });
+  }
+});
 
 // 서버 시작
 function startServer() {

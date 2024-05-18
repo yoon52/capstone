@@ -3,10 +3,6 @@ import { useNavigate, Routes, Route, useParams } from 'react-router-dom';
 import { Button } from '@mui/material';
 import Header from './Header';
 import '../../styles/product.css';
-import ProductDetail from './ProductDetail';
-
-
-
 
 const ShowWishlist = () => {
   const userId = sessionStorage.getItem('userId');
@@ -78,7 +74,7 @@ const ShowWishlist = () => {
 
   const handleProductClick = (productId) => {
     // productId를 이용하여 상품 상세 페이지로 이동
-    navigate(`/productDetail/${productId}`);
+    navigate(`/ProductDetail/${productId}`);
   };
 
   const handleAddProduct = () => {
@@ -210,10 +206,6 @@ const ShowWishlist = () => {
       }
     }
   };
-
-
-
-
 
   return (
     <div className="container-main">

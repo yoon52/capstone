@@ -219,7 +219,7 @@ const SearchResults = () => {
         )}
       </div>
       <Routes>
-        <Route path="/productDetail/:productId" element={<ProductDetail />} />
+        <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
         <Route path="/ProductManagement" element={<ProductManagement />} />
         <Route path="/ChatListComponent" element={<ChatListComponent />} />
         <Route path="/showWishlist" element={<ShowWishlist />} />
