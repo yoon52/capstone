@@ -7,7 +7,7 @@
   margin: 0 auto;
   /* 수평 가운데 정렬 */
   padding: 20px;
-  margin-top: 120px;
+  background-color: white;
 }
 
 /* 제목 스타일 */
@@ -22,6 +22,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+
 }
 
 /* 테이블 헤더 스타일 */

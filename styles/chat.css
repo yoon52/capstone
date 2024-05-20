@@ -1,8 +1,7 @@
-/* chat.css */
-
 /* 대화창 컨테이너 */
 .chat-component {
-  max-width: 100%;
+  width: 500px;
+  /* 고정된 너비를 800px로 지정 */
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -17,8 +16,8 @@
 
 /* 대화 메시지 영역 */
 .chat-messages {
-  height: 540px;
-  max-height: 540px;
+  height: 520px;
+  max-height: 520px;
   overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -26,46 +25,54 @@
   margin-bottom: 20px;
 }
 
-/* 대화 메시지 컨테이너 */
 .message-container {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
 }
 
-/* 사용자의 메시지 */
 .own-message {
-  text-align: right;
+  flex-direction: row-reverse;
 }
 
-/* 상대방의 메시지 */
 .other-message {
-  text-align: left;
+  flex-direction: row;
 }
 
-/* 메시지 텍스트 스타일 */
+.message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .message-text {
   background-color: #f0f0f0;
   padding: 10px;
   border-radius: 15px;
   display: inline-block;
-  max-width: 70%; /* 메시지 텍스트의 최대 너비를 설정하여 너무 긴 메시지가 글씨를 벗어나는 것을 방지 */
-  word-wrap: break-word; /* 너무 긴 단어가 있을 경우 줄 바꿈 */
+  max-width: 100%;
+  /* 최대 너비를 100%로 설정하여 부모 요소의 너비에 맞게 조절됩니다 */
+  word-wrap: break-word;
+  /* 너무 긴 단어가 있을 경우 줄 바꿈 */
+  overflow-wrap: break-word;
+  /* overflow-wrap 속성을 추가하여 단어가 너무 길어서 끝까지 가지 않고 줄 바꿈됩니다 */
 }
 
-/* 상대방 메시지 텍스트 스타일 */
+
 .other-message .message-text {
-  background-color: #e6e6e6; /* 상대방 메시지의 배경색 */
+  background-color: #e6e6e6;
 }
 
-/* 사용자의 메시지 텍스트 스타일 */
 .own-message .message-text {
-  background-color: #007bff; /* 사용자 메시지의 배경색 */
-  color: #fff; /* 사용자 메시지의 글자색 */
+  background-color: #007bff;
+  color: #fff;
 }
+
 
 /* 메시지 입력 폼 */
 .message-input-form {
   display: flex;
-  margin-bottom: 20px; /* 입력 폼과 이전 메시지 간의 간격 */
+  margin-bottom: 20px;
 }
 
 /* 메시지 입력 필드 */
@@ -74,7 +81,7 @@
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-right: 10px; /* 입력 필드 간의 간격 */
+  margin-right: 10px;
 }
 
 /* 전송 버튼 */
@@ -90,4 +97,58 @@
 /* 전송 버튼 호버 효과 */
 .message-input-form button:hover {
   background-color: #0056b3;
+}
+
+/* 새로운 메시지 입력 폼 */
+.message-input-form1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 600px;
+  margin-top: 10px;
+}
+
+.message-input-form1 input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button-group-1 {
+  display: flex;
+  gap: 16px;
+  /* 버튼 간의 간격을 원하는 대로 조정하세요 */
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  /* 버튼의 패딩을 조정하여 크기를 조절하세요 */
+  text-transform: none;
+  /* 버튼 텍스트의 대문자 변환을 방지합니다 (옵션) */
+  height: 48px;
+  /* 원하는 버튼 높이 설정 */
+  width: 48px;
+  /* 원하는 버튼 너비 설정 */
+  min-width: 48px;
+  /* 최소 너비 설정 */
+}
+
+.button .MuiButton-startIcon {
+  margin: 0;
+  /* 아이콘과 텍스트 사이의 기본 여백 제거 */
+}
+
+.message-input-form button:hover {
+  background-color: #0056b3;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
