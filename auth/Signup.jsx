@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/main.css';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 function Signup() {
   const [signupSuccess, setSignupSuccess] = useState(false);
@@ -16,7 +17,7 @@ function Signup() {
     grade: '',
     studentIdImage: null  // New state to store the uploaded image
   });
-  const [idAvailability, setIdAvailability] = useState(null);
+  const [, setIdAvailability] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -63,7 +64,7 @@ function Signup() {
     formDataWithImage.append('studentIdImage', formData.studentIdImage, imageFileName); // 이미지 추가 및 파일 이름 설정
 
     try {
-      const response = await fetch('http://localhost:4000/signup', {
+      const response = await fetch(`${serverHost}:4000/signup`, {
         method: 'POST',
         body: formDataWithImage // FormData 전송
       });
@@ -94,7 +95,7 @@ function Signup() {
 
   const handleCheckAvailability = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/checkUser?id=${formData.id}`);
+      const response = await fetch(`${serverHost}:4000/checkUser?id=${formData.id}`);
       if (response.ok) {
         const data = await response.json();
         setIdAvailability(data.available);
@@ -114,9 +115,11 @@ function Signup() {
   };
   return (
     <div>
-      <img src={logo} id='logo' alt="로고" />
-      <h1 className="Signup-header">회원가입</h1>
-      <div className="Signup-container">
+      <a href="/Login">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
+      <h1 className="signup-header">회원가입</h1>
+      <div className="signup-container">
         {isModalOpen && (
           <div className="modal">
             <div className="modal-content">
@@ -194,7 +197,7 @@ function Signup() {
               <option value="design">디자인학과</option>
               <option value="business-administration">경영학과</option>
             </select>
-  
+
             <select
               name="grade"
               value={formData.grade}
@@ -209,8 +212,7 @@ function Signup() {
               <option value="4">4학년</option>
             </select>
           </div>
-          
-          {/* Image upload field */}
+
           <div className="form-group">
             <input
               type="file"
@@ -220,14 +222,13 @@ function Signup() {
               required
             />
           </div>
-  
+
           <button type="submit" className="signup-button">가입하기</button>
         </form>
         <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
       </div>
     </div>
   );
-  
 }
 
 export default Signup;

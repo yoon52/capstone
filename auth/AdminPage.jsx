@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
+import serverHost from '../../utils/host';
 import '../../styles/admin.css';
 
 function AdminPage() {
@@ -14,9 +15,8 @@ function AdminPage() {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
-  
 
-
+  const navigate = useNavigate
   useEffect(() => {
     fetchUsers();
     fetchApprovedUsers();
@@ -24,17 +24,29 @@ function AdminPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:4000/users');
+      const response = await fetch(`${serverHost}:4000/users`);
+      if (response.status === 204) {
+        console.log('승인대기중인 사용자 정보가 없습니다.');
+        // 사용자 정보가 없는 경우 빈 배열을 설정
+        setUsers([]);
+        return;
+      }
+      if (!response.ok) {
+        throw new Error('사용자 정보를 가져오지 못했습니다.');
+      }
       const userData = await response.json();
       setUsers(userData);
     } catch (error) {
       console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+      // 사용자 정보를 가져오는 데 실패한 경우, 빈 배열로 사용자 목록을 설정
+      setUsers([]);
     }
   };
 
+
   const fetchApprovedUsers = async () => {
     try {
-      const response = await fetch('http://localhost:4000/users/approved');
+      const response = await fetch(`${serverHost}:4000/users/approved`);
       const approvedUserData = await response.json();
       setApprovedUsers(approvedUserData);
     } catch (error) {
@@ -49,7 +61,7 @@ function AdminPage() {
         bodyData = { ...bodyData, rejectionReason };
       }
 
-      const response = await fetch(`http://localhost:4000/users/${userId}/approval`, {
+      const response = await fetch(`${serverHost}:4000/users/${userId}/approval`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -78,7 +90,7 @@ function AdminPage() {
 
   const sendImageForOCR = async (userId, imageUrl) => {
     try {
-      const response = await fetch('http://localhost:4000/api/verify', {
+      const response = await fetch(`${serverHost}:4000/api/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -99,10 +111,6 @@ function AdminPage() {
 
   const handleDetailModalOpen = async (userId, imageUrl) => {
     await sendImageForOCR(userId, imageUrl);
-  };
-
-  const handleDetailModalClose = () => {
-    setVerificationResult('');
   };
 
   const handleRejectButton = (userId) => {
@@ -147,7 +155,7 @@ function AdminPage() {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:4000/deletefromadmin/${userId}`, {
+      const response = await fetch(`${serverHost}:4000/deletefromadmin/${userId}`, {
         method: 'DELETE'
       });
       if (response.ok) {
@@ -160,13 +168,16 @@ function AdminPage() {
     }
   };
 
-
+  const handleReport = async () => {
+    navigate('/ReportList')
+  }
 
   return (
     <div className="admin-container">
       <h1>회원 정보 관리</h1>
       <button className="sidebar-toggle-button" onClick={toggleSidebar}>
         <MenuIcon style={{ fontSize: 30 }} />
+
       </button>
 
       <table className="user-table">
@@ -183,7 +194,7 @@ function AdminPage() {
           </tr>
         </thead>
         <tbody>
-        {(showApprovedUsers ? approvedUsers : users).map((user) => (
+          {(showApprovedUsers ? approvedUsers : users).map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
@@ -195,13 +206,13 @@ function AdminPage() {
                 <button onClick={() => handleAdminModalOpen(user)}>보기</button>
               </td>
               <td>
-              <div className="more-button-container">
+                <div className="more-button-container">
                   <button className="more-button" onClick={() => handleToggleOptions(user.id)}>
                     <MoreHorizIcon />
                   </button>
                   {showOptionsForUser === user.id && (
                     <div className="options-container">
-                      
+
                       <button onClick={() => handleDeleteUser(user.id)}>사용자 정보 삭제</button>
                     </div>
                   )}
@@ -216,9 +227,9 @@ function AdminPage() {
       {selectedUser && (
         <div className="admin-modal">
           <div className="modal-content">
-            <img src={`http://localhost:4000/uploads_id/${selectedUser.id}.jpg`} alt="학생증 이미지" />
+            <img src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`} alt="학생증 이미지" />
             {verificationResult && <p>{verificationResult}</p>}
-            <button onClick={() => handleDetailModalOpen(selectedUser.id, `http://localhost:4000/uploads_id/${selectedUser.id}.jpg`)}>
+            <button onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>
               상세 정보 보기
             </button>
             <button onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>승인</button>
@@ -241,10 +252,14 @@ function AdminPage() {
       {isSidebarOpen && (
         <div className="admin-sidebar">
           <button onClick={handleApprovedUsersClick}>승인 완료된 사용자 보기</button>
+          <button onClick={handleReport}>신고 처리 내역 보기</button>
           {/* <button onClick={handlereportedUsersClick}>신고내역</button> */}
         </div>
+
       )}
+
     </div>
+
   );
 }
 

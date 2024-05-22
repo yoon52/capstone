@@ -4,6 +4,7 @@ import '../../styles/login.css';
 import naver from '../../image/naver.png';
 import kakao from '../../image/kakao.png';
 import logo from '../../image/logo.png';
+import serverHost from '../../utils/host';
 
 // Login 컴포넌트 정의
 function Login() {
@@ -15,10 +16,11 @@ function Login() {
 
   // 로그인 상태 관리
   const [loginSuccess, setLoginSuccess] = useState(true);
+  // 승인 대기 상태 관리
+  const [, setPendingUser] = useState(false);
 
   // 페이지 이동 기능을 위한 navigate 함수 사용
   const navigate = useNavigate();
-
 
   // 입력 필드 값이 변경될 때마다 formData 객체 업데이트
   const handleChange = (e) => {
@@ -34,7 +36,7 @@ function Login() {
     e.preventDefault();
     try {
       // 백엔드 서버로 로그인 요청 전송
-      const response = await fetch('http://localhost:4000/login', {
+      const response = await fetch(`${serverHost}:4000/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -45,25 +47,6 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         sessionStorage.setItem('userId', data.id);
-
-        // 서버에 해당 ID 전송
-// 서버에 해당 ID 전송
-fetch('/getUserInfo', {
-  method: 'GET', // GET 요청으로 변경
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-.then(response => {
-  if (!response.ok) {
-    console.error('Failed to fetch user info from server');
-  }
-})
-.catch(error => {
-  console.error('Error:', error);
-});
-
-
 
         // 여기서 관리자 여부 확인
         if (data.isAdmin) {
@@ -76,10 +59,16 @@ fetch('/getUserInfo', {
         setLoginSuccess(false);
         // 반려된 사용자일 경우
         if (response.status === 403) {
-          // 반려 사유 가져오기
+          // 승인 대기 중인 사용자인 경우
           const responseData = await response.json();
-          const rejectionReason = responseData.rejection_reason || '관리자에게 문의하세요.';
-          alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
+          if (responseData.error === '승인 대기 중입니다. 관리자의 승인을 기다려주세요.') {
+            setPendingUser(true);
+            alert('승인 대기 중입니다. 관리자의 승인을 기다려주세요.');
+          } else {
+            // 반려된 사용자일 경우
+            const rejectionReason = responseData.rejectionReason || '관리자에게 문의하세요.';
+            alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
+          }
         }
       }
     } catch (error) {
@@ -96,7 +85,7 @@ fetch('/getUserInfo', {
     sessionStorage.setItem('oauthState', state);
 
     // 네이버 OAuth 인증 요청 URL 생성
-    const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=http://localhost:4000/oauth/naver/callback&state=${state}`;
+    const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=${serverHost}:4000/oauth/naver/callback&state=${state}`;
 
     // OAuth 인증 요청
     window.location.href = naverOAuthUrl;
@@ -110,7 +99,7 @@ fetch('/getUserInfo', {
 
   const handleKakaoLogin = () => {
     const clientId = '0bee6abe1a644025c9faedffda0ddd04';
-    const redirectUri = 'http://localhost:4000/oauth/kakao/callback';
+    const redirectUri = `${serverHost}:4000/oauth/kakao/callback`;
     const responseType = 'code';
 
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}`;
@@ -118,6 +107,7 @@ fetch('/getUserInfo', {
     // 리다이렉트하여 카카오 OAuth 인증 요청을 시작
     window.location.href = kakaoAuthUrl;
   };
+
 
   // 회원가입 버튼 클릭 시 호출되는 함수
   const handleSignup = () => {
