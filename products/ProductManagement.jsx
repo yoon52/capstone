@@ -1,28 +1,47 @@
-/* eslint-disable react/jsx-no-duplicate-props */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useRef } from 'react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
-import ViewsList from '../products/ViewsList';
-import SearchResults from '../header/SearchResults';
-import ProductDetail from '../products/ProductDetail';
-import ProductManagement from '../products/ProductManagement';
-import ChatListComponent from '../messages/ChatListComponent';
-import Header from '../header/Header';
-import ShowWishlist from '../products/ShowWishlist';
-import '../../styles/main.css';
-import '../../styles/product.css';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import serverHost from '../../utils/host';
+import Header from '../header/Header';
 
-function Main() {
-  const [,setFilteredProducts] = useState([]);
+function ProductManagement() {
+  const [products, setProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [, setShowRecentSearches] = useState(false);
+  const [, setFormattedProducts] = useState([]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${serverHost}:4000/productsmanage`, {
+        headers: {
+          'user_id': sessionStorage.getItem('userId')
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data);
+      } else {
+        console.error('상품 목록 가져오기 오류:', response.status);
+      }
+    } catch (error) {
+      console.error('상품 목록 가져오기 오류:', error);
+    }
+  };
+
+
+
+
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -64,6 +83,8 @@ function Main() {
       handleSearchProduct();
     }
   };
+
+
 
   const saveSearchTerm = async (searchTerm) => {
     try {
@@ -119,9 +140,32 @@ function Main() {
     setShowNavMenu(false);
   };
 
-  const handleMoreList = () => {
-    navigate('/LatestList');
-  }
+  useEffect(() => {
+    const formatDate = (createdAt) => {
+      const currentTime = new Date();
+      const productTime = new Date(createdAt);
+      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60)); // milliseconds to minutes
+
+      if (timeDifference < 30) {
+        return '방금 전';
+      } else if (timeDifference < 60 * 24) {
+        return `${Math.floor(timeDifference / 60)}시간 전`;
+      } else if (timeDifference < 60 * 24 * 7) {
+        return `${Math.floor(timeDifference / (60 * 24))}일 전`;
+      } else if (timeDifference < 60 * 24 * 30) {
+        return `${Math.floor(timeDifference / (60 * 24 * 7))}주 전`;
+      } else {
+        return '한달 ↑';
+      }
+    };
+
+    const formatted = products.map(product => ({
+      ...product,
+      formattedCreatedAt: formatDate(product.createdAt),
+    }));
+    setFormattedProducts(formatted);
+  }, [products]);
+
 
   return (
     <div className="container-main">
@@ -145,44 +189,39 @@ function Main() {
         onSearchSubmit={handleSearchProduct}
         recentSearches={[]}
       />
-      <div className="main">
-        <section className="fleamarket-cover">
-          <div className="cover-content">
-            <h1 className="cover-title">믿을만한<br />대학교 교내 중고거래</h1>
-            <span className="cover-description">학생들과 가깝고 따뜻한 거래를<br />지금 경험해보세요.</span>
-            <div className="cover-image">
-              <span className="fleamarket-cover-image">
-                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래"/>
-              </span>
-
-            </div>
-          </div>
-        </section>
-
-        <div className="list-container">
-          <ViewsList
-
-          />
+      <div className='h2-font'>
+        <h2>내가 등록한 상품</h2>
+        <div className="cards-wrap1">
+          {products.map((product) => (
+            <article className="card-top" key={product.id}>
+              <a className="card-link" href={`/ProductManagementForm/${product.id}`} data-event-label={product.id}>
+                <div className="card-photo">
+                  <img
+                    src={`${serverHost}:4000/uploads/${product.image}`}
+                    alt={product.title}
+                  />
+                </div>
+                <div className="card-desc">
+                  <h2 className="card-title">상품명: {product.name}</h2>
+                  <div className="card-price">가격: {product.price}원</div>
+                  <div className="product-info1">
+                    <div className="product-views-L">
+                      <VisibilityIcon style={{ marginRight: '5px' }} />
+                      {product.views}
+                    </div>
+                    <p className="product-time-L">{product.formattedCreatedAt}</p>
+                  </div>
+                </div>
+              </a>
+            </article>
+          ))}
         </div>
-        <div className="more-list">
-          <button className="more-button" onClick={handleMoreList}>전체 상품 보기</button>
-        </div>
-        <Routes>
-          <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
-          <Route path="/ProductManagement" element={<ProductManagement />} />
-          <Route path="/ChatListComponent" element={<ChatListComponent />} />
-          <Route path="/showWishlist" element={<ShowWishlist />} />
-          <Route path="/SearchResults/:searchTerm" element={<SearchResults />} />
-
-        </Routes>
-        {searchError && (
-          <p className="search-error">{searchError}</p>
-        )}
       </div>
-
-      {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
+      {searchError && (
+        <p className="search-error">{searchError}</p>
+      )}
     </div>
   );
 }
 
-export default Main;
+export default ProductManagement

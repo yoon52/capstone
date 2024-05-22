@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../../styles/login.css';
+import '../../styles/main.css';
 import logo from '../../image/logo.png';
 import serverHost from '../../utils/host';
 
@@ -121,7 +121,7 @@ function Signup() {
       <h1 className="signup-header">회원가입</h1>
       <div className="signup-container">
         {isModalOpen && (
-          <div className="modal-overlay">
+          <div className="modal">
             <div className="modal-content">
               <p>{errorMessage}</p>
               <button className="modal-close" onClick={handleModalClose}>확인</button>
