@@ -210,7 +210,7 @@ input[type="search"] {
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 60px;
+  gap: 70px;
   margin-bottom: 10px;
 }
 
