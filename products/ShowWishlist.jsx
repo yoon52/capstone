@@ -1,20 +1,82 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import serverHost from '../../utils/host';
+import { useNavigate, Routes, Route, useParams } from 'react-router-dom';
+import { Button } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import Header from '../header/Header';
+import '../../styles/product.css'; // CSS 파일을 불러옴
+import serverHost from '../../utils/host';
 
 const ShowWishlist = () => {
   const userId = sessionStorage.getItem('userId');
   const [wishlistItems, setWishlistItems] = useState([]);
-  const [,setFilteredProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
-  const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const { productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [chatRooms, setChatRooms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [savedSearchTerm, setSavedSearchTerm] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showNavMenu, setShowNavMenu] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false); // 추가: 찜 상태
+  const [isFavorited, setIsFavorited] = useState(false); // 찜 상태 여부
+
+  useEffect(() => {
+    const fetchWishlistItems = async () => {
+      try {
+        const response = await fetch(`${serverHost}:4000/favorites?userId=${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setWishlistItems(data);
+        } else {
+          console.error('Error fetching wishlist items:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching wishlist items:', error);
+      }
+    };
+
+    fetchWishlistItems();
+  }, [userId]);
+
+  const handleChatButtonClick = async (productId) => {
+    try {
+      const response = await fetch(`${serverHost}:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
+      if (response.ok) {
+        const existingChatRoom = await response.json();
+        if (existingChatRoom) {
+          setIsChatModalOpen(true);
+          return;
+        }
+      }
+
+      const createResponse = await fetch(`${serverHost}:4001/api/chat-rooms`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId, userId })
+      });
+
+      if (!createResponse.ok) {
+        throw new Error('Failed to create chat room');
+      }
+
+      setIsChatModalOpen(true);
+    } catch (error) {
+      console.error('Error creating or retrieving chat room:', error);
+    }
+  };
+
+  const handleProductClick = (productId) => {
+    // productId를 이용하여 상품 상세 페이지로 이동
+    navigate(`/ProductDetail/${productId}`);
+  };
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -23,10 +85,8 @@ const ShowWishlist = () => {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
-
     try {
       const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
@@ -37,18 +97,14 @@ const ShowWishlist = () => {
         setShowSearchResults(true);
         setSearchError('');
 
-        // Navigate to the search results page
-        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
-
+        // Navigate to ResultPage with encoded searchTerm
+        navigate(`/SearchResultsP/${encodeURIComponent(searchTerm)}`);
       } else {
         console.error('검색 오류:', response.status);
       }
     } catch (error) {
       console.error('검색 오류:', error);
     }
-    // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
-
   };
 
   const handleEnterKeyPress = (event) => {
@@ -87,9 +143,11 @@ const ShowWishlist = () => {
   const handleProductManagement = () => {
     navigate('/ProductManagement');
   };
+
   const handleShowWishlist = () => {
     navigate('/ShowWishlist');
   };
+
   const handleShowMyInfoPage = () => {
     navigate('/MyInfo');
   };
@@ -111,28 +169,52 @@ const ShowWishlist = () => {
     setShowNavMenu(false);
   };
 
-  
-  useEffect(() => {
-    const fetchWishlistItems = async () => {
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const isSelected = (itemId) => {
+    return selectedItems.includes(itemId);
+  };
+
+  const handleCheckboxChange = (itemId) => {
+    if (isSelected(itemId)) {
+      setSelectedItems(selectedItems.filter(item => item !== itemId));
+    } else {
+      setSelectedItems([...selectedItems, itemId]);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (window.confirm('선택한 상품을 삭제하시겠습니까?')) {
       try {
-        const response = await fetch(`${serverHost}:4000/favorites`, {
+        const selectedItemsIds = selectedItems; // 이미 상품 ID로 구성된 배열
+        const response = await fetch(`${serverHost}:4000/favorites/deleteSelectedItems`, {
+          method: 'POST',
           headers: {
-            'user_id': userId
-          }
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ selectedItems: selectedItemsIds })
         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        if (response.ok) {
+          const updatedWishlist = wishlistItems.filter(product => !selectedItemsIds.includes(product.id));
+          setWishlistItems(updatedWishlist);
+          setSelectedItems([]); // 선택된 상품 초기화
+        } else {
+          console.error('상품 삭제 오류:', response.status);
         }
-        const data = await response.json();
-        setWishlistItems(data);
       } catch (error) {
-        console.error('Error fetching wishlist:', error);
+        console.error('상품 삭제 오류:', error);
       }
-    };
+    }
+  };
 
-    fetchWishlistItems();
-  }, [userId]);
+  const handleSelectAll = () => {
+    if (selectedItems.length === wishlistItems.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(wishlistItems.map(item => item.id));
+    }
+  };
 
   return (
     <div className="container-main">
@@ -151,24 +233,37 @@ const ShowWishlist = () => {
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
-        setShowRecentSearches={setShowRecentSearches}
-        userInfo
-        onSearchSubmit={handleSearchProduct}
-        recentSearches={[]}
       />
-      {searchError && (
-          <p className="search-error">{searchError}</p>
-        )}
-      <h1>찜목록</h1>
-      <ul>
-        {wishlistItems.map(item => (
-          <li key={item.id}>
-            <strong>{item.product_name}</strong> - {item.price ? item.price.toLocaleString() + '원' : '가격 정보 없음'}
-          </li>
+      <h1 style={{ marginBottom: '10px' }}>찜 목록</h1>
+      <div className="wishlist-container">
+        {wishlistItems.map(product => (
+          <div key={product.id} className="wishlist-item">
+            
+
+            {/* 상품 이미지 */}
+            <img
+              src={`${serverHost}:4000/uploads/${product.image}`}
+              alt={product.product_name}
+              className="product-image1"
+              onClick={() => handleProductClick(product.product_id)}
+            />
+            {/* 상품명과 가격 */}
+            <div className="wish-two">
+              <p className="wish-name">
+                <span style={{ fontSize: '18px', fontWeight: 'bold' }}>{product.product_name}</span>
+              </p>
+              <p className="wish-price">
+                <span style={{ fontSize: '16px' }}>{product.price.toLocaleString()}원</span>
+              </p>
+            </div>
+          </div>
         ))}
-      </ul>
+
+      </div>
     </div>
   );
+
 };
 
 export default ShowWishlist;
+

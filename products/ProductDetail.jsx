@@ -4,8 +4,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
-import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
+import { MoreVert, Favorite, FavoriteBorder, close } from '@mui/icons-material'; // 추가: Favorite 아이콘
 import Modal from 'react-modal';
+import CloseIcon from '@mui/icons-material/Close';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from '../messages/ChatComponent';
@@ -160,25 +161,26 @@ const ProductDetail = () => {
   };
 
   const handleToggleFavorite = async () => {
-    try {
-      const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId })
-      });
+  try {
+    const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ userId })
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        setIsFavorite(data.isFavorite); // 서버에서 받은 찜 상태로 업데이트
-      } else {
-        console.error('찜 상태 토글 실패:', response.status);
-      }
-    } catch (error) {
-      console.error('찜 상태 토글 오류:', error);
+    if (response.ok) {
+      const data = await response.json();
+      // 서버에서 받은 찜 상태로 업데이트
+      setIsFavorite(data.isFavorite);
+    } else {
+      console.error('찜 상태 토글 실패:', response.status);
     }
-  };
+  } catch (error) {
+    console.error('찜 상태 토글 오류:', error);
+  }
+};
 
   if (!product) {
     return <div className="loading">Loading...</div>;
@@ -298,8 +300,9 @@ const ProductDetail = () => {
   };
 
   const handleReport = () => {
-    // 신고하기 핸들러
+    navigate('/Report', { state: { sellerId: sellerId, sellerName: sellerName } });
   };
+  
 
   const handleDelete = async () => {
     if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
@@ -446,10 +449,12 @@ const ProductDetail = () => {
             borderRadius: 2,
           }}
         >
-          <div>
-            <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-            <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
-          </div>
+           <div>
+          <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
+          <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
+            <CloseIcon />
+          </IconButton>
+        </div>
         </MuiModal>
 
         <section id="article-profile">

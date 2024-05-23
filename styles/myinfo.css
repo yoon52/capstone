@@ -1,0 +1,357 @@
+/* myinfo.css */
+
+.myinfo-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.myinfo-header {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.myinfo-content {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.myinfo-sidebar {
+    width: 200px;
+    background-color: #2c3e50;
+    color: white;
+
+    padding: 20px;
+    text-align: center;
+}
+
+.myinfo-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.myinfo-sidebar li {
+    margin-bottom: 10px;
+}
+
+.myinfo-sidebar a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.myinfo-sidebar a:hover {
+    background-color: #1a252f;
+}
+
+.myinfo-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-password {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.password-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.myinfo-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.myinfo-button:hover {
+    background-color: #0056b3;
+}
+
+.user-edit {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.button-groupP {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button-groupP button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-groupP button:hover {
+    background-color: #0056b3;
+}
+
+.withdrawal-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.withdrawal-title {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.withdrawal-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.modal-button-groupP {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirm-button,
+.cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.confirm-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.confirm-button:hover {
+    background-color: #c0392b;
+}
+
+.cancel-button {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #7f8c8d;
+}
+
+/* myinfo.css */
+
+.myinfo-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.myinfo-header {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.myinfo-content {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.myinfo-sidebar {
+    width: 200px;
+    background-color: #2c3e50;
+    color: white;
+
+    padding: 20px;
+    text-align: center;
+}
+
+.myinfo-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.myinfo-sidebar li {
+    margin-bottom: 10px;
+}
+
+.myinfo-sidebar a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.myinfo-sidebar a:hover {
+    background-color: #1a252f;
+}
+
+.myinfo-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-password {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.password-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.myinfo-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.myinfo-button:hover {
+    background-color: #0056b3;
+}
+
+.user-edit {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.button-groupP {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button-groupP button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-groupP button:hover {
+    background-color: #0056b3;
+}
+
+.withdrawal-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.withdrawal-title {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.withdrawal-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.modal-button-groupP {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirm-button,
+.cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.confirm-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.confirm-button:hover {
+    background-color: #c0392b;
+}
+
+.cancel-button {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #7f8c8d;
+}

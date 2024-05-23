@@ -19,6 +19,8 @@ const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [productDetails, setProductDetails] = useState(null); // 상품 정보를 상태로 관리
+  
+  
 
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
@@ -82,6 +84,7 @@ const ChatComponent = () => {
       console.error('Error fetching chat history:', error);
     }
   };
+
 
   const fetchProductDetails = async () => {
     try {
