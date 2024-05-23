@@ -19,7 +19,7 @@ const ChatList = () => {
   const fetchChatRooms = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.30.1.19:4001/myChatRooms', {
+      const response = await fetch('http://172.30.1.2:4001/myChatRooms', {
         headers: {
           'user_id': userId
         }
@@ -87,9 +87,9 @@ const ChatList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 90,
     flex: 1,
     padding: 20,
+    marginTop: 60
   },
   chatListContainer: {
     marginBottom: 20,

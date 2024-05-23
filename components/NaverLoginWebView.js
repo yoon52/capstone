@@ -11,10 +11,10 @@ function NaverLoginWebView() {
   // 세션 스토리지에 state 값 저장
   AsyncStorage.setItem('oauthState', state);
 
-  const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=http://172.30.1.19:4000/oauth/naver/callback/mob/&state=${state}`;
+  const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=http://172.30.1.2:4000/oauth/naver/callback/mob/&state=${state}`;
 
   const handleNavigationStateChange = (navState) => {
-    if (navState.url.includes('http://172.30.1.19:8081/Main')) {
+    if (navState.url.includes('http://172.30.1.2:8081/Main')) {
       setIsLoggedIn(true);
     }
   };

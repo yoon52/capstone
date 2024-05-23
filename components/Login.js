@@ -29,7 +29,7 @@ function Login() {
       return;
     }
     try {
-      const response = await fetch('http://172.30.1.19:4000/login', {
+      const response = await fetch('http://172.30.1.2:4000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -114,13 +114,13 @@ function Login() {
         </TouchableOpacity>
       </View>
       <View style={styles.restButtonGroup}>
-      <TouchableOpacity style={styles.socialLoginButton} onPress={handleNaverLogin}>
-        <Image source={require('../image/naver.png')} style={styles.socialLoginIcon} />
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleNaverLogin}>
+          <Image source={require('../image/naver.png')} style={styles.socialLoginIcon} />
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.socialLoginButton} onPress={handleKakaoLogin}>
-        <Image source={require('../image/kakao.png')} style={styles.socialLoginIcon} />
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleKakaoLogin}>
+          <Image source={require('../image/kakao.png')} style={styles.socialLoginIcon} />
+        </TouchableOpacity>
 
 
       </View>

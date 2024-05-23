@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+// ProductList.js
+
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const { width } = Dimensions.get('window');
-const itemWidth = (width - 5) / 4;
-
 function ProductList({ filteredProducts }) {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [formattedProducts, setFormattedProducts] = useState([]);
+
+  useEffect(() => {
+    const formatDate = (createdAt) => {
+      const currentTime = new Date();
+      const productTime = new Date(createdAt);
+      const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60)); // milliseconds to minutes
+
+      if (timeDifference < 30) {
+        return '방금 전';
+      } else if (timeDifference < 60 * 24) {
+        return `${Math.floor(timeDifference / 60)}시간 전`;
+      } else if (timeDifference < 60 * 24 * 7) {
+        return `${Math.floor(timeDifference / (60 * 24))}일 전`;
+      } else if (timeDifference < 60 * 24 * 30) {
+        return `${Math.floor(timeDifference / (60 * 24 * 7))}주 전`;
+      } else {
+        return '한달 ↑';
+      }
+    };
+
+    const formatted = filteredProducts.map(product => ({
+      ...product,
+      formattedCreatedAt: formatDate(product.createdAt),
+    }));
+    setFormattedProducts(formatted);
+  }, [filteredProducts]);
 
   const handleProductClick = async (productId) => {
     const viewedProductKey = `viewed_product_${productId}`;
@@ -19,7 +45,7 @@ function ProductList({ filteredProducts }) {
       const isProductViewed = await AsyncStorage.getItem(viewedProductKey);
 
       if (!isProductViewed) {
-        await fetch(`http://172.30.1.19:4000/updateViews/${productId}`, {
+        await fetch(`http://172.30.1.2:4000/updateViews/${productId}`, {
           method: 'POST',
         });
 
@@ -40,7 +66,7 @@ function ProductList({ filteredProducts }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {filteredProducts.map(product => (
+      {formattedProducts.map(product => (
         <TouchableOpacity
           key={product.id}
           style={styles.productItem}
@@ -50,7 +76,7 @@ function ProductList({ filteredProducts }) {
           <View style={styles.productCard}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: `http://172.30.1.19:4000/uploads/${product.image}` }}
+                source={{ uri: `http://172.30.1.2:4000/uploads/${product.image}` }}
                 style={styles.productImage}
               />
             </View>
@@ -59,37 +85,38 @@ function ProductList({ filteredProducts }) {
                 {product.name}
               </Text>
               <Text style={styles.productPrice}>가격: {product.price}원</Text>
+              <Text style={styles.productPrice}>{product.formattedCreatedAt}</Text>
             </View>
-            {loading && <ActivityIndicator size="small" color="#000" />}
           </View>
         </TouchableOpacity>
       ))}
+      {loading && <ActivityIndicator size="large" color="#000" style={styles.loadingIndicator} />}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     padding: 10,
-    marginHorizontal: 0, // 좌우 여백 없애기
-
   },
   productItem: {
-    marginBottom: 5,
+    width: '100%',
+    marginBottom: 10,
   },
   productCard: {
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 10,
     backgroundColor: '#fff',
-    
-    padding: 3,
+    padding: 10,
   },
   imageContainer: {
     width: 100,
     height: 100,
     borderRadius: 10,
-    overflow: 'hidden', // 이미지가 컨테이너를 넘어가지 않도록 설정
+    overflow: 'hidden',
   },
   productImage: {
     width: '100%',
@@ -101,19 +128,24 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   productName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   productPrice: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
   },
   emptyText: {
     textAlign: 'center',
     marginTop: 50,
-    fontSize: 10,
+    fontSize: 14,
+  },
+  loadingIndicator: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
   },
 });
 

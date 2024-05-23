@@ -7,6 +7,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Sidebar = ({ onClose }) => {
   const navigation = useNavigation();
   const [userInfo, setUserInfo] = useState(null);
+  const [barLength, setBarLength] = useState(0);
+  const [rates, setRates] = useState(null);
+
+  useEffect(() => {
+    // rates 값이 변경될 때마다 막대기 길이 업데이트
+    if (rates !== null) {
+      const ratesValue = parseFloat(rates);
+      const newBarLength = (ratesValue / 4.5) * 100;
+      setBarLength(newBarLength);
+    }
+  }, [rates]);
+
+  const getBarColor = (rates) => {
+    const ratesValue = parseFloat(rates);
+    if (ratesValue >= 0 && ratesValue < 1.0) {
+      return '#FF0000'; // 빨간색
+    } else if (ratesValue >= 1.0 && ratesValue < 2.0) {
+      return '#FFA500'; // 주황색
+    } else if (ratesValue >= 2.0 && ratesValue < 3.0) {
+      return '#ADFF2F'; // 연두색
+    } else if (ratesValue >= 3.0 && ratesValue <= 4.5) {
+      return '#0000FF'; // 파란색
+    } else {
+      return '#000000'; // 기본 색상
+    }
+  };
 
   useEffect(() => {
     // Fetch user info from the server
@@ -14,7 +40,7 @@ const Sidebar = ({ onClose }) => {
       try {
         // Get user ID from the session or wherever it's stored
         const userId = await AsyncStorage.getItem('userId');
-        const response = await fetch('http://172.30.1.19:4000/getUserInfo', {
+        const response = await fetch('http://172.30.1.2:4000/getUserInfo', {
 
           headers: {
             'user_id': userId // Send user ID in the request headers
@@ -25,6 +51,7 @@ const Sidebar = ({ onClose }) => {
         if (response.ok) {
           const data = await response.json();
           setUserInfo(data);
+          setRates(data.rates);
         } else {
           console.error('Failed to fetch user info');
         }
@@ -71,8 +98,13 @@ const Sidebar = ({ onClose }) => {
           </View>
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>{`잔액: ${userInfo.total_sales}원`}</Text>
-            <Text style={styles.ratingText}>{`평점: ${userInfo.rates}`}</Text>
+            <Text style={styles.ratingText}>{`매너 학점: ${userInfo.rates}`}</Text>
+            
+            <View style={styles.barContainer}>
+              <View style={[styles.bar, { width: `${barLength}%`, backgroundColor: getBarColor(rates) }]}></View>
+            </View>
           </View>
+
         </>
       )}
       <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -125,6 +157,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    
   },
   profileImage: {
     width: 80,
@@ -159,6 +192,39 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 16,
+  },
+  temperatureWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  temperatureTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  temperatureText: {
+    color: '#FF4500',
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  meters: {
+    height: 10,
+    backgroundColor: '#DCDCDC',
+    borderRadius: 5,
+    marginTop: 5,
+    width: 100,
+  },
+  barContainer: {
+    height: 8,
+    backgroundColor: '#DCDCDC',
+    borderRadius: 5,
+    marginTop: 5,
+    width: 80,
+  },
+
+  bar: {
+    height: '100%',
+    backgroundColor: '#FF4500',
+    borderRadius: 5,
   },
 });
 

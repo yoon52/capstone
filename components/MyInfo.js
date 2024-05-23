@@ -12,7 +12,7 @@ function MyInfo() {
   const handleConfirm = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId'); // Retrieve userId from AsyncStorage
-      const response = await fetch('http://172.30.1.80:4000/myinfo', {
+      const response = await fetch('http://172.30.1.2:4000/myinfo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

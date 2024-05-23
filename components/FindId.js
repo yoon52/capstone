@@ -26,7 +26,7 @@ const FindId = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://172.30.1.19:4000/find-id', {
+      const response = await fetch('http://172.30.1.2:4000/find-id', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

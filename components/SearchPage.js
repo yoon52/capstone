@@ -26,7 +26,7 @@ function SearchPage() {
 
   const saveSearchTerm = async (searchTerm) => {
     try {
-      const response = await fetch(`http://172.30.1.19:4000/searchHistory`, {
+      const response = await fetch(`http://172.30.1.2:4000/searchHistory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ function SearchPage() {
   // 검색어 목록을 서버로부터 가져오는 함수
   const fetchSearchKeywords = useCallback(async () => {
     try {
-      const response = await fetch(`http://172.30.1.19:4000/searchKeywords/${userId}`);
+      const response = await fetch(`http://172.30.1.2:4000/searchKeywords/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setSearchKeywords(data);
@@ -64,12 +64,12 @@ function SearchPage() {
     try {
       // 검색어가 비어 있는지 확인
       if (!searchTerm.trim()) {
-        console.error('검색어를 입력하세요.');
+        // console.error('검색어를 입력하세요.');
         return;
       }
 
       // 서버로 검색어를 포함한 GET 요청 보내기
-      const response = await fetch(`http://172.30.1.19:4000/products?search=${encodeURIComponent(searchTerm)}`);
+      const response = await fetch(`http://172.30.1.2:4000/products?search=${encodeURIComponent(searchTerm)}`);
       if (response.ok) {
         const searchResults = await response.json();
         // 검색 결과를 SearchResults 컴포넌트로 전달
@@ -93,7 +93,7 @@ function SearchPage() {
   // 검색어 삭제 함수
   const deleteKeyword = async (keywordId) => {
     try {
-      const response = await fetch(`http://172.30.1.19:4000/searchKeywords/delete/${keywordId}`, {
+      const response = await fetch(`http://172.30.1.2:4000/searchKeywords/delete/${keywordId}`, {
         method: 'DELETE'
       });
       if (response.ok) {

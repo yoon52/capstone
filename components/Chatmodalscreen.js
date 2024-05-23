@@ -40,7 +40,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
   }, []);
 
   useEffect(() => {
-    socket.current = io('http://172.30.1.19:4001/', {
+    socket.current = io('http://172.30.1.2:4001/', {
       query: { productId, receiver }
     });
 
@@ -82,7 +82,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://172.30.1.19:4001/messages/${productId}`, {
+      const response = await fetch(`http://172.30.1.2:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }
@@ -111,7 +111,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
       <KeyboardAvoidingView behavior="padding" style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Ionicons name="close" size={24} color="black" />
+            <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.heading}>채팅방 번호: {chatRoomId}</Text>
           <ScrollView ref={messageContainerRef} style={styles.chatContainer}>

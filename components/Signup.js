@@ -60,7 +60,7 @@ function Signup() {
     });
 
     try {
-      const response = await fetch('http://172.30.1.19:4000/signup', {
+      const response = await fetch('http://172.30.1.2:4000/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -86,7 +86,7 @@ function Signup() {
 
   const handleCheckAvailability = async () => {
     try {
-      const response = await fetch(`http://172.30.1.19:4000/checkUser?id=${formData.id}`);
+      const response = await fetch(`http://172.30.1.2:4000/checkUser?id=${formData.id}`);
 
       if (response.ok) {
         const data = await response.json();

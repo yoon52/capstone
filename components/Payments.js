@@ -27,7 +27,7 @@ function Payments() {
 
   const loadPayments = async (userId) => {
     try {
-      const response = await fetch(`http://172.30.1.19:4000/payments/${userId}`);
+      const response = await fetch(`http://172.30.1.2:4000/payments/${userId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch payments');

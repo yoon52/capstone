@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // useNavigation 훅 추가
-
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Image } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,7 +15,7 @@ const ChatComponent = ({ route }) => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const navigation = useNavigation(); // useNavigation 훅으로 navigation 객체 생성
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +24,7 @@ const ChatComponent = ({ route }) => {
         setUserId(storedUserId);
 
         if (storedUserId && productId && receiver) {
-          socket.current = io('http://172.30.1.19:4001/', {
+          socket.current = io('http://172.30.1.2:4001/', {
             query: { productId, receiver }
           });
 
@@ -55,6 +54,16 @@ const ChatComponent = ({ route }) => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current = null; // 소켓 객체 초기화
+      }
+    };
+  }, []);
+
+
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollToEnd({ animated: true });
@@ -63,7 +72,7 @@ const ChatComponent = ({ route }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://172.30.1.19:4001/messages/${productId}`, {
+      const response = await fetch(`http://172.30.1.2:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }
@@ -89,11 +98,9 @@ const ChatComponent = ({ route }) => {
     }
   };
 
-
   const handlePayment = () => {
-    // 결제 페이지로 이동하면서 상품 정보를 URL 쿼리 파라미터로 전달
     navigation.navigate('Sandbox', { productId, userId });
-    console.log('결제 처리 로직을 추가하세요.');
+    console.log('Add payment logic here');
   };
 
   return (
@@ -101,10 +108,19 @@ const ChatComponent = ({ route }) => {
       <ScrollView ref={messageContainerRef} style={styles.messagesContainer}>
         {messages.map((message, index) => (
           <View key={index} style={[styles.messageContainer, message.sender === userId ? styles.ownMessage : styles.otherMessage]}>
+          {message.sender !== userId && (
+            <Image
+              source={{ uri: 'https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png' }}
+              style={styles.profileImage}
+            />
+          )}
+          <View style={[styles.messageContent, message.sender === userId ? styles.ownMessageBackground : styles.otherMessageBackground]}>
             <Text style={styles.messageSender}>{message.sender === userId ? '나' : message.sender}</Text>
             <Text style={styles.messageText}>{message.text}</Text>
           </View>
+        </View>
         ))}
+
       </ScrollView>
       <View style={styles.inputContainer}>
         <TextInput
@@ -128,28 +144,35 @@ const ChatComponent = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 90,
     flex: 1,
     padding: 10,
+    borderRadius: 20, // 컨테이너를 둥글게 만듦
+    backgroundColor: '#F4F4F4', // 배경색 추가
+    overflow: 'hidden', // 둥근 테두리가 넘치지 않도록 함
   },
   messagesContainer: {
     flex: 1,
   },
   messageContainer: {
     marginBottom: 10,
-    padding: 10,
-    borderRadius: 8,
-    maxWidth: '80%',
-
+    flexDirection: 'row',
   },
   ownMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
   },
   otherMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#E5E5EA',
-    color: 'white'
+  },
+  messageContent: {
+    maxWidth: '80%',
+    borderRadius: 10, // 메시지 텍스트의 둥근 테두리
+    padding: 10, // 메시지 내용 간격 추가
+  },
+  ownMessageBackground: {
+    backgroundColor: '#DCF8C6', // 사용자 메시지의 배경색
+  },
+  otherMessageBackground: {
+    backgroundColor: '#E5E5EA', // 상대방 메시지의 배경색
   },
   messageSender: {
     fontWeight: 'bold',
@@ -182,6 +205,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
 });
 

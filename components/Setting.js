@@ -13,7 +13,7 @@ function Setting() {
       try {
         // Get user ID from the session or wherever it's stored
         const userId = await AsyncStorage.getItem('userId');
-        const response = await fetch('http://172.30.1.19:4000/getUserInfo', {
+        const response = await fetch('http://172.30.1.2:4000/getUserInfo', {
 
           headers: {
             'user_id': userId // Send user ID in the request headers
