@@ -1,29 +1,40 @@
 .admin-container {
   position: relative;
-  /* 부모 요소를 상대 위치로 설정 */
-  max-width: 800px;
-  max-height: 480px;
-  height: 480px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 10px;
   border: 2px solid #162b9150;
   border-radius: 5px;
   text-align: center;
-  margin-top: 40px;
+  margin-top: 50px;
   margin-bottom: 20px;
 }
 
-
-.admin-header {
-  font-size: 40px;
-  margin-top: -20px;
-  text-align: center;
+.table-container {
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 .user-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-top: -10px;
+  margin-bottom: 0px;
+}
+
+.user-table th {
+  background-color: #103260;
+  color: #fff;
+  position: sticky;
+  top: 0;
+}
+
+.user-table th:first-child {
+  left: 0;
+}
+
+.user-table th:not(:first-child) {
+  background-color: #103260;
 }
 
 .user-table th,
@@ -203,15 +214,10 @@
 /* Style for the container of the "More" button and options */
 .more-button-container {
   position: relative;
-  /* 상대 위치 설정 */
-  display: flex;
-  /* 내부 요소들을 수평으로 배치하기 위해 flex 사용 */
-  justify-content: center;
-  /* 가로 중앙 정렬 */
-  align-items: center;
-  /* 세로 중앙 정렬 */
-  height: 100%;
-  /* 컨테이너의 높이를 100%로 설정하여 컨테이너와 같은 높이로 만듭니다. */
+  margin-top: -30px;
+  margin-bottom: 30px;
+  margin-left: -15px;
+  margin-right: 10px;
 }
 
 .more-button {
@@ -219,6 +225,7 @@
   border: none;
   cursor: pointer;
   color: black;
+  margin-left: -20px;
 }
 
 /* Style for the options container */

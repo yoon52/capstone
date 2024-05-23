@@ -21,6 +21,7 @@
     height: 100%;
     background-color: #fff;
     overflow: hidden;
+    border-radius: 5px;
 }
 
 .myinfo-sidebar {
@@ -58,7 +59,7 @@
 
 .myinfo-container {
     flex: 1;
-    padding: 20px;
+    padding: 0px;
 }
 
 .password-form {
@@ -69,33 +70,39 @@
 
 /* 비밀번호를 입력해주세요 */
 .input-password {
-    margin-top: 70px;
+    margin-top: 50px;
     margin-bottom: 50px;
-    font-size: 20px;
+    font-size: 25px;
 }
 
 .password-input {
     width: 100%;
-    max-width: 300px;
+    max-width: 400px;
     padding: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
 }
 
 .myinfo-button {
+    appearance: none;
     background-color: #103260;
-    color: #ffffff;
     border: 2px solid #103260;
     border-radius: 5px;
+    color: #ffffff;
     cursor: pointer;
     align-self: center;
-    padding: 10px 20px;
+    font-size: 17px;
+    padding: 15px 20px;
     transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 32%;
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
 
 .myinfo-button:hover {
+    color: #ffffff;
     outline: 0;
     box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
 }
@@ -103,29 +110,36 @@
 .user-edit {
     width: 500px;
     max-width: 500px;
-    padding: 10px;
+    padding: 0px 250px 2px 270px;
     margin: 0 auto;
     text-align: center;
+    border: 2px solid #2c3e50;
 }
 
 .save-button {
-    padding: 10px 20px;
-    margin-top: 20px;
     background-color: #103260;
-    color: white;
-    border: none;
+    color: #ffffff;
+    border: 2px solid #103260;
     border-radius: 5px;
     cursor: pointer;
+    align-self: center;
+    font-size: 17px;
+    padding: 15px 20px;
     transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .save-button:hover {
+    outline: 0;
     box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
 }
 
 .withdrawal-button {
     padding: 10px 20px;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     margin-left: 400px;
     background-color: transparent;
     color: black;
@@ -207,7 +221,7 @@
     margin: 0 auto;
     padding: 10px;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 50px;
     margin-bottom: 20px;
 }
 
@@ -218,11 +232,15 @@
     border-radius: 5px;
     cursor: pointer;
     align-self: center;
-    padding: 10px 20px;
-    margin-top: 20px;
+    font-size: 17px;
+    padding: 15px 20px;
     transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+    width: 95%;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 .changepw:hover {
-    box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
+    outline: 0;
+  box-shadow: 0 0 40px 40px #103260 inset, 0 0 5px 1px #103260;
 }

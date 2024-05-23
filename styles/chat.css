@@ -8,10 +8,35 @@
   border-radius: 10px;
 }
 
-/* 대화 헤더 */
+/* chat.css */
+
 .chat-header {
-  text-align: center;
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-top: -15px;
+}
+
+.product-details {
+  display: flex;
+  align-items: center;
+}
+
+.product-details img.products-image {
+  width: 90px; /* 이미지 크기 */
+  height: 90px; /* 이미지 크기 */
+  margin-right: 10px; /* 이미지와 텍스트 간격 */
+  border-radius: 5px; /* 이미지의 모서리를 둥글게 */
+}
+
+.product-details .products-info {
+  display: flex;
+  flex-direction: column; /* 텍스트를 수직으로 배치 */
+}
+
+.products-info h3, .products-info p {
+  margin: 0;
+  line-height: 2.2; /* 줄 간격을 좁게 조정 */
 }
 
 /* 대화 메시지 영역 */
@@ -117,7 +142,8 @@
 
 .button-group-1 {
   display: flex;
-  gap: 16px;
+  gap: 13px;
+  margin-top: 10px;
   /* 버튼 간의 간격을 원하는 대로 조정하세요 */
 }
 
