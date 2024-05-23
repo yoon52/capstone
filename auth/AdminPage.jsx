@@ -69,7 +69,7 @@ function AdminPage() {
         body: JSON.stringify(bodyData)
       });
 
-      const responseData = await response.json();
+      await response.json();
       fetchUsers();
       setIsRejectionFormOpen(false);
       setRejectionReason('');

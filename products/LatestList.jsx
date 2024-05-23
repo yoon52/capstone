@@ -173,18 +173,14 @@ function LatestList() {
 
         // 세션 스토리지에 조회 기록 저장
         sessionStorage.setItem(viewedProductKey, 'true');
-
-        // 상품 상세 페이지로 이동
-        navigate(`/productDetail/${productId}`);
       } catch (error) {
         console.error('Error updating views:', error);
       }
-    } else {
-      // 이미 조회한 상품인 경우, 상품 상세 페이지로 이동만 수행
-      navigate(`/productDetail/${productId}`);
     }
-  };
-
+    
+    // 상품 상세 페이지로 이동
+    navigate(`/ProductDetail/${productId}`);
+};
   return (
     <div className="container-main">
       <Header

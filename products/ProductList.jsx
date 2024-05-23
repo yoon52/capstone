@@ -34,7 +34,9 @@ function ProductList({ filteredProducts }) {
     setFormattedProducts(formatted);
   }, [filteredProducts]);
 
-  const handleProductClick = async (productId) => {
+  const handleProductClick = async (event, productId) => {
+    event.preventDefault(); // 기본 동작 막기
+
     const viewedProductKey = `viewed_product_${productId}`;
 
     // 세션 스토리지에서 해당 상품의 조회 기록 확인
@@ -49,23 +51,20 @@ function ProductList({ filteredProducts }) {
 
         // 세션 스토리지에 조회 기록 저장
         sessionStorage.setItem(viewedProductKey, 'true');
-
-        // 상품 상세 페이지로 이동
-        navigate(`/productDetail/${productId}`);
       } catch (error) {
         console.error('Error updating views:', error);
       }
-    } else {
-      // 이미 조회한 상품인 경우, 상품 상세 페이지로 이동만 수행
-      navigate(`/productDetail/${productId}`);
     }
-  };
+    
+    // 상품 상세 페이지로 이동
+    navigate(`/ProductDetail/${productId}`);
+};
 
   return (
     <div className="cards-wrap">
       {formattedProducts.map((product) => (
-        <article className="card-top" key={product.id} onClick={() => handleProductClick(product.id)}>
-          <a className="card-link" href={`/ProductDetail/${product.id}`} data-event-label={product.id}>
+        <article className="card-top" key={product.id} onClick={(e) => handleProductClick(e, product.id)}>
+          <div className="card-link" data-event-label={product.id}>
             <div className="card-photo">
               <img
                 src={`${serverHost}:4000/uploads/${product.image}`}
@@ -83,10 +82,11 @@ function ProductList({ filteredProducts }) {
                 <p className="product-time-L">{product.formattedCreatedAt}</p>
               </div>
             </div>
-          </a>
+          </div>
         </article>
       ))}
     </div>
+
   );
 }
 

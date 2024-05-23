@@ -4,7 +4,6 @@ import React, { useState, useRef } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import ViewsList from '../products/ViewsList';
 import SearchResults from '../header/SearchResults';
-import ProductDetail from '../products/ProductDetail';
 import ProductManagement from '../products/ProductManagement';
 import ChatListComponent from '../messages/ChatListComponent';
 import Header from '../header/Header';
@@ -168,7 +167,7 @@ function Main() {
           <button className="more-button" onClick={handleMoreList}>전체 상품 보기</button>
         </div>
         <Routes>
-          <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
+          
           <Route path="/ProductManagement" element={<ProductManagement />} />
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />

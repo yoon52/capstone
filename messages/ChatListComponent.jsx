@@ -121,6 +121,10 @@ const ChatListComponent = () => {
     navigate('/MyInfo');
   };
 
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
+
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
     navigate('/login');
@@ -154,6 +158,7 @@ const ChatListComponent = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
       />
       <div className="chatsidebar-container">
         <div className="chatsidebar">
