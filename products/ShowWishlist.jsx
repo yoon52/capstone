@@ -238,13 +238,11 @@ const ShowWishlist = () => {
       <div className="wishlist-container">
         {wishlistItems.map(product => (
           <div key={product.id} className="wishlist-item">
-            
-
             {/* 상품 이미지 */}
             <img
               src={`${serverHost}:4000/uploads/${product.image}`}
               alt={product.product_name}
-              className="product-image"
+              className="wish-image"
               onClick={() => handleProductClick(product.product_id)}
             />
             {/* 상품명과 가격 */}
@@ -258,11 +256,9 @@ const ShowWishlist = () => {
             </div>
           </div>
         ))}
-
       </div>
     </div>
   );
-
 };
 
 export default ShowWishlist;

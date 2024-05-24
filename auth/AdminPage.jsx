@@ -250,15 +250,17 @@ function AdminPage() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <IconButton onClick={() => handleToggleOptions(user.id)}>
-                  <MoreHorizIcon />
-                </IconButton>
-                {showOptionsForUser === user.id && (
-                  <div className="admin-options-container">
-                    <Button size="small" onClick={() => handleAdminModalOpen(user)}>학생증 보기</Button>
-                    <Button size="small" onClick={() => handleDeleteUser(user.id)}>사용자 삭제</Button>
-                  </div>
-                )}
+                <div className="admin-options-container">
+                  <IconButton onClick={() => handleToggleOptions(user.id)} style={{ position: 'absolute', top: 8, right: 8 }}>
+                    <MoreHorizIcon />
+                  </IconButton>
+                  {showOptionsForUser === user.id && (
+                    <div className="admin-options">
+                      <Button size="small" onClick={() => handleAdminModalOpen(user)}>학생증 확인</Button>
+                      <Button size="small" onClick={() => { handleDeleteUser(user.id); handleToggleOptions(user.id); }}>유저 삭제</Button>
+                    </div>
+                  )}
+                </div>
               </CardActions>
             </Card>
           ))}
@@ -308,7 +310,7 @@ function AdminPage() {
               <Button variant="contained" color="error" onClick={() => handleRejectButton(selectedUser.id)}>반려</Button>
             </div>
             {isRejectionFormOpen && (
-              <div style={{ position: 'absolute', right: -330, top:0, width: '300px', padding: '15px', backgroundColor: '#ffffff' }}>
+              <div style={{ position: 'absolute', right: -330, top: 0, width: '300px', padding: '15px', backgroundColor: '#ffffff' }}>
                 <form onSubmit={handleRejectFormSubmit}>
                   <TextField
                     label="반려 사유"
@@ -320,8 +322,8 @@ function AdminPage() {
                     fullWidth
                     margin="normal"
                   />
-            <div style={{ marginTop: '10px', marginLeft: '110px'}}>
-                  <Button type="submit" variant="contained" color="error">반려 하기</Button>
+                  <div style={{ marginTop: '10px', marginLeft: '110px' }}>
+                    <Button type="submit" variant="contained" color="error">반려 하기</Button>
                   </div>
                 </form>
               </div>

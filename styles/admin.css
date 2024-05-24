@@ -3,16 +3,19 @@
 .admin-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure the container covers the full viewport height */
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width: 1300px;
 }
 
 .admin-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Adjusted card width */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 20px;
 }
 
 .admin-user-card {
+  position: relative;
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -55,8 +58,34 @@
 }
 
 .admin-options-container {
-  display: flex;
-  align-items: center;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.admin-options-container .admin-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  width: 120px;
+}
+
+.admin-options-container .admin-options button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  text-align: left;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.admin-options-container .admin-options button:hover {
+  background-color: #f0f0f0;
 }
 
 /* Styles for the Modal */
@@ -83,10 +112,10 @@
 /* Adjustments for large screens (1920px width) */
 @media (min-width: 1920px) {
   .admin-card-grid {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Adjusted card width for larger screens */
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
 
   .MuiPaper-modal {
-    width: 600px; /* Increase modal width for better visibility on larger screens */
+    width: 600px;
   }
 }
