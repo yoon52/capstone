@@ -771,16 +771,16 @@ app.get('/productsmanage', async (req, res) => {
 
   // 사용자 ID가 없는 경우
   if (!userId) {
-    return res.status(401).json({ error: '사용자 인증이 필요합니다.' });
+      return res.status(401).json({ error: '사용자 인증이 필요합니다.' });
   }
 
   try {
-    // 해당 사용자가 작성한 상품 목록 조회 쿼리
-    const [rows] = await pool.query('SELECT * FROM products WHERE user_id = ?', [userId]);
-    return res.status(200).json(rows);
+      // 해당 사용자가 작성한 상품 목록 조회 쿼리
+      const [rows] = await pool.query('SELECT * FROM products WHERE user_id = ?', [userId]);
+      return res.status(200).json(rows);
   } catch (error) {
-    console.error('상품 목록 가져오기 오류:', error);
-    return res.status(500).json({ error: '상품 목록을 가져오는 중 오류가 발생했습니다.' });
+      console.error('상품 목록 가져오기 오류:', error);
+      return res.status(500).json({ error: '상품 목록을 가져오는 중 오류가 발생했습니다.' });
   }
 });
 
@@ -790,27 +790,27 @@ app.get('/productsmanage', async (req, res) => {
 const executeQuery = async (pool, query, values) => {
   let connection;
   try {
-    connection = await pool.getConnection();
-    const [rows] = await connection.query(query, values);
-    return rows;
+      connection = await pool.getConnection();
+      const [rows] = await connection.query(query, values);
+      return rows;
   } catch (error) {
-    throw error;
+      throw error;
   } finally {
-    if (connection) {
-      connection.release();
-    }
+      if (connection) {
+          connection.release();
+      }
   }
 };
 
 // Example function to fetch product details by ID
 const getProductById = async (pool, productId) => {
   try {
-    const query = 'SELECT * FROM products WHERE id = ?';
-    const values = [productId];
-    const products = await executeQuery(pool, query, values);
-    return products[0]; // Assuming there's only one product with the given ID
+      const query = 'SELECT * FROM products WHERE id = ?';
+      const values = [productId];
+      const products = await executeQuery(pool, query, values);
+      return products[0]; // Assuming there's only one product with the given ID
   } catch (error) {
-    throw error;
+      throw error;
   }
 };
 
@@ -818,11 +818,11 @@ const getProductById = async (pool, productId) => {
 app.get('/productsD/:productId', async (req, res) => {
   const productId = req.params.productId;
   try {
-    const product = await getProductById(pool, productId);
-    res.json(product);
+      const product = await getProductById(pool, productId);
+      res.json(product);
   } catch (error) {
-    console.error('Error fetching product:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error fetching product:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -1209,25 +1209,20 @@ app.get('/api/products/:productId', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
+  
 
 
 // 즐겨찾기 목록 조회 API 엔드포인트
 app.get('/favorites', async (req, res) => {
   try {
-    const userId = req.headers['user_id'];
-
-    // 사용자의 즐겨찾기 목록을 가져오기 위해 favorites 테이블과 products 테이블을 조인
+    // favorites 테이블과 products 테이블을 조인하여 즐겨찾기 목록과 해당 제품 정보를 가져옴
     const [rows] = await pool.query(`
-          SELECT f.id, f.user_id, f.product_id, f.created_at,
-                 p.name AS product_name, p.description, p.price, p.createdAt AS product_created_at,
-                 p.image,
-                 u.name AS user_name, u.email, u.department, u.grade, u.rates
-          FROM favorites f
-          JOIN products p ON f.product_id = p.id
-          JOIN users u ON f.user_id = u.id
-          WHERE f.user_id = ?
-      `, [userId]);
+        SELECT f.id, f.user_id, f.product_id, f.created_at,
+               p.name AS product_name, p.description, p.price, p.createdAt AS product_created_at,
+               p.image
+        FROM favorites f
+        JOIN products p ON f.product_id = p.id
+      `);
 
     // 쿼리 결과를 클라이언트에 반환
     res.json(rows);
@@ -1236,8 +1231,6 @@ app.get('/favorites', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-
 
 // 사용자의 rates 업데이트 함수
 async function updateRates(userId) {
@@ -1280,8 +1273,6 @@ app.post('/ratings', async (req, res) => {
   }
 });
 
-
-
 // 사용자가 즐겨찾기한 상품을 가져오는 함수
 async function getFavoriteProducts(userId, pool) {
   try {
@@ -1320,8 +1311,6 @@ async function getPurchasedProducts(userId, pool) {
     throw new Error('구매한 상품을 가져오는 중에 오류가 발생했습니다.');
   }
 }
-
-
 
 async function getRecommendedProducts(userId, pool) {
   try {
@@ -1493,7 +1482,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
 // 아이디 찾기 엔드포인트
 app.post('/find-id', async (req, res) => {
   try {
@@ -1519,9 +1507,6 @@ app.post('/find-id', async (req, res) => {
   }
 });
 
-
-
-
 // 사용자의 승인 상태를 업데이트하는 API 엔드포인트
 app.put('/users/:userId/approval', async (req, res) => {
   const { userId } = req.params;
@@ -1536,8 +1521,7 @@ app.put('/users/:userId/approval', async (req, res) => {
     res.status(500).json({ error: '사용자 승인 상태를 업데이트하는 중에 오류가 발생했습니다.' });
   }
 });
-
-
+  
 // 승인 완료된 사용자 정보 가져오는 엔드포인트
 app.get('/users/approved', async (req, res) => {
   try {
@@ -1551,7 +1535,6 @@ app.get('/users/approved', async (req, res) => {
     res.status(500).json({ error: '승인된 사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
   }
 });
-
 
 // 중복 확인 엔드포인트
 app.get('/checkUser', async (req, res) => {
@@ -1709,7 +1692,6 @@ app.post('/changepassword', async (req, res) => {
   }
 });
 
-
 app.get('/users', async (req, res) => {
   try {
     // 모든 승인되지 않은 사용자 정보를 가져오는 쿼리 실행
@@ -1730,7 +1712,6 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: '사용자 정보를 가져오는 중에 오류가 발생했습니다.' });
   }
 });
-
 
 // DELETE 엔드포인트 - /deletefromadmin/:userId
 app.delete('/deletefromadmin/:userId', async (req, res) => {
@@ -1805,25 +1786,23 @@ app.get('/getUserInfo', async (req, res) => {
 // products/latest 엔드포인트를 만듭니다.
 app.get('/products/latest', async (req, res) => {
   try {
-    // 최신순으로 상품을 조회하는 쿼리를 실행합니다.
-    const latestProductsQuery = `
+      // 최신순으로 상품을 조회하는 쿼리를 실행합니다.
+      const latestProductsQuery = `
       SELECT *
       FROM products
       ORDER BY createdAt desc
     `;
-    // 쿼리를 실행하여 최신순으로 정렬된 상품 목록을 가져옵니다.
-    const [latestProductsRows] = await pool.execute(latestProductsQuery);
+      // 쿼리를 실행하여 최신순으로 정렬된 상품 목록을 가져옵니다.
+      const [latestProductsRows] = await pool.execute(latestProductsQuery);
 
-    // 최신순으로 정렬된 상품 목록을 클라이언트에 응답합니다.
-    res.json(latestProductsRows);
+      // 최신순으로 정렬된 상품 목록을 클라이언트에 응답합니다.
+      res.json(latestProductsRows);
   } catch (error) {
-    console.error('Error fetching latest products:', error);
-    // 오류가 발생한 경우 500 상태 코드와 오류 메시지를 클라이언트에 응답합니다.
-    res.status(500).json({ error: 'Failed to fetch latest products' });
+      console.error('Error fetching latest products:', error);
+      // 오류가 발생한 경우 500 상태 코드와 오류 메시지를 클라이언트에 응답합니다.
+      res.status(500).json({ error: 'Failed to fetch latest products' });
   }
 });
-
-
 
 app.get('/products/seller/:productId', async (req, res) => {
   const { productId } = req.params;
@@ -1862,17 +1841,17 @@ app.get('/products/isFavorite/:userId/:productId', async (req, res) => {
   const productId = req.params.productId;
 
   try {
-    // 데이터베이스에서 해당 사용자와 상품에 대한 찜 정보를 조회합니다.
-    const favoriteQuery = 'SELECT * FROM favorites WHERE user_id = ? AND product_id = ?';
-    const [favoriteRows] = await pool.execute(favoriteQuery, [userId, productId]);
+      // 데이터베이스에서 해당 사용자와 상품에 대한 찜 정보를 조회합니다.
+      const favoriteQuery = 'SELECT * FROM favorites WHERE user_id = ? AND product_id = ?';
+      const [favoriteRows] = await pool.execute(favoriteQuery, [userId, productId]);
 
-    // 찜 상태가 존재하는 경우 true를 반환합니다.
-    const isFavorite = favoriteRows.length > 0;
+      // 찜 상태가 존재하는 경우 true를 반환합니다.
+      const isFavorite = favoriteRows.length > 0;
 
-    res.json({ isFavorite });
+      res.json({ isFavorite });
   } catch (error) {
-    console.error('Error fetching favorite status:', error);
-    res.status(500).json({ error: 'Failed to fetch favorite status' });
+      console.error('Error fetching favorite status:', error);
+      res.status(500).json({ error: 'Failed to fetch favorite status' });
   }
 });
 
