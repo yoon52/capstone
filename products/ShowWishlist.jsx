@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Routes, Route, useParams } from 'react-router-dom';
-import { Button } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
 import Header from '../header/Header';
-import '../../styles/product.css'; // CSS 파일을 불러옴
+import '../../styles/product.css';
 import serverHost from '../../utils/host';
 
 const ShowWishlist = () => {
@@ -23,8 +21,8 @@ const ShowWishlist = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [isFavorite, setIsFavorite] = useState(false); // 추가: 찜 상태
-  const [isFavorited, setIsFavorited] = useState(false); // 찜 상태 여부
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
@@ -74,7 +72,6 @@ const ShowWishlist = () => {
   };
 
   const handleProductClick = (productId) => {
-    // productId를 이용하여 상품 상세 페이지로 이동
     navigate(`/ProductDetail/${productId}`);
   };
 
