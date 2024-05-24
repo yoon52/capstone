@@ -22,6 +22,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PeopleIcon from '@mui/icons-material/People';
 import ReportIcon from '@mui/icons-material/Report';
+import CloseIcon from '@mui/icons-material/Close'; // CloseIcon 추가
 import serverHost from '../../utils/host';
 import '../../styles/admin.css';
 
@@ -223,11 +224,11 @@ function AdminPage() {
         <List>
           <ListItem button onClick={handleApprovedUsersClick}>
             <ListItemIcon><PeopleIcon /></ListItemIcon>
-            <ListItemText primary="View Approved Users" />
+            <ListItemText primary="승인된 사용자 보기" />
           </ListItem>
           <ListItem button onClick={handleReport}>
             <ListItemIcon><ReportIcon /></ListItemIcon>
-            <ListItemText primary="View Reports" />
+            <ListItemText primary="신고내역 보기" />
           </ListItem>
         </List>
       </Drawer>
@@ -249,13 +250,13 @@ function AdminPage() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small" onClick={() => handleAdminModalOpen(user)}>View Student ID</Button>
                 <IconButton onClick={() => handleToggleOptions(user.id)}>
                   <MoreHorizIcon />
                 </IconButton>
                 {showOptionsForUser === user.id && (
                   <div className="admin-options-container">
-                    <Button size="small" onClick={() => handleDeleteUser(user.id)}>Delete User</Button>
+                    <Button size="small" onClick={() => handleAdminModalOpen(user)}>학생증 보기</Button>
+                    <Button size="small" onClick={() => handleDeleteUser(user.id)}>사용자 삭제</Button>
                   </div>
                 )}
               </CardActions>
@@ -270,27 +271,60 @@ function AdminPage() {
           aria-labelledby="admin-modal-modal-title"
           aria-describedby="admin-modal-modal-description"
         >
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
-            <img src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`} alt="Student ID" style={{ width: '80%', marginBottom: '20px' }} />
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <IconButton
+              aria-label="close"
+              onClick={handleAdminModalClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <img
+              src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`}
+              alt="Student ID"
+              style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
+            />
             {verificationResult && <Typography id="admin-modal-modal-description" sx={{ mt: 2 }}>{verificationResult}</Typography>}
-            <Button variant="contained" onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>View Details</Button>
-            <Button variant="contained" color="success" onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>Approve</Button>
-            <Button variant="contained" color="error" onClick={() => handleRejectButton(selectedUser.id)}>Reject</Button>
-            <Button variant="contained" onClick={handleAdminModalClose}>Close</Button>
+            <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+              <Button variant="contained" onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>상세 정보 보기</Button>
+              <Button variant="contained" color="success" onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>승인</Button>
+              <Button variant="contained" color="error" onClick={() => handleRejectButton(selectedUser.id)}>반려</Button>
+            </div>
             {isRejectionFormOpen && (
-              <form onSubmit={handleRejectFormSubmit}>
-                <TextField
-                  label="Rejection Reason"
-                  multiline
-                  rows={4}
-                  value={rejectionReason}
-                  onChange={handleRejectionReasonChange}
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                />
-                <Button type="submit" variant="contained" color="error">요청 반려</Button>
-              </form>
+              <div style={{ position: 'absolute', right: -330, top:0, width: '300px', padding: '15px', backgroundColor: '#ffffff' }}>
+                <form onSubmit={handleRejectFormSubmit}>
+                  <TextField
+                    label="반려 사유"
+                    multiline
+                    rows={4}
+                    value={rejectionReason}
+                    onChange={handleRejectionReasonChange}
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                  />
+            <div style={{ marginTop: '10px', marginLeft: '110px'}}>
+                  <Button type="submit" variant="contained" color="error">반려 하기</Button>
+                  </div>
+                </form>
+              </div>
             )}
           </Box>
         </Modal>
