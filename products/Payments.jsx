@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Table } from 'react-bootstrap';
+import { Container, Card, Spinner, Button, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
@@ -33,6 +33,7 @@ const Payments = () => {
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching payments:', error.message);
+        setIsLoading(false);
       }
     };
     fetchPayments();
@@ -49,6 +50,7 @@ const Payments = () => {
       second: 'numeric',
     });
   };
+
   const handleChangeSearchTerm = (event) => {
     setSearchTerm(event.target.value);
     setSearchError('');
@@ -61,9 +63,11 @@ const Payments = () => {
   const handleProductManagement = () => {
     navigate('/ProductManagement');
   };
+
   const handleShowWishlist = () => {
     navigate('/ShowWishlist');
   };
+
   const handleShowMyInfoPage = () => {
     navigate('/MyInfo');
   };
@@ -84,13 +88,15 @@ const Payments = () => {
   const closeNavMenu = () => {
     setShowNavMenu(false);
   };
+
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
+
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      console.log('touch');
       return;
     }
 
@@ -104,24 +110,23 @@ const Payments = () => {
         setShowSearchResults(true);
         setSearchError('');
 
-        // Navigate to the search results page
         navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
-
       } else {
         console.error('검색 오류:', response.status);
       }
     } catch (error) {
       console.error('검색 오류:', error);
     }
-    // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
 
+    console.log("검색어:", searchTerm);
   };
+
   const handleEnterKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSearchProduct();
     }
   };
+
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
@@ -140,7 +145,6 @@ const Payments = () => {
     }
   };
 
-
   return (
     <div className='container-main'>
       <Header
@@ -158,37 +162,34 @@ const Payments = () => {
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
-        setShowRecentSearches={setShowRecentSearches} // setShowRecentSearches 함수 전달
-        userInfo // 사용자 정보 추가
-
+        setShowRecentSearches={setShowRecentSearches}
       />
-      <Container className="container">
-        <h1 className="my-4">결제 내역</h1>
+      <Container className="my-4">
+        <h1 className="mb-4">구매 내역</h1>
         {isLoading ? (
-          <p>Loading...</p>
+          <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </div>
         ) : (
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>상품명</th>
-                <th>주문 번호</th>
-                <th>금액</th>
-                <th>일시</th>
-              </tr>
-            </thead>
-            <tbody>
-              {payments.map((payment) => (
-                <tr key={payment.id}>
-                  <td>{payment.productName}</td>
-                  <td>{payment.orderId}</td>
-                  <td>{payment.amount.toLocaleString()}원</td>
-                  <td>{formatDate(payment.createdAt)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          <Row>
+            {payments.map((payment) => (
+              <Col md={6} lg={3} key={payment.id} className="mb-4">
+                <Card>
+                  <Card.Body>
+                    <Card.Title>{payment.productName}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">주문 번호: {payment.orderId}</Card.Subtitle>
+                    <Card.Text>금액: {payment.amount.toLocaleString()}원</Card.Text>
+                    <Card.Text>일시: {formatDate(payment.createdAt)}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
         )}
       </Container>
+
     </div>
   );
 };

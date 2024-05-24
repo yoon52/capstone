@@ -70,7 +70,7 @@ function UserEdit({ userInfo, onAccountDeleted }) {
 
   return (
     <div className="user-edit">
-      <h2>회원 정보 수정</h2>
+      <h2 style={{ marginTop: '30px', marginBottom: '25px' }}>회원 정보 수정</h2>
       <p className="user-id">학번 : {userInfo.id}</p>
       <div className="form-group">
         <input
@@ -118,7 +118,7 @@ function UserEdit({ userInfo, onAccountDeleted }) {
         </select>
       </div>
       <div>
-      <button className="save-button" onClick={handleSave}>저장</button>
+        <button className="save-button" onClick={handleSave}>저장</button>
       </div>
       <button className="withdrawal-button" onClick={handleDeleteAccount}>회원 탈퇴</button>
       {/* 모달 */}

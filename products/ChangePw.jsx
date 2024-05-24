@@ -34,7 +34,7 @@ function ChangePw() {
 
       if (response.ok) {
         alert('비밀번호가 변경되었습니다.');
-        window.location.href = '/login';
+        window.location.href = '/Login';
       } else {
         const data = await response.json();
         alert(data.message);

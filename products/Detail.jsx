@@ -51,37 +51,37 @@ function Detail({ filteredProducts }) {
         sessionStorage.setItem(viewedProductKey, 'true');
 
         // 상품 상세 페이지로 이동
-        navigate(`/productDetail/${productId}`);
+        navigate(`/ProductDetail/${productId}`);
       } catch (error) {
         console.error('Error updating views:', error);
       }
     } else {
       // 이미 조회한 상품인 경우, 상품 상세 페이지로 이동만 수행
-      navigate(`/productDetail/${productId}`);
+      navigate(`/ProductDetail/${productId}`);
     }
   };
 
 
   return (
-    <div className="product-list-container-1">
-      <div className="product-list-wrapper-1">
-        <div className="product-grid-1">
+    <div className="product-list-container">
+      <div className="product-list-wrapper">
+        <div className="product-grid">
           {formattedProducts.map((product) => (
             <div
               key={product.id}
-              className="product-item-1"
+              className="product-item"
               onClick={() => handleProductClick(product.id)}
             >
-              <div className="product-image-container-1">
+              <div className="product-image-container">
                 <img
                   src={`${serverHost}:4000/uploads/${product.image}`}
                   alt="Product"
                   className="product-image"
                 />
               </div>
-              <div className="product-details-1">
-                <p className="product-name-1">{product.name}</p>
-                <p className="product-price-1">
+              <div className="product-details">
+                <p className="product-name">{product.name}</p>
+                <p className="product-price">
                   <span style={{ fontSize: '20px', fontWeight: 550 }}>{product.price}</span> 원
                 </p>
                 <div className="product-views">

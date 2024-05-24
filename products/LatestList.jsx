@@ -117,7 +117,7 @@ function LatestList() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -175,13 +175,13 @@ function LatestList() {
         sessionStorage.setItem(viewedProductKey, 'true');
 
         // 상품 상세 페이지로 이동
-        navigate(`/productDetail/${productId}`);
+        navigate(`/ProductDetail/${productId}`);
       } catch (error) {
         console.error('Error updating views:', error);
       }
     } else {
       // 이미 조회한 상품인 경우, 상품 상세 페이지로 이동만 수행
-      navigate(`/productDetail/${productId}`);
+      navigate(`/ProductDetail/${productId}`);
     }
   };
 
@@ -208,7 +208,7 @@ function LatestList() {
         recentSearches={[]}
       />
       <div className='h2-font'>
-        <h2 className='text-center article-list-title'>전체 상품 목록</h2>
+        <h2 className='text-center article-list-title'>전체 상품</h2>
         <div className="cards-wrap1">
           {formattedProducts.map((product) => (
             <article className="card-top" key={product.id} onClick={() => handleProductClick(product.id)}>
@@ -220,14 +220,14 @@ function LatestList() {
                   />
                 </div>
                 <div className="card-desc">
-                  <h2 className="card-title">상품명: {product.name}</h2>
-                  <div className="card-price">가격: {product.price}원</div>
-                  <div className="product-info1">
-                    <div className="product-views-L">
+                  <h2 className="card-title">상품명 : {product.name}</h2>
+                  <div className="card-price">가격 : {product.price}원</div>
+                  <div className="card-info">
+                    <div className="card-views">
                       <VisibilityIcon style={{ marginRight: '5px' }} />
                       {product.views}
                     </div>
-                    <p className="product-time-L">{product.formattedCreatedAt}</p>
+                    <p className="card-time">{product.formattedCreatedAt}</p>
                   </div>
                 </div>
               </a>

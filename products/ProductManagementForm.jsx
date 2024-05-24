@@ -115,7 +115,7 @@ function ProductManagementForm() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -190,7 +190,7 @@ function ProductManagementForm() {
             />
             <div style={{ marginLeft: '20px' }}>
               <div>
-                <label htmlFor="productName">Product Name:</label>
+                <label htmlFor="productName">Product Name :</label>
                 <input
                   id="productName"
                   type="text"
@@ -200,7 +200,7 @@ function ProductManagementForm() {
                 />
               </div>
               <div>
-                <label htmlFor="productDescription">상품 설명:</label>
+                <label htmlFor="productDescription">상품 설명 :</label>
                 {/* 상품 설명을 텍스트 박스로 변경 */}
                 <textarea
                   id="productDescription"
@@ -212,7 +212,7 @@ function ProductManagementForm() {
               </div>
 
               <div>
-                <label htmlFor="productPrice">Product Price:</label>
+                <label htmlFor="productPrice">Product Price :</label>
                 <input
                   id="productPrice"
                   type="number"

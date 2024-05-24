@@ -14,15 +14,15 @@ import '../../styles/product.css';
 import serverHost from '../../utils/host';
 
 function Main() {
-  const [,setFilteredProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
   const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+  const [, setShowRecentSearches] = useState(false);
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -104,7 +104,7 @@ function Main() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -152,16 +152,13 @@ function Main() {
             <span className="cover-description">학생들과 가깝고 따뜻한 거래를<br />지금 경험해보세요.</span>
             <div className="cover-image">
               <span className="fleamarket-cover-image">
-                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래"/>
+                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래" />
               </span>
-
             </div>
           </div>
         </section>
-
         <div className="list-container">
           <ViewsList
-
           />
         </div>
         <div className="more-list">
@@ -173,13 +170,11 @@ function Main() {
           <Route path="/ChatListComponent" element={<ChatListComponent />} />
           <Route path="/showWishlist" element={<ShowWishlist />} />
           <Route path="/SearchResults/:searchTerm" element={<SearchResults />} />
-
         </Routes>
         {searchError && (
           <p className="search-error">{searchError}</p>
         )}
       </div>
-
       {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
     </div>
   );

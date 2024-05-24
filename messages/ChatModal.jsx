@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/chat.css';
 import io from 'socket.io-client';
 import serverHost from '../../utils/host';
+import SendIcon from '@mui/icons-material/Send';
+import PaymentIcon from '@mui/icons-material/Payment';
+import Button from '@mui/material/Button';
+
 const ChatPage = ({ chatRoomId, productId }) => {
   const userId = sessionStorage.getItem('userId');
   const userType = sessionStorage.getItem('userType');
@@ -96,20 +100,41 @@ const ChatPage = ({ chatRoomId, productId }) => {
             key={index}
             className={`message-container ${isCurrentUser(message.sender) ? 'own-message' : 'other-message'}`}
           >
-            <span className="message-sender">{isCurrentUser(message.sender) ? '나' : message.sender}</span>
-            <span className="message-text">{message.text}</span>
+            {!isCurrentUser(message.sender) && (
+              <img
+                src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
+                className="profile-image"
+                alt="프로필 이미지"
+              />
+            )}
+            <div className="message-content">
+              <span className="message-sender">{isCurrentUser(message.sender) ? '' : message.sender}</span>
+              <span className="message-text">{message.text}</span>
+            </div>
           </div>
         ))}
       </div>
-      <form onSubmit={handleMessageSubmit} className="message-input-form">
+      <form onSubmit={handleMessageSubmit} className="chatlist-form">
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="메시지를 입력하세요."
         />
-        <button type="submit">전송</button>
-        <button onClick={handlePayment}>결제하기</button>
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<SendIcon />}
+          className="button"
+        >
+        </Button>
+        <Button
+          onClick={handlePayment}
+          variant="contained"
+          startIcon={<PaymentIcon />}
+          className="button"
+        >
+        </Button>
       </form>
     </div>
   );

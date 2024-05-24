@@ -204,120 +204,6 @@ input[type="search"] {
 
 /*--------------------------------------------------------------------------------*/
 
-/* 인기 매물  */
-.cards-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 70px;
-  margin-bottom: 10px;
-}
-
-/* 전체 매물  */
-.cards-wrap1 {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-  margin-bottom: 15px;
-}
-
-/* 카드 컨테이너 */
-.card-top {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.card-link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-/* 카드 이미지 */
-.card-photo img {
-  width: 230px;
-  height: 230px;
-  max-width: 230px;
-  max-height: 230px;
-  object-fit: cover;
-  border-radius: 5px;
-}
-
-/* 카드 정보 */
-.card-desc {
-  display: flex;
-  flex-direction: column;
-}
-
-/* 상품명 */
-.card-title {
-  font-size: 18px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-}
-
-/* 상품 가격 */
-.card-price {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333333;
-}
-
-.h2-font {
-  display: grid;
-  place-items: center;
-  text-align: center;
-}
-
-.product-info1 {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  margin-right: 20px;
-  margin-left: 20px;
-}
-
-/* 상품 조회수 */
-.product-views {
-  font-size: 15px;
-  margin-left: 175px;
-  margin-top: -100px;
-  margin-bottom: 70px;
-}
-
-/* 상품 시간 */
-.product-time {
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  font-size: 12px;
-  text-align: center;
-  padding: 5px;
-  width: 55px;
-  border: 1px solid #00000050;
-  border-radius: 5px;
-  margin-top: -50px;
-  margin-left: -11px;
-}
-
-/* 인기 매물 조회수 */
-.product-views-L {
-  display: flex;
-  align-items: center;
-  margin-top: 0px;
-}
-
-/* 인기 매물 시간 */
-.product-time-L {
-  color: #000000;
-  margin-top: 15px;
-}
-
 /* 메인 배너 */
 .fleamarket-cover {
   height: 315px;
@@ -378,12 +264,6 @@ input[type="search"] {
   object-fit: cover;
 }
 
-.fleamarket-cover .cover-content .cover-image {
-  position: absolute;
-  bottom: 0;
-  display: flex;
-}
-
 @media (min-width: 768px) {
   .cover-image {
     right: 0;
@@ -391,6 +271,98 @@ input[type="search"] {
     width: 416px;
   }
 }
+
+/* 인기 매물  */
+.cards-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 70px;
+  margin-bottom: 10px;
+}
+
+/* 전체 매물  */
+.cards-wrap1 {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  margin-bottom: 15px;
+}
+
+/* 카드 컨테이너 */
+.card-top {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 카드 이미지 */
+.card-photo img {
+  width: 230px;
+  height: 230px;
+  max-width: 230px;
+  max-height: 230px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* 카드 정보 */
+.card-desc {
+  display: flex;
+  flex-direction: column;
+}
+
+.h2-font {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+/* 상품명 */
+.card-title {
+  font-size: 18px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+/* 상품 가격 */
+.card-price {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+/* 인기 매물 조회수 */
+.card-views {
+  display: flex;
+  align-items: center;
+  margin-top: 0px;
+}
+
+/* 인기 매물 시간 */
+.card-time {
+  color: #000000;
+  margin-top: 15px;
+}
+
+/*--------------------------------------------------------------------------------*/
 
 /* 전체 상품 보기 */
 .more-list {

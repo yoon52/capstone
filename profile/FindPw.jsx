@@ -45,7 +45,10 @@ function FindPw() {
 
   return (
 
-    <div><img src={logo} id='logo' alt="로고" />
+    <div>
+      <a href="/Login">
+        <img src={logo} id='logo' alt="로고" />
+      </a>
       <h1 className="findpw-header">비밀번호 찾기</h1>
       <div className="findpw-container">
         <form onSubmit={(e) => { e.preventDefault(); handleResetPassword(); }}>

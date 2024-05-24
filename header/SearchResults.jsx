@@ -139,7 +139,7 @@ const SearchResults = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {

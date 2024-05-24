@@ -4,8 +4,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
-import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
+import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material';
 import Modal from 'react-modal';
+import CloseIcon from '@mui/icons-material/Close';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from '../messages/ChatComponent';
@@ -38,6 +39,27 @@ const ProductDetail = () => {
   const [sellerName, setSellerName] = useState(null); // 판매자 ID 상태
   const [rates, setRates] = useState(null); // 판매자 ID 상태
   const [barLength, setBarLength] = useState(0);
+
+  // React 코드에서 수정된 부분
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      try {
+        // 서버에서 찜 상태 확인
+        const favoriteResponse = await fetch(`${serverHost}:4000/products/isFavorite/${userId}/${productId}`);
+        if (favoriteResponse.ok) {
+          const { isFavorite } = await favoriteResponse.json();
+          setIsFavorite(isFavorite);
+        } else {
+          console.error('찜 상태 확인 실패:', favoriteResponse.status);
+        }
+      } catch (error) {
+        console.error('찜 상태 확인 오류:', error);
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [productId, userId]);
+
 
 
   useEffect(() => {
@@ -81,18 +103,7 @@ const ProductDetail = () => {
           setProduct(data);
 
           // 서버에서 찜 상태 확인
-          const favoriteResponse = await fetch(`${serverHost}:4000/products/checkFavorite/${productId}?userId=${userId}`, {
-            headers: {
-              Authorization: `Bearer ${userId}` // 사용자 토큰을 헤더에 포함하여 인증
-            }
-          });
 
-          if (favoriteResponse.ok) {
-            const { isFavorited } = await favoriteResponse.json();
-            setIsFavorite(isFavorited);
-          } else {
-            console.error('찜 상태 확인 실패:', favoriteResponse.status);
-          }
         } else {
           console.error('상품 상세 정보 가져오기 오류:', response.status);
         }
@@ -161,6 +172,7 @@ const ProductDetail = () => {
 
   const handleToggleFavorite = async () => {
     try {
+      // 서버에 찜 상태 토글 요청
       const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
         method: 'PUT',
         headers: {
@@ -298,9 +310,8 @@ const ProductDetail = () => {
   };
 
   const handleReport = () => {
-    navigate('/Report', { state: { sellerId: sellerId, sellerName: sellerName } });
+    // 신고하기 핸들러
   };
-  
 
   const handleDelete = async () => {
     if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
@@ -402,8 +413,9 @@ const ProductDetail = () => {
               className="favorite-button"
             >
               {isFavorite ? <Favorite /> : <FavoriteBorder />}
-              {isFavorite ? '찜 해제' : '찜하기'}
+              {isFavorite ? '찜해제' : '찜하기'}
             </Button>
+
 
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
 
@@ -447,10 +459,12 @@ const ProductDetail = () => {
             borderRadius: 2,
           }}
         >
-          <div>
-            <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-            <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
-          </div>
+           <div>
+          <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
+          <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
+            <CloseIcon />
+          </IconButton>
+        </div>
         </MuiModal>
 
         <section id="article-profile">
@@ -483,7 +497,7 @@ const ProductDetail = () => {
 
         </section>
 
-        <div className="related-products">
+        <div className="product-list">
           <DetailList />
         </div>
       </div>
