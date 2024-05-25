@@ -1,14 +1,19 @@
+/* eslint-disable react/style-prop-object */
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import serverHost from '../../utils/host';
+import Modal from 'react-modal';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import '../../styles/product.css';
 import Header from '../header/Header';
+import serverHost from '../../utils/host';
 
-function ProductManagementForm() {
+Modal.setAppElement('#root');
+
+const ProductManagementForm = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
-  const [editedProduct, setEditedProduct] = useState(null);
-  const [, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [, setSavedSearchTerm] = useState('');
   const [, setShowSearchResults] = useState(false);
@@ -17,6 +22,9 @@ function ProductManagementForm() {
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const [, setFilteredProducts] = useState([]);
+  const [editedProduct, setEditedProduct] = useState(null);
+  const [, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -42,6 +50,15 @@ function ProductManagementForm() {
 
     fetchProductDetails();
   }, [productId]);
+  useEffect(() => {
+    sessionStorage.setItem('productId', productId);
+  }, [productId]);
+
+  if (!product) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  const availability = product.status === 'available' ? '구매 가능' : '판매 완료';
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -62,13 +79,12 @@ function ProductManagementForm() {
         setShowSearchResults(true);
         setSearchError('');
 
-        // Navigate to ResultPage with encoded searchTerm
         navigate(`/SearchResultsP/${encodeURIComponent(searchTerm)}`);
       } else {
-        console.error('검색 오류:', response.status);
+        console.error('Search error:', response.status);
       }
     } catch (error) {
-      console.error('검색 오류:', error);
+      console.error('Search error:', error);
     }
   };
 
@@ -84,15 +100,15 @@ function ProductManagementForm() {
       const response = await fetch(`${serverHost}:4000/searchHistory`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ searchTerm, userId })
+        body: JSON.stringify({ searchTerm, userId }),
       });
       if (!response.ok) {
-        console.error('검색어 저장 오류:', response.status);
+        console.error('Error saving search term:', response.status);
       }
     } catch (error) {
-      console.error('검색어 저장 오류:', error);
+      console.error('Error saving search term:', error);
     }
   };
 
@@ -122,6 +138,10 @@ function ProductManagementForm() {
     navigate('/ChatListComponent');
   };
 
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
+
   const toggleNavMenu = () => {
     setShowNavMenu(!showNavMenu);
   };
@@ -130,11 +150,23 @@ function ProductManagementForm() {
     setShowNavMenu(false);
   };
 
+  const calculateTimeAgo = (date) => {
+    const today = new Date();
+    const registrationDate = new Date(date);
+    const diffTime = today.getTime() - registrationDate.getTime();
+    const diffMinutes = Math.floor(diffTime / (1000 * 60));
 
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedProduct({ ...editedProduct, [name]: value });
+    if (diffMinutes < 30) {
+      return '방금 전';
+    } else if (diffMinutes < 60 * 24) {
+      return `${Math.floor(diffMinutes / 60)}시간 전`;
+    } else if (diffMinutes < 60 * 24 * 7) {
+      return `${Math.floor(diffMinutes / (60 * 24))}일 전`;
+    } else if (diffMinutes < 60 * 24 * 30) {
+      return `${Math.floor(diffMinutes / (60 * 24 * 7))}주 전`;
+    } else {
+      return '한달 ↑';
+    }
   };
 
   const handleSaveChanges = async () => {
@@ -151,6 +183,7 @@ function ProductManagementForm() {
       if (response.ok) {
         setProduct(editedProduct);
         alert('상품이 성공적으로 업데이트되었습니다.');
+        navigate('/ProductManagement')
       } else {
         console.error('상품 업데이트 오류:', response.status);
         alert('상품 업데이트 중 오류가 발생했습니다.');
@@ -162,6 +195,12 @@ function ProductManagementForm() {
       setIsSaving(false);
     }
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProduct({ ...editedProduct, [name]: value });
+  };
+
 
   return (
     <div className="container-main">
@@ -179,63 +218,66 @@ function ProductManagementForm() {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
+        onSearchSubmit={handleSearchProduct}
+        recentSearches={[]}
       />
 
-      <div>
-        {product && (
-          <div style={{ display: 'flex', width: '80%' }}>
-            <img
-              src={`${serverHost}:4000/uploads/${product.image}`}
-              alt={product.title}
+      <div className="product-manage">
+        <div style={{ display: 'flex', width: '100%' }}>
+          <img
+            className="product-m-image"
+            src={`${serverHost}:4000/uploads/${editedProduct.image}`}
+            alt={editedProduct.name}
+          />
+          <div className="product-content">
+            <input
+              type="text"
+              className="product-m-name"
+              name="name"
+              value={editedProduct.name}
+              onChange={handleInputChange}
             />
-            <div style={{ marginLeft: '20px' }}>
-              <div>
-                <label htmlFor="productName">Product Name:</label>
-                <input
-                  id="productName"
-                  type="text"
-                  name="name"
-                  value={editedProduct.name}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="productDescription">상품 설명:</label>
-                {/* 상품 설명을 텍스트 박스로 변경 */}
-                <textarea
-                  id="productDescription"
-                  name="description"
-                  value={editedProduct.description}
-                  onChange={handleInputChange}
-                  rows={4} // 원하는 높이로 설정할 수 있습니다.
-                />
-              </div>
-
-              <div>
-                <label htmlFor="productPrice">Product Price:</label>
-                <input
-                  id="productPrice"
-                  type="number"
-                  name="price"
-                  value={editedProduct.price}
-                  onChange={handleInputChange}
-                />
-                <span>원</span>
-              </div>
-              <button
-                onClick={handleSaveChanges}
-                disabled={isSaving}
-              >
-                {isSaving ? 'Saving...' : '수정'}
-              </button>
+            <p className="product-m-price">
+              <input
+                type="number"
+                style={{ fontSize: '40px', fontWeight: 450 }}
+                name="price"
+                value={editedProduct.price}
+                onChange={handleInputChange}
+              />원
+            </p>
+            <div className="product-info" style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+              <p className="product-m-views">
+                <VisibilityIcon sx={{ fontSize: 20, marginRight: 0.5, marginBottom: -0.3 }} />
+                {editedProduct.views}
+              </p>
+              <span>|</span>
+              <p className="product-m-date">{calculateTimeAgo(editedProduct.createdAt)}</p>
+              <span>|</span>
+              <p className="product-m-availability">{availability}</p>
             </div>
           </div>
-        )}
+        </div>
+        <div className="product-m-description-container">
+          <p className="product-m-description-header">상품정보</p>
+          <textarea
+            className="product-m-description"
+            name="description"
+            value={editedProduct.description}
+            onChange={handleInputChange}
+            rows={10}
+          />
+        </div>
+        <button
+          onClick={handleSaveChanges}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : '수정'}
+        </button>
       </div>
     </div>
-
-
   );
-}
+};
 
 export default ProductManagementForm;
