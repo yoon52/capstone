@@ -115,7 +115,7 @@ function Signup() {
   };
 
   const handleKeyDown = (e) => {
-    const allowedKeys = [8, 46, 37, 39]; // 백스페이스, Delete, 왼쪽 화살표, 오른쪽 화살표 키코드
+    const allowedKeys = [8, 46, 37, 39, 9]; // 백스페이스, Delete, 왼쪽 화살표, 오른쪽 화살표, Tab 키코드
     const charCode = e.which ? e.which : e.keyCode;
     if ((charCode < 48 || charCode > 57) && !allowedKeys.includes(charCode)) {
       e.preventDefault();

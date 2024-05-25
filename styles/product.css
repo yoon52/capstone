@@ -332,7 +332,7 @@ label {
   font-weight: bold;
 }
 
-/* add-product 설명 */
+/* add-product 상품 설명 */
 textarea {
   width: calc(100% - 20px);
   padding: 15px;
@@ -410,8 +410,8 @@ input[type="price"] {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: flex-start;
-  padding-right: 40px; 
-  }
+  padding-right: 40px;
+}
 
 .wishlist-item {
   display: flex;
@@ -424,7 +424,7 @@ input[type="price"] {
   margin-bottom: 20px;
 }
 
-.wish-two{
+.wish-two {
   margin-top: 60px;
 }
 
@@ -452,4 +452,38 @@ input[type="price"] {
   position: absolute;
   bottom: 70px;
   left: 350px;
-  }
+}
+
+/*--------------------------------------------------------------------------------*/
+
+/* managementform.css */
+.product-manage {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.product-m-image {
+  max-width: 250px;
+  max-height: 250px;
+  width: 250px;
+  height: 250px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 50px;
+}
+
+.product-content {
+  flex: 1;
+}
+
+input[type="number"] {
+  width: 250px !important;
+  padding: 15px !important;
+  padding-right: 40px !important;
+  border-radius: 5px;
+  border: 1.5px solid #b0c4de !important;
+  font-size: 15px !important;
+  box-sizing: border-box !important;
+  margin-top: 10px !important;
+}

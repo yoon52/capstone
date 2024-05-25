@@ -33,7 +33,7 @@ function AddProducts() {
     // 엔터키 입력 감지
     if (event.key === 'Enter') {
       event.preventDefault(); // 기본 엔터키 동작 방지
-      // 현재 설명값에 엔터키 추가하여 설정
+      // 현재 상품 설명값에 엔터키 추가하여 설정
       setDescription(prevDescription => prevDescription + '\n');
       setDescriptionCharCount(prevCount => prevCount + 1);
     } else {
@@ -202,8 +202,6 @@ function AddProducts() {
     setShowNavMenu(false);
   };
 
-
-
   return (
     <div className="container-main">
       <Header
@@ -244,16 +242,15 @@ function AddProducts() {
             </label>
             <input type="file" onChange={handleImageChange} id="imageInput" accept="image/*" style={{ display: 'none' }} />
           </div>
-
           <div className="form-group">
             <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
             <input type="text" placeholder="상품명을 입력해 주세요." value={name} onChange={handleNameChange} required />
           </div>
           <div className="form-group">
-            <label htmlFor="description" style={{ marginTop: '30px' }}>설명</label>
+            <label htmlFor="description" style={{ marginTop: '30px' }}>상품 설명</label>
             <textarea
               id="description"
-              placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
+              placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
               value={description}
               onChange={handleDescriptionChange}
             />

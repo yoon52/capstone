@@ -434,7 +434,7 @@ const ProductDetail = () => {
         </div>
         <div className="product-d-description-container">
           <p className="product-d-description-header">상품정보</p>
-          {/* 설명칸의 내용을 div 태그로 감싸고 내용을 개행 문자(\n)를 기준으로 분할하여 각각의 div로 렌더링 */}
+          {/* 상품 설명칸의 내용을 div 태그로 감싸고 내용을 개행 문자(\n)를 기준으로 분할하여 각각의 div로 렌더링 */}
           {product.description.split('\n').map((line, index) => (
             <div key={index} className="product-d-description">{line}</div>
           ))}
