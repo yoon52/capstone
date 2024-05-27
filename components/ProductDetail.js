@@ -3,6 +3,9 @@ import { View, Text, Button, Modal, StyleSheet, Image, TouchableOpacity, ScrollV
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatComponent from './ChatComponent'; // Assuming ChatComponent is correctly defined
 import socket from 'socket.io-client';
+import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
+import { Alert } from 'react-native';
+import serverHost from './host';
 
 const ProductDetail = ({ route }) => {
   const { productId } = route.params;
@@ -13,6 +16,9 @@ const ProductDetail = ({ route }) => {
   const [sellerId, setSellerId] = useState(null);
   const [rates, setRates] = useState(null);
   const [barLength, setBarLength] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // Initialize state for the image modal
+
 
   useEffect(() => {
     // rates 값이 변경될 때마다 막대기 길이 업데이트
@@ -23,26 +29,47 @@ const ProductDetail = ({ route }) => {
     }
   }, [rates]);
 
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      try {
+        // 서버에서 찜 상태 확인
+        const favoriteResponse = await fetch(`${serverHost}:4000/products/isFavorite/${userId}/${productId}`);
+        if (favoriteResponse.ok) {
+          const { isFavorite } = await favoriteResponse.json();
+          setIsFavorite(isFavorite);
+        } else {
+          console.error('찜 상태 확인 실패:', favoriteResponse.status);
+        }
+      } catch (error) {
+        console.error('찜 상태 확인 오류:', error);
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [productId, userId]);
+
+
   const getBarColor = (rates) => {
     const ratesValue = parseFloat(rates);
     if (ratesValue >= 0 && ratesValue < 1.0) {
-      return '#FF0000'; // 빨간색
+      return '#de5d06'; // 빨간색
     } else if (ratesValue >= 1.0 && ratesValue < 2.0) {
-      return '#FFA500'; // 주황색
+      return '#df9100'; // 주황색
     } else if (ratesValue >= 2.0 && ratesValue < 3.0) {
-      return '#ADFF2F'; // 연두색
-    } else if (ratesValue >= 3.0 && ratesValue <= 4.5) {
-      return '#0000FF'; // 파란색
+      return '#319e45'; // 연두색
+    } else if (ratesValue >= 3.0 && ratesValue < 4.0) {
+      return '#1561a9'; // 파란색
+    } else if (ratesValue >= 4.0 && ratesValue <= 4.5) {
+      return '#0d3a65'; // 남색
     } else {
       return '#000000'; // 기본 색상
     }
   };
 
-
   useEffect(() => {
     const fetchSellerInfo = async () => {
       try {
-        const response = await fetch(`http://172.30.1.2:4000/products/seller/${productId}`);
+        const response = await fetch(`${serverHost}:4000/products/seller/${productId}`);
         if (response.ok) {
           const data = await response.json();
           setSellerId(data.sellerId);
@@ -62,7 +89,7 @@ const ProductDetail = ({ route }) => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await fetch(`http://172.30.1.2:4000/products/detail/${productId}`);
+        const response = await fetch(`${serverHost}:4000/products/detail/${productId}`);
         if (response.ok) {
           const data = await response.json();
           setProduct(data);
@@ -92,7 +119,7 @@ const ProductDetail = ({ route }) => {
 
   const handleChatButtonClick = async () => {
     try {
-      const response = await fetch(`http://172.30.1.2:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
+      const response = await fetch(`${serverHost}:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
       if (response.ok) {
         const existingChatRoom = await response.json();
         if (existingChatRoom) {
@@ -101,7 +128,7 @@ const ProductDetail = ({ route }) => {
         }
       }
 
-      const createResponse = await fetch('http://172.30.1.2:4001/api/chat-rooms', {
+      const createResponse = await fetch(`${serverHost}:4001/api/chat-rooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -131,10 +158,41 @@ const ProductDetail = ({ route }) => {
     return <View style={styles.container}><Text>Loading...</Text></View>;
   }
 
+  const handleToggleFavorite = async () => {
+    try {
+      // 서버에 찜 상태 토글 요청
+      const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorite(data.isFavorite); // 서버에서 받은 찜 상태로 업데이트
+      } else {
+        Alert.alert('알림', '본인의 게시물에는 찜을 할 수 없습니다.');
+
+      }
+    } catch (error) {
+      console.error('찜 상태 토글 오류:', error);
+    }
+  };
+
+  if (!product) {
+    return <View style={styles.container}><Text>Loading...</Text></View>;
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contentContainer}>
-        <Image style={styles.productImage} source={{ uri: `http://172.30.1.2:4000/uploads/${product.image}` }} />
+        <TouchableOpacity onPress={() => { setIsImageModalOpen(!isImageModalOpen); }}>
+          <Image style={styles.productImage} source={{ uri: `${serverHost}:4000/uploads/${product.image}` }} />
+        </TouchableOpacity>
+
+
         <View style={styles.userInfoContainer}>
           <Image
             style={styles.profileImage}
@@ -168,10 +226,16 @@ const ProductDetail = ({ route }) => {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.price}>{product.price.toLocaleString()}원</Text>
-          <TouchableOpacity style={styles.chatButton} onPress={handleChatButtonClick}>
-            <Text style={styles.chatButtonText}>채팅하기</Text>
+          <TouchableOpacity style={styles.favoriteButton} onPress={handleToggleFavorite}>
+            <FontAwesome name={isFavorite ? 'heart' : 'heart-o'} size={24} color={isFavorite ? 'red' : 'black'} />
           </TouchableOpacity>
+
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>{product.price.toLocaleString()}원</Text>
+            <TouchableOpacity style={styles.chatButton} onPress={handleChatButtonClick}>
+              <Text style={styles.chatButtonText}>채팅하기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <Modal
@@ -183,6 +247,24 @@ const ProductDetail = ({ route }) => {
             <ChatComponent route={route} />
           </View>
         </Modal>
+        <Modal
+          visible={isImageModalOpen}
+          animationType="slide"
+          onRequestClose={() => { setIsImageModalOpen(false); }}
+        >
+          <View style={styles.imagemodalContainer}>
+            <Image
+              source={{ uri: `${serverHost}:4000/uploads/${product.image}` }}
+              style={{ width: '100%', aspectRatio: 4 / 3 }} // Adjust aspectRatio according to your image's aspect ratio
+              resizeMode="contain" // Ensure the entire image fits within the dimensions specified
+            />
+
+            <TouchableOpacity style={styles.closeButton} onPress={() => { setIsImageModalOpen(false); }}>
+              <FontAwesome name="times-circle" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
       </ScrollView>
     </View>
   );
@@ -305,45 +387,57 @@ const styles = StyleSheet.create({
     borderTopColor: '#333',
     paddingTop: 10,
   },
-    footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+  footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#333',
-    
+    paddingVertical: 10,
+    backgroundColor: '#fff', // Footer의 배경색
   },
-
-
+  heartButton: {
+    marginRight: 10,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   price: {
-    color: '#000000',
-    fontSize: 18,
+    marginRight: 10,
+    fontSize: 25,
     fontWeight: 'bold',
+    color: '#333', // 가격 텍스트의 색상
   },
   chatButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
     backgroundColor: '#ff4500',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 5,
   },
   chatButtonText: {
-    color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#fff', // 채팅하기 버튼의 텍스트 색상
   },
+
   modalContainer: {
     flex: 1,
     justifyContent: 'flex',
     alignItems: 'flex',
     backgroundColor: '#FFFFFF',
   },
+  imagemodalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Semi-transparent background color
+  },
+
+  fullImage: {
+    width: '100%',
+    height: '100%',
+  },
+
   modalContent: {
     backgroundColor: '#FFFFFF',
     width: '80%',
@@ -353,4 +447,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductDetail;
+export default ProductDetail; // Exporting ProductDetail as the default export

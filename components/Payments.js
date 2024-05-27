@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import serverHost from './host';
 
 function Payments() {
   const [payments, setPayments] = useState([]);
@@ -27,7 +28,7 @@ function Payments() {
 
   const loadPayments = async (userId) => {
     try {
-      const response = await fetch(`http://172.30.1.2:4000/payments/${userId}`);
+      const response = await fetch(`${serverHost}:4000/payments/${userId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch payments');

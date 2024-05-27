@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import serverHost from './host';
 
 const SearchResults = ({ route, navigation }) => {
   const { searchResults, searchTerm } = route.params;
@@ -28,7 +29,7 @@ const SearchResults = ({ route, navigation }) => {
             >
               <View style={styles.productCard}>
                 <Image
-                  source={{ uri: `http://172.30.1.2:4000/uploads/${extractImageFilename(item.image)}` }}
+                  source={{ uri: `${serverHost}:4000/uploads/${extractImageFilename(item.image)}` }}
                   style={styles.productImage}
                 />
                 <View style={styles.infoContainer}>

@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatModal from './Chatmodalscreen'; // ChatModal 컴포넌트 import
-
+import serverHost from './host';
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
@@ -19,7 +19,7 @@ const ChatList = () => {
   const fetchChatRooms = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.30.1.2:4001/myChatRooms', {
+      const response = await fetch(`${serverHost}:4001/myChatRooms`, {
         headers: {
           'user_id': userId
         }

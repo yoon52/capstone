@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import serverHost from './host';
 
 const Sidebar = ({ onClose }) => {
   const navigation = useNavigation();
@@ -22,17 +24,20 @@ const Sidebar = ({ onClose }) => {
   const getBarColor = (rates) => {
     const ratesValue = parseFloat(rates);
     if (ratesValue >= 0 && ratesValue < 1.0) {
-      return '#FF0000'; // 빨간색
+      return '#de5d06'; // 빨간색
     } else if (ratesValue >= 1.0 && ratesValue < 2.0) {
-      return '#FFA500'; // 주황색
+      return '#df9100'; // 주황색
     } else if (ratesValue >= 2.0 && ratesValue < 3.0) {
-      return '#ADFF2F'; // 연두색
-    } else if (ratesValue >= 3.0 && ratesValue <= 4.5) {
-      return '#0000FF'; // 파란색
+      return '#319e45'; // 연두색
+    } else if (ratesValue >= 3.0 && ratesValue < 4.0) {
+      return '#1561a9'; // 파란색
+    } else if (ratesValue >= 4.0 && ratesValue <= 4.5) {
+      return '#0d3a65'; // 남색
     } else {
       return '#000000'; // 기본 색상
     }
   };
+  
 
   useEffect(() => {
     // Fetch user info from the server
@@ -40,7 +45,7 @@ const Sidebar = ({ onClose }) => {
       try {
         // Get user ID from the session or wherever it's stored
         const userId = await AsyncStorage.getItem('userId');
-        const response = await fetch('http://172.30.1.2:4000/getUserInfo', {
+        const response = await fetch(`${serverHost}:4000/getUserInfo`, {
 
           headers: {
             'user_id': userId // Send user ID in the request headers
@@ -97,7 +102,7 @@ const Sidebar = ({ onClose }) => {
             </View>
           </View>
           <View style={styles.balanceContainer}>
-            <Text style={styles.balanceText}>{`잔액: ${userInfo.total_sales}원`}</Text>
+            <Text style={styles.balanceText}>{`잔액: ${userInfo && parseInt(userInfo.total_sales).toLocaleString()}원`}</Text>
             <Text style={styles.ratingText}>{`매너 학점: ${userInfo.rates}`}</Text>
             
             <View style={styles.barContainer}>
@@ -110,19 +115,24 @@ const Sidebar = ({ onClose }) => {
       <TouchableOpacity onPress={onClose} style={styles.closeButton}>
         <Ionicons name="close" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleMyinfo}>
-        <Text>내 정보 수정</Text>
+      <TouchableOpacity onPress={handleMyinfo} style={styles.menuItem} >
+      <Ionicons name="person-outline" size={20} color="black"/>
+      <Text>내 정보</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.menuItem} onPress={handleWishList}>
+      <FontAwesome name="heart-o" size={20} color="black"/>
         <Text>찜한 상품</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.menuItem} onPress={handleProductManagement}>
+      <Ionicons name="create-outline"size={20} color="black"/>
         <Text>내 상품 관리</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.menuItem} onPress={handleSelling}>
+      <Ionicons name="card-outline"size={20} color="black"/>
         <Text>구매 및 판매 내역</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.menuItem}>
+      <Ionicons name="log-out-outline"size={20} color="black"/>
         <Text>로그아웃</Text>
       </TouchableOpacity>
     </View>
@@ -181,10 +191,10 @@ const styles = StyleSheet.create({
   },
   balanceContainer: {
     width: 250,
-    borderWidth: 0.2,
+    
     padding: 10,
     borderRadius: 5,
-    marginTop: 20,
+    marginTop: 5,
   },
   balanceText: {
     fontSize: 16,

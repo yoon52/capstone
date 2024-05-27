@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import serverHost from './host';
 function Login() {
   const [formData, setFormData] = useState({
 
@@ -29,7 +29,7 @@ function Login() {
       return;
     }
     try {
-      const response = await fetch('http://172.30.1.2:4000/login', {
+      const response = await fetch(`${serverHost}:4000/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import serverHost from './host';
 
 function Setting() {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ function Setting() {
       try {
         // Get user ID from the session or wherever it's stored
         const userId = await AsyncStorage.getItem('userId');
-        const response = await fetch('http://172.30.1.2:4000/getUserInfo', {
+        const response = await fetch(`${serverHost}:4000/getUserInfo`, {
 
           headers: {
             'user_id': userId // Send user ID in the request headers
@@ -57,7 +58,7 @@ function Setting() {
             </View>
           </View>
           <View style={styles.balanceContainer}>
-            <Text style={styles.balanceText}>{`잔액: ${userInfo.balance}원`}</Text>
+            <Text style={styles.balanceText}>{`잔액: ${userInfo && parseInt(userInfo.balance).toLocaleString()}원`}</Text>
             <Text style={styles.ratingText}>{`평점: ${userInfo.rates}`}</Text>
           </View>
         </>

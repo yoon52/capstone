@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 import UserEdit from './UserEdit'; // Assuming this component exists
+import serverHost from './host';
 
 function MyInfo() {
   const [password, setPassword] = useState('');
@@ -12,7 +13,7 @@ function MyInfo() {
   const handleConfirm = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId'); // Retrieve userId from AsyncStorage
-      const response = await fetch('http://172.30.1.2:4000/myinfo', {
+      const response = await fetch(`${serverHost}:4000/myinfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, Ale
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-
+import serverHost from './host';
 import Icon from 'react-native-vector-icons/Entypo';
 
 function AddProducts() {
@@ -61,7 +61,7 @@ function AddProducts() {
         name: `product-image.${fileType}`,
       });
 
-      const response = await fetch('http://172.30.1.2:4000/addProduct', {
+      const response = await fetch(`${serverHost}:4000/addProduct`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -121,7 +121,7 @@ function AddProducts() {
           value={name}
           onChangeText={setName}
         />
-        
+
         <TextInput
           style={styles.input}
           placeholder="가격을 입력해주세요."
@@ -129,7 +129,7 @@ function AddProducts() {
           onChangeText={setPrice}
           keyboardType="numeric"
         />
-      
+
         <TextInput
           style={styles.textarea}
           placeholder="상세한 설명"
@@ -137,7 +137,10 @@ function AddProducts() {
           onChangeText={setDescription}
           multiline={true}
         />
-        <Button title="작성 완료" onPress={handleAddProduct} />
+                <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
+          <Text style={styles.buttonText}>작성 완료</Text>
+        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -191,6 +194,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#dcdcdc',
   },
+  button: {
+    backgroundColor: '#103260', // 버튼의 배경색
+    borderRadius: 5, // 버튼의 모서리 반경
+    paddingVertical: 10, // 버튼의 수직 패딩
+    paddingHorizontal: 20, // 버튼의 수평 패딩
+  },
+  buttonText: {
+    color: '#fff', // 버튼 텍스트의 색상
+    fontSize: 16, // 버튼 텍스트의 크기
+    fontWeight: 'bold', // 버튼 텍스트의 굵기
+    textAlign: 'center', // 텍스트를 가운데 정렬
+  },
+
 });
 
 export default AddProducts;

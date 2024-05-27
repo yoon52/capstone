@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'reac
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import serverHost from './host';
 
 function Signup() {
   const navigation = useNavigation();
@@ -60,7 +61,7 @@ function Signup() {
     });
 
     try {
-      const response = await fetch('http://172.30.1.2:4000/signup', {
+      const response = await fetch(`${serverHost}:4000/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -86,7 +87,7 @@ function Signup() {
 
   const handleCheckAvailability = async () => {
     try {
-      const response = await fetch(`http://172.30.1.2:4000/checkUser?id=${formData.id}`);
+      const response = await fetch(`${serverHost}:4000/checkUser?id=${formData.id}`);
 
       if (response.ok) {
         const data = await response.json();

@@ -3,7 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Image 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Ionicons } from '@expo/vector-icons';
+import serverHost from './host';
 const ChatComponent = ({ route }) => {
   const { productId, userType } = route.params;
 
@@ -24,7 +25,7 @@ const ChatComponent = ({ route }) => {
         setUserId(storedUserId);
 
         if (storedUserId && productId && receiver) {
-          socket.current = io('http://172.30.1.2:4001/', {
+          socket.current = io(`${serverHost}:4001/`, {
             query: { productId, receiver }
           });
 
@@ -72,7 +73,7 @@ const ChatComponent = ({ route }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://172.30.1.2:4001/messages/${productId}`, {
+      const response = await fetch(`${serverHost}:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }
@@ -108,17 +109,19 @@ const ChatComponent = ({ route }) => {
       <ScrollView ref={messageContainerRef} style={styles.messagesContainer}>
         {messages.map((message, index) => (
           <View key={index} style={[styles.messageContainer, message.sender === userId ? styles.ownMessage : styles.otherMessage]}>
-          {message.sender !== userId && (
-            <Image
-              source={{ uri: 'https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png' }}
-              style={styles.profileImage}
-            />
-          )}
-          <View style={[styles.messageContent, message.sender === userId ? styles.ownMessageBackground : styles.otherMessageBackground]}>
-            <Text style={styles.messageSender}>{message.sender === userId ? '나' : message.sender}</Text>
-            <Text style={styles.messageText}>{message.text}</Text>
+            {message.sender !== userId && (
+              <Image
+                source={{ uri: 'https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png' }}
+                style={styles.profileImage}
+              />
+            )}
+            <View style={[styles.messageContent, message.sender === userId ? messageContentBackgroundStyles.ownMessageBackground : messageContentBackgroundStyles.otherMessageBackground]}>
+              {message.sender !== userId && <Text style={messageContentTextStyles.messageSender}>{message.sender}</Text>}
+              <Text style={[messageContentTextStyles.messageText, message.sender !== userId && { color: 'black' }]}>{message.text}</Text>
+            </View>
+
+
           </View>
-        </View>
         ))}
 
       </ScrollView>
@@ -130,11 +133,11 @@ const ChatComponent = ({ route }) => {
           placeholder="메시지를 입력하세요..."
         />
         <TouchableOpacity style={styles.sendButton} onPress={handleMessageSubmit}>
-          <Text style={styles.sendButtonText}>전송</Text>
+          <Ionicons name="send" size={24} color="#103260" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.sendButton} onPress={handlePayment}>
-          <Text style={styles.sendButtonText}>결제하기</Text>
+          <Ionicons name="card" size={24} color="#103260" />
         </TouchableOpacity>
 
       </View>
@@ -146,9 +149,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    borderRadius: 20, // 컨테이너를 둥글게 만듦
-    backgroundColor: '#F4F4F4', // 배경색 추가
-    overflow: 'hidden', // 둥근 테두리가 넘치지 않도록 함
+    borderRadius: 20,
+    backgroundColor: '#F4F4F4',
+    overflow: 'hidden',
   },
   messagesContainer: {
     flex: 1,
@@ -165,14 +168,14 @@ const styles = StyleSheet.create({
   },
   messageContent: {
     maxWidth: '80%',
-    borderRadius: 10, // 메시지 텍스트의 둥근 테두리
-    padding: 10, // 메시지 내용 간격 추가
+    borderRadius: 10,
+    padding: 10,
   },
   ownMessageBackground: {
-    backgroundColor: '#DCF8C6', // 사용자 메시지의 배경색
+    backgroundColor: '#204b80',
   },
   otherMessageBackground: {
-    backgroundColor: '#E5E5EA', // 상대방 메시지의 배경색
+    backgroundColor: '#E5E5EA',
   },
   messageSender: {
     fontWeight: 'bold',
@@ -180,6 +183,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
+    color: 'white', // Set font color to white for own messages
   },
   inputContainer: {
     flexDirection: 'row',
@@ -197,9 +201,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 8,
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sendButtonText: {
     color: 'white',
@@ -213,5 +219,26 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 });
+const messageContentBackgroundStyles = {
+  ownMessageBackground: {
+    backgroundColor: '#204b80',
+  },
+  otherMessageBackground: {
+    backgroundColor: '#E5E5EA',
+  },
+};
+
+// Define styles for message content text
+const messageContentTextStyles = {
+  messageSender: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  messageText: {
+    fontSize: 16,
+    color: '#F0F0F0', // Off-white color
+  },
+};
+
 
 export default ChatComponent;

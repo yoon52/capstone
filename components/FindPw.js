@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import serverHost from './host';
 function FindPw() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -11,7 +11,7 @@ function FindPw() {
 
   const handleResetPassword = async () => {
     try {
-      const response = await fetch('http://172.30.1.2:4000/reset-password', {
+      const response = await fetch(`${serverHost}:4000/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

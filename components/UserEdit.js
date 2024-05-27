@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
+import serverHost from './host';
 function UserEdit({ userInfo }) {
   const [editedUserInfo, setEditedUserInfo] = useState({ ...userInfo });
   const [password, setPassword] = useState('');
@@ -18,7 +18,7 @@ function UserEdit({ userInfo }) {
   const handleSave = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.30.1.2:4000/edituserinfo', {
+      const response = await fetch(`${serverHost}:4000/edituserinfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ function UserEdit({ userInfo }) {
 
   const confirmDeleteAccount = async () => {
     try {
-      const response = await fetch('http://172.30.1.2:4000/deleteaccount', {
+      const response = await fetch(`${serverHost}:4000/deleteaccount`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

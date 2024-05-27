@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import serverHost from './host';
 
 function WishList() {
   const [favorites, setFavorites] = useState([]);
@@ -15,7 +16,7 @@ function WishList() {
     try {
       const userId = await AsyncStorage.getItem('userId');
 
-      const response = await fetch('http://172.30.1.2:4000/favorites', {
+      const response = await fetch(`${serverHost}:4000/favorites?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ function WishList() {
   const renderFavoriteItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image
-        source={{ uri: `http://172.30.1.2:4000/uploads/${item.image}` }}
+        source={{ uri: `${serverHost}:4000/uploads/${item.image}` }}
         style={styles.itemImage} />
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.product_name}</Text>
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     paddingHorizontal: 20,
     paddingTop: 40,
-    
+
   },
   title: {
     fontSize: 24,

@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'reac
 import { Picker } from '@react-native-picker/picker';
 
 import { useNavigation } from '@react-navigation/native';
-
+import serverHost from './host';
 const FindId = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ const FindId = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://172.30.1.2:4000/find-id', {
+      const response = await fetch(`${serverHost}:4000/find-id`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

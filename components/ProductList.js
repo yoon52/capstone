@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import serverHost from './host';
 
 function ProductList({ filteredProducts }) {
   const navigation = useNavigation();
@@ -45,7 +46,7 @@ function ProductList({ filteredProducts }) {
       const isProductViewed = await AsyncStorage.getItem(viewedProductKey);
 
       if (!isProductViewed) {
-        await fetch(`http://172.30.1.2:4000/updateViews/${productId}`, {
+        await fetch(`${serverHost}:4000/updateViews/${productId}`, {
           method: 'POST',
         });
 
@@ -76,7 +77,7 @@ function ProductList({ filteredProducts }) {
           <View style={styles.productCard}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: `http://172.30.1.2:4000/uploads/${product.image}` }}
+                source={{ uri: `${serverHost}:4000/uploads/${product.image}` }}
                 style={styles.productImage}
               />
             </View>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import serverHost from './host';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ function ProductManagement() {
   const fetchProducts = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://172.30.1.2:4000/productsmanage', {
+      const response = await fetch(`${serverHost}:4000/productsmanage`, {
         headers: {
           'user_id': userId
         }
@@ -36,7 +37,7 @@ function ProductManagement() {
   const handleDeleteProduct = async (productId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://172.30.1.2:4000/productsmanage/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'user_id': userId
@@ -61,7 +62,7 @@ function ProductManagement() {
   const handleSaveEdit = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://172.30.1.2:4000/productsmanage/${editingProduct.id}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ function ProductManagement() {
   const handleSellProduct = async (productId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://172.30.1.2:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

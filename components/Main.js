@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddProducts from './Addproducts';
 import ChatList from './ChatList';
 import Sidebar from './SideBar';
+import serverHost from './host';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -23,13 +24,13 @@ function MainScreen() {
 
   const fetchProducts = async () => {
     try {
-      let url = 'http://172.30.1.2:4000/products/views';
+      let url = `${serverHost}:4000/products/viewsMob`;
       if (sortType === 'latest') {
-        url = 'http://172.30.1.2:4000/products/views';
+        url = `${serverHost}:4000/products/viewsMob`;
       } else if (sortType === 'recommend') {
-        url = 'http://172.30.1.2:4000/products/views';
+        url = `${serverHost}:4000/products/viewsMob`;
       } else if (sortType === 'views') {
-        url = 'http://172.30.1.2:4000/products/views';
+        url = `${serverHost}:4000/products/viewsMob`;
       }
       const userId = await AsyncStorage.getItem('userId');
       const response = await fetch(url, {
