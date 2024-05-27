@@ -1,51 +1,104 @@
-/* Payments 컴포넌트 스타일 */
+/* Container Styles */
+.container.my-4 {
+  padding: 1rem;
 
-/* 전체 컨테이너 스타일 */
-.container {
-  max-width: 1200px;
-  /* 최대 폭 1200px로 제한 */
-  margin: 0 auto;
-  /* 수평 가운데 정렬 */
-  padding: 20px;
-  background-color: white;
+  border-radius: 8px;
 }
 
-/* 제목 스타일 */
-h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-/* 테이블 스타일 */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  
-}
-
-/* 테이블 헤더 스타일 */
-th {
-  background-color: #007bff;
-  color: #fff;
-  padding: 12px;
+/* Header Styles */
+.container.my-4 h1.mb-4 {
+  color: #343a40;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
-/* 테이블 셀 스타일 */
-td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: center;
-
+/* Spinner Styles */
+.d-flex.justify-content-center.align-items-center {
+  height: 60vh;
 }
 
-/* 홀수 행 배경색 스타일 */
-tbody tr:nth-child(odd) {
-  background-color: #f2f2f2;
+.spinner-border {
+  color: #007bff;
 }
 
+/* Card Styles */
+.card {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Body Styles */
+.card-body {
+  padding: 1rem;
+}
+
+/* Card Title Styles */
+
+/* Card Subtitle Styles */
+.card-subtitle {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #6c757d;
+  margin-bottom: 0.75rem;
+}
+
+/* Card Text Styles */
+.card-text {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #495057;
+}
+
+/* Row and Column Styles */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -0.5rem;
+}
+
+.col-md-6,
+.col-lg-3 {
+  padding: 0.5rem;
+  flex: 0 0 calc(25% - 1rem);
+  max-width: calc(25% - 1rem);
+  margin-bottom: 1rem;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1200px) {
+
+  .col-md-6,
+  .col-lg-3 {
+    flex: 0 0 calc(33.33% - 1rem);
+    max-width: calc(33.33% - 1rem);
+  }
+}
+
+@media (max-width: 992px) {
+
+  .col-md-6,
+  .col-lg-3 {
+    flex: 0 0 calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 576px) {
+
+  .col-md-6,
+  .col-lg-3 {
+    flex: 0 0 calc(100% - 1rem);
+    max-width: calc(100% - 1rem);
+  }
+}
 
 .w-100 {
   width: 100%;
@@ -177,5 +230,72 @@ a {
 }
 
 .color-grey {
-  color: #b0b8c1;
+  color: #d6e0f0;
+}
+
+/* Modal 스타일링 */
+/* SuccessPage.css */
+
+.rate-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background-color: #e1e2e4;
+  border-radius: 8px;
+}
+
+.rate-h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.rate-rating-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.rate-input-range {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.rate-rating-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.rate-button {
+  background-color: #007bff;
+  color: #fff;
+  border: 1px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.rate-button:hover {
+  background-color: #0056b3;
+}
+
+.rate-ReactModal__Content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 400px;
+}
+
+.rate-ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75);
 }
