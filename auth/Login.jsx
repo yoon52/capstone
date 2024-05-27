@@ -52,7 +52,7 @@ function Login() {
         if (data.isAdmin) {
           navigate('/AdminPage'); // 관리자 페이지로 이동
         } else {
-          navigate('/Main/*'); // 일반 사용자 페이지로 이동
+          navigate('/Main'); // 일반 사용자 페이지로 이동
         }
       } else {
         console.error('로그인 실패:', response.status);
@@ -77,6 +77,23 @@ function Login() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    const allowedKeys = [8, 46, 37, 39, 9]; // 백스페이스, Delete, 왼쪽 화살표, 오른쪽 화살표, Tab 키코드
+    const charCode = e.which ? e.which : e.keyCode;
+    if ((charCode < 48 || charCode > 57) && !allowedKeys.includes(charCode)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleInput = (e) => {
+    const value = e.target.value;
+    const filteredValue = value.replace(/[^0-9]/g, '');
+    setFormData(prevState => ({
+      ...prevState,
+      id: filteredValue
+    }));
+  };
+
   // 네이버 로그인 버튼 클릭 시 수행되는 함수
   const handleNaverLogin = () => {
     const state = generateRandomState();
@@ -96,7 +113,6 @@ function Login() {
     return Math.random().toString(36).substring(7);
   };
 
-
   const handleKakaoLogin = () => {
     const clientId = '0bee6abe1a644025c9faedffda0ddd04';
     const redirectUri = `${serverHost}:4000/oauth/kakao/callback`;
@@ -107,7 +123,6 @@ function Login() {
     // 리다이렉트하여 카카오 OAuth 인증 요청을 시작
     window.location.href = kakaoAuthUrl;
   };
-
 
   // 회원가입 버튼 클릭 시 호출되는 함수
   const handleSignup = () => {
@@ -124,24 +139,25 @@ function Login() {
     navigate('/FindPw');
   };
 
-  // 로그인 폼을 렌더링하는 JSX
   return (
     <div className="container-login">
       <img src={logo} id='login-logo' alt="로고" />
       <div className="login-container">
         <h1 className="login-header">L O G I N</h1>
         <form onSubmit={handleSubmit}>
-          {/* 사용자 ID 입력 필드 */}
           <div className="form-group">
             <input
               type="text"
               name="id"
               value={formData.id}
               onChange={handleChange}
+              onInput={handleInput}
               placeholder="학번"
-              required />
+              maxLength="7" // 최대 7자리까지만 입력 가능
+              onKeyDown={handleKeyDown} // 숫자 이외의 입력을 막기
+              required
+            />
           </div>
-          {/* 비밀번호 입력 필드 */}
           <div className="form-group">
             <input
               type="password"
@@ -149,21 +165,18 @@ function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="비밀번호"
-              required />
+              required
+            />
           </div>
-          {/* 로그인 실패 메시지 */}
           {!loginSuccess && (
             <p className="login-failure-message">아이디 또는 비밀번호가 올바르지 않습니다.</p>
           )}
-          {/* 로그인 버튼 */}
           <button type="submit" className="login-button">로그인</button>
-          {/* 회원가입/아이디/비밀번호 찾기 버튼 */}
           <div className="all-group">
             <button type="button" className="signup" onClick={handleSignup}>회원가입</button>
             <button type="button" className="find-id" onClick={handleFindId}>아이디 찾기</button>
             <button type="button" className="find-pw" onClick={handleFindPassword}>비밀번호 찾기</button>
           </div>
-          {/* Rest 로그인 버튼 */}
           <div className="rest-group">
             <button type="button" src={naver} alt="naver" className="naver-login" onClick={handleNaverLogin}></button>
             <button type="button" src={kakao} alt="kakao" className="kakao-login" onClick={handleKakaoLogin}></button>

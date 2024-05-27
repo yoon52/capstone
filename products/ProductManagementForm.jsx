@@ -4,7 +4,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import '../../styles/product.css';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
@@ -25,6 +24,7 @@ const ProductManagementForm = () => {
   const [editedProduct, setEditedProduct] = useState(null);
   const [, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [descriptionCharCount, setDescriptionCharCount] = useState(0);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -50,6 +50,7 @@ const ProductManagementForm = () => {
 
     fetchProductDetails();
   }, [productId]);
+
   useEffect(() => {
     sessionStorage.setItem('productId', productId);
   }, [productId]);
@@ -57,8 +58,6 @@ const ProductManagementForm = () => {
   if (!product) {
     return <div className="loading">Loading...</div>;
   }
-
-  const availability = product.status === 'available' ? '구매 가능' : '판매 완료';
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -150,25 +149,6 @@ const ProductManagementForm = () => {
     setShowNavMenu(false);
   };
 
-  const calculateTimeAgo = (date) => {
-    const today = new Date();
-    const registrationDate = new Date(date);
-    const diffTime = today.getTime() - registrationDate.getTime();
-    const diffMinutes = Math.floor(diffTime / (1000 * 60));
-
-    if (diffMinutes < 30) {
-      return '방금 전';
-    } else if (diffMinutes < 60 * 24) {
-      return `${Math.floor(diffMinutes / 60)}시간 전`;
-    } else if (diffMinutes < 60 * 24 * 7) {
-      return `${Math.floor(diffMinutes / (60 * 24))}일 전`;
-    } else if (diffMinutes < 60 * 24 * 30) {
-      return `${Math.floor(diffMinutes / (60 * 24 * 7))}주 전`;
-    } else {
-      return '한달 ↑';
-    }
-  };
-
   const handleSaveChanges = async () => {
     try {
       setIsSaving(true);
@@ -198,10 +178,19 @@ const ProductManagementForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedProduct({ ...editedProduct, [name]: value });
+    if (name === "price") {
+      if (/^\d*$/.test(value) && value.length <= 8) {
+        setEditedProduct({ ...editedProduct, [name]: value });
+      }
+    } else if (name === "description") {
+      if (value.length <= 1000) {
+        setEditedProduct({ ...editedProduct, [name]: value });
+        setDescriptionCharCount(value.length);
+      }
+    } else {
+      setEditedProduct({ ...editedProduct, [name]: value });
+    }
   };
-
-
   return (
     <div className="container-main">
       <Header
@@ -223,53 +212,48 @@ const ProductManagementForm = () => {
         recentSearches={[]}
       />
 
-      <div className="product-manage">
-        <div style={{ display: 'flex', width: '100%' }}>
+      <div className="add-container">
+        <div className="image-upload">
+          <label htmlFor="image" style={{ marginBottom: '10px' }}>상품 이미지</label>
           <img
             className="product-m-image"
             src={`${serverHost}:4000/uploads/${editedProduct.image}`}
             alt={editedProduct.name}
           />
-          <div className="product-content">
-            <input
-              type="text"
-              className="product-m-name"
-              name="name"
-              value={editedProduct.name}
-              onChange={handleInputChange}
-            />
-            <p className="product-m-price">
-              <input
-                type="number"
-                style={{ fontSize: '40px', fontWeight: 450 }}
-                name="price"
-                value={editedProduct.price}
-                onChange={handleInputChange}
-              />원
-            </p>
-            <div className="product-info" style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
-              <p className="product-m-views">
-                <VisibilityIcon sx={{ fontSize: 20, marginRight: 0.5, marginBottom: -0.3 }} />
-                {editedProduct.views}
-              </p>
-              <span>|</span>
-              <p className="product-m-date">{calculateTimeAgo(editedProduct.createdAt)}</p>
-              <span>|</span>
-              <p className="product-m-availability">{availability}</p>
-            </div>
-          </div>
         </div>
-        <div className="product-m-description-container">
-          <p className="product-m-description-header">상품정보</p>
+        <div className="form-group">
+          <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
+          <input type="text"
+            placeholder="상품명을 입력해 주세요."
+            value={editedProduct.name}
+            onChange={handleInputChange} />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="description" style={{ marginTop: '30px' }}>상품 설명</label>
           <textarea
-            className="product-m-description"
+            placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
             name="description"
             value={editedProduct.description}
             onChange={handleInputChange}
-            rows={10}
           />
+          <p className="char-count">{descriptionCharCount} / 1000</p> {/* Character count display */}
+        </div>
+        <div className="form-group">
+          <label htmlFor="price">가격</label>
+          <div className="price-input">
+            <input
+              type="number"
+              placeholder="가격을 입력해 주세요."
+              name="price"
+              value={editedProduct.price}
+              onChange={handleInputChange}
+            />
+            <span>원</span>
+          </div>
         </div>
         <button
+          className="add-product-button"
           onClick={handleSaveChanges}
           disabled={isSaving}
         >

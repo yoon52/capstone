@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Modal,
+  Box,
+  TextField,
+  Menu,
+  MenuItem
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import PeopleIcon from '@mui/icons-material/People';
+import CloseIcon from '@mui/icons-material/Close'; // CloseIcon 추가
 import serverHost from '../../utils/host';
 import '../../styles/admin.css';
+
+const drawerWidth = 240;
 
 function AdminPage() {
   const [users, setUsers] = useState([]);
@@ -15,8 +39,9 @@ function AdminPage() {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
+  const [showNavMenu, setShowNavMenu] = useState(false); // State for controlling overlay
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const navigate = useNavigate
   useEffect(() => {
     fetchUsers();
     fetchApprovedUsers();
@@ -26,23 +51,20 @@ function AdminPage() {
     try {
       const response = await fetch(`${serverHost}:4000/users`);
       if (response.status === 204) {
-        console.log('승인대기중인 사용자 정보가 없습니다.');
-        // 사용자 정보가 없는 경우 빈 배열을 설정
+        console.log('No pending users found.');
         setUsers([]);
         return;
       }
       if (!response.ok) {
-        throw new Error('사용자 정보를 가져오지 못했습니다.');
+        throw new Error('Failed to fetch users.');
       }
       const userData = await response.json();
       setUsers(userData);
     } catch (error) {
-      console.error('사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
-      // 사용자 정보를 가져오는 데 실패한 경우, 빈 배열로 사용자 목록을 설정
+      console.error('Error fetching users:', error);
       setUsers([]);
     }
   };
-
 
   const fetchApprovedUsers = async () => {
     try {
@@ -50,7 +72,7 @@ function AdminPage() {
       const approvedUserData = await response.json();
       setApprovedUsers(approvedUserData);
     } catch (error) {
-      console.error('승인 완료된 사용자 목록을 가져오는 중에 오류가 발생했습니다:', error);
+      console.error('Error fetching approved users:', error);
     }
   };
 
@@ -73,8 +95,17 @@ function AdminPage() {
       fetchUsers();
       setIsRejectionFormOpen(false);
       setRejectionReason('');
+
+      // 사용자 승인 후 알람 표시 및 모달 닫기
+      if (newStatus === 'approved') {
+        alert('사용자가 승인되었습니다.');
+        handleAdminModalClose();
+      } else if (newStatus === 'rejected') {
+        alert('사용자가 거부되었습니다.');
+        handleAdminModalClose();
+      }
     } catch (error) {
-      console.error('사용자 승인 상태 업데이트 오류:', error);
+      console.error('Error updating approval status:', error);
     }
   };
 
@@ -100,12 +131,12 @@ function AdminPage() {
       const result = await response.json();
 
       if (result && result.similarity !== undefined) {
-        setVerificationResult(`유사도: ${result.similarity.toFixed(2)}%`);
+        setVerificationResult(`Similarity: ${result.similarity.toFixed(2)}%`);
       } else {
-        setVerificationResult('유사도 검증 결과가 없습니다.');
+        setVerificationResult('No similarity result available.');
       }
     } catch (error) {
-      console.error('이미지 OCR 및 유사도 검증 오류:', error);
+      console.error('Error in OCR verification:', error);
     }
   };
 
@@ -134,24 +165,30 @@ function AdminPage() {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+    setShowNavMenu(!showNavMenu); // Toggle overlay
   };
 
   const handleApprovedUsersClick = () => {
     setShowApprovedUsers(!showApprovedUsers);
   };
-  const handleToggleOptions = (userId) => {
+
+  const handleToggleOptions = (userId, event) => {
     setShowOptionsForUser((prevUserId) => (prevUserId === userId ? null : userId));
+    setAnchorEl(event.currentTarget);
+  };
+
+
+  const handleCloseOptions = () => {
+    setAnchorEl(null);
   };
 
 
   const handleDeleteUser = (userId) => {
-    const result = window.confirm('정말 삭제하시겠습니까?');
+    const result = window.confirm('정말로 이 사용자를 삭제하시겠습니까?');
     if (result) {
       deleteUser(userId);
     }
   };
-
-
 
   const deleteUser = async (userId) => {
     try {
@@ -159,107 +196,148 @@ function AdminPage() {
         method: 'DELETE'
       });
       if (response.ok) {
-        fetchUsers(); // Update user list after deletion
+        await fetchUsers(); // 사용자 목록을 업데이트함
+        window.location.reload(); // 페이지 새로고침
       } else {
-        console.error('사용자 삭제 중 오류 발생');
+        console.error('Error deleting user');
       }
     } catch (error) {
-      console.error('사용자 삭제 중 오류 발생:', error);
+      console.error('Error deleting user:', error);
     }
   };
 
-  const handleReport = async () => {
-    navigate('/ReportList')
-  }
+
 
   return (
     <div className="admin-container">
-      <h1>회원 정보 관리</h1>
-      <button className="sidebar-toggle-button" onClick={toggleSidebar}>
-        <MenuIcon style={{ fontSize: 30 }} />
-
-      </button>
-
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>아이디</th>
-            <th>이름</th>
-            <th>이메일</th>
-            <th>부서</th>
-            <th>학년</th>
-            <th>승인 상태</th>
-            <th>학생증</th>
-            <th>관리</th>
-          </tr>
-        </thead>
-        <tbody>
+      <AppBar position="fixed">
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleSidebar}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6">
+            관리자 페이지
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="persistent"
+        anchor="left"
+        open={isSidebarOpen}
+        sx={{ width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' } }}
+      >
+        <Toolbar />
+        <List>
+          <ListItem button onClick={handleApprovedUsersClick}>
+            <ListItemIcon><PeopleIcon /></ListItemIcon>
+            <ListItemText primary="승인된 사용자 보기" />
+          </ListItem>
+        </List>
+      </Drawer>
+      {showNavMenu && <div className="overlay" onClick={toggleSidebar}></div>} {/* Overlay for closing sidebar */}
+      <main style={{ flexGrow: 1, padding: '20px', marginLeft: `${isSidebarOpen ? drawerWidth : 0}px`, transition: 'margin 0.3s' }}>
+        <Toolbar />
+        <Typography variant="h4" gutterBottom>사용자 관리</Typography>
+        <div className="admin-card-grid">
           {(showApprovedUsers ? approvedUsers : users).map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.department}</td>
-              <td>{user.grade}</td>
-              <td>{user.admin === 'pending' ? '대기 중' : user.admin === 'approved' ? '승인됨' : '거절됨'}</td>
-              <td>
-                <button onClick={() => handleAdminModalOpen(user)}>보기</button>
-              </td>
-              <td>
-                <div className="more-button-container">
-                  <button className="more-button" onClick={() => handleToggleOptions(user.id)}>
+            <Card key={user.id} className="admin-user-card">
+              <CardContent>
+                <Typography variant="h5" component="div">{user.name}</Typography>
+                <Typography sx={{ mb: 1.5 }} color="text.secondary">ID: {user.id}</Typography>
+                <Typography variant="body2">이메일 : {user.email}</Typography>
+                <Typography variant="body2">학과 : {user.department}</Typography>
+                <Typography variant="body2">학년 : {user.grade}</Typography>
+                <Typography variant="body2" className={`admin-status ${user.admin}`}>
+                  {user.admin === 'pending' ? '승인 대기중' : user.admin === 'approved' ? '승인 완료' : '승인 거절'}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <div className="admin-options-container">
+                  <IconButton onClick={(event) => handleToggleOptions(user.id, event)} style={{ position: 'absolute', top: 8, right: 8 }}>
                     <MoreHorizIcon />
-                  </button>
-                  {showOptionsForUser === user.id && (
-                    <div className="options-container">
-
-                      <button onClick={() => handleDeleteUser(user.id)}>사용자 정보 삭제</button>
-                    </div>
-                  )}
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl && showOptionsForUser === user.id)}
+                    onClose={handleCloseOptions}
+                  >
+                    <MenuItem onClick={() => handleAdminModalOpen(user)}>학생증 확인</MenuItem>
+                    <MenuItem onClick={() => { handleDeleteUser(user.id); handleCloseOptions(); }}>유저 삭제</MenuItem>
+                  </Menu>
                 </div>
 
-              </td>
-            </tr>
+
+              </CardActions>
+            </Card>
           ))}
-        </tbody>
-      </table>
-
+        </div>
+      </main>
       {selectedUser && (
-        <div className="admin-modal">
-          <div className="modal-content">
-            <img src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`} alt="학생증 이미지" />
-            {verificationResult && <p>{verificationResult}</p>}
-            <button onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>
-              상세 정보 보기
-            </button>
-            <button onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>승인</button>
-            <button onClick={() => handleRejectButton(selectedUser.id)}>반려</button>
-            <button onClick={handleAdminModalClose}>닫기</button>
-
+        <Modal
+          open={Boolean(selectedUser)}
+          onClose={handleAdminModalClose}
+          aria-labelledby="admin-modal-modal-title"
+          aria-describedby="admin-modal-modal-description"
+        >
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <IconButton
+              aria-label="close"
+              onClick={handleAdminModalClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <img
+              src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`}
+              alt="Student ID"
+              style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
+            />
+            {verificationResult && <Typography id="admin-modal-modal-description" sx={{ mt: 2 }}>{verificationResult}</Typography>}
+            <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+              <Button variant="contained" onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>상세 정보 보기</Button>
+              <Button variant="contained" color="success" onClick={() => handleUpdateApproval(selectedUser.id, 'approved')}>승인</Button>
+              <Button variant="contained" color="error" onClick={() => handleRejectButton(selectedUser.id)}>반려</Button>
+            </div>
             {isRejectionFormOpen && (
-              <form onSubmit={handleRejectFormSubmit}>
-                <label>
-                  반려 사유:
-                  <textarea value={rejectionReason} onChange={handleRejectionReasonChange} />
-                </label>
-                <button type="submit">반려</button>
-              </form>
+              <div style={{ position: 'absolute', right: -330, top: 0, width: '300px', padding: '15px', backgroundColor: '#ffffff' }}>
+                <form onSubmit={handleRejectFormSubmit}>
+                  <TextField
+                    label="반려 사유"
+                    multiline
+                    rows={4}
+                    value={rejectionReason}
+                    onChange={handleRejectionReasonChange}
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                  />
+                  <div style={{ marginTop: '10px', marginLeft: '110px' }}>
+                    <Button type="submit" variant="contained" color="error">반려 하기</Button>
+                  </div>
+                </form>
+              </div>
             )}
-          </div>
-        </div>
+          </Box>
+        </Modal>
       )}
-
-      {isSidebarOpen && (
-        <div className="admin-sidebar">
-          <button onClick={handleApprovedUsersClick}>승인 완료된 사용자 보기</button>
-          <button onClick={handleReport}>신고 처리 내역 보기</button>
-          {/* <button onClick={handlereportedUsersClick}>신고내역</button> */}
-        </div>
-
-      )}
-
     </div>
-
   );
 }
 

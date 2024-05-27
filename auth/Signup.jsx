@@ -15,7 +15,7 @@ function Signup() {
     email: '',
     department: '',
     grade: '',
-    studentIdImage: null  // New state to store the uploaded image
+    studentIdImage: null
   });
   const [, setIdAvailability] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,7 +85,7 @@ function Signup() {
   const handleSignupSuccess = () => {
     setSignupSuccess(true);
     setErrorMessage('');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleModalClose = () => {
@@ -113,6 +113,24 @@ function Signup() {
       setIsModalOpen(true); // Open modal on error
     }
   };
+
+  const handleKeyDown = (e) => {
+    const allowedKeys = [8, 46, 37, 39, 9]; // 백스페이스, Delete, 왼쪽 화살표, 오른쪽 화살표, Tab 키코드
+    const charCode = e.which ? e.which : e.keyCode;
+    if ((charCode < 48 || charCode > 57) && !allowedKeys.includes(charCode)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleInput = (e) => {
+    const value = e.target.value;
+    const filteredValue = value.replace(/[^0-9]/g, '');
+    setFormData(prevState => ({
+      ...prevState,
+      id: filteredValue
+    }));
+  };
+
   return (
     <div>
       <a href="/Login">
@@ -147,7 +165,10 @@ function Signup() {
                 name="id"
                 value={formData.id}
                 onChange={handleChange}
+                onInput={handleInput}
                 placeholder="학번"
+                maxLength="7" // 최대 7자리까지만 입력 가능
+                onKeyDown={handleKeyDown} // 숫자 이외의 입력을 막기
                 required
               />
             </div>

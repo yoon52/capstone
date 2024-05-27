@@ -17,6 +17,9 @@ const ChatComponent = () => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [productDetails, setProductDetails] = useState(null); // 상품 정보를 상태로 관리
+
+
 
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
@@ -32,6 +35,8 @@ const ChatComponent = () => {
       console.log('Client reconnected');
       fetchMessages();
     });
+
+    fetchProductDetails(); // 컴포넌트가 마운트될 때 상품 정보를 가져옴
 
     return () => {
       socket.current.disconnect();
@@ -79,6 +84,20 @@ const ChatComponent = () => {
     }
   };
 
+
+  const fetchProductDetails = async () => {
+    try {
+      const response = await fetch(`${serverHost}:4000/api/products/${productId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product details');
+      }
+      const data = await response.json();
+      setProductDetails(data);
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
+  };
+
   const handleMessageSubmit = (e) => {
     e.preventDefault();
     if (newMessage.trim() !== '') {
@@ -97,7 +116,19 @@ const ChatComponent = () => {
   return (
     <div className="chat-component">
       <div className="chat-header">
-        <h3>사용자 ID: {userId} - 채팅방 번호: {productId}</h3>
+        {productDetails && (
+          <div className="product-chat-imamge">
+            <img
+              className="products-image"
+              src={`${serverHost}:4000/uploads/${productDetails.image}`}
+              alt="상품 이미지"
+            />
+            <div className="products-info">
+              <h3>상품명 : {productDetails.name}</h3>
+              <p>가격 : {productDetails.price}원</p>
+            </div>
+          </div>
+        )}
       </div>
       <div ref={messageContainerRef} className="chat-messages">
         {messages.map((message, index) => (
@@ -120,32 +151,29 @@ const ChatComponent = () => {
           </div>
         ))}
       </div>
-      <form onSubmit={handleMessageSubmit} className="message-input-form1">
+      <form onSubmit={handleMessageSubmit} className="chat-form">
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="메시지를 입력하세요..."
+          placeholder="메시지를 입력하세요."
         />
-        <div className="button-group-1">
+        <div className="chat-button-group">
           <Button
             type="submit"
             variant="contained"
             startIcon={<SendIcon />}
             className="button"
           >
-            {/* 아이콘만 사용하고 텍스트는 비워둡니다 */}
           </Button>
           <Button
-            className="button Pay-button1"
             onClick={handlePayment}
             variant="contained"
             startIcon={<PaymentIcon />}
+            className="button"
           >
-            {/* 아이콘만 사용하고 텍스트는 비워둡니다 */}
           </Button>
         </div>
-
       </form>
     </div>
   );

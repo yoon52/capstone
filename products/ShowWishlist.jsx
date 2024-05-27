@@ -1,20 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import serverHost from '../../utils/host';
 import Header from '../header/Header';
+import '../../styles/product.css';
+import serverHost from '../../utils/host';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
 
 const ShowWishlist = () => {
   const userId = sessionStorage.getItem('userId');
   const [wishlistItems, setWishlistItems] = useState([]);
-  const [,setFilteredProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [,setSavedSearchTerm] = useState('');
-  const [,setShowSearchResults] = useState(false);
-  const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [,setShowRecentSearches] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
+  const [showNavMenu, setShowNavMenu] = useState(false);
+  const [, setSearchError] = useState('');
+  const [, setFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchWishlistItems = async () => {
+      try {
+        const response = await fetch(`${serverHost}:4000/favorites?userId=${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setWishlistItems(data);
+        } else {
+          console.error('Error fetching wishlist items:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching wishlist items:', error);
+      }
+    };
+
+    fetchWishlistItems();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      try {
+        const updatedItems = await Promise.all(
+          wishlistItems.map(async (product) => {
+            const favoriteResponse = await fetch(`${serverHost}:4000/products/isFavorite/${userId}/${product.product_id}`);
+            if (favoriteResponse.ok) {
+              const { isFavorite } = await favoriteResponse.json();
+              return { ...product, isFavorite };
+            } else {
+              console.error('찜 상태 확인 실패:', favoriteResponse.status);
+              return product;
+            }
+          })
+        );
+        setWishlistItems(updatedItems);
+      } catch (error) {
+        console.error('찜 상태 확인 오류:', error);
+      }
+    };
+
+    if (wishlistItems.length > 0) {
+      fetchFavoriteStatus();
+    }
+  }, [wishlistItems, userId]);
+
+  const handleProductClick = (productId) => {
+    navigate(`/ProductDetail/${productId}`);
+  };
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -23,10 +73,8 @@ const ShowWishlist = () => {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
-
     try {
       const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
       if (response.ok) {
@@ -37,18 +85,13 @@ const ShowWishlist = () => {
         setShowSearchResults(true);
         setSearchError('');
 
-        // Navigate to the search results page
-        navigate(`/searchResultsP/${encodeURIComponent(searchTerm)}`);
-
+        navigate(`/SearchResultsP/${encodeURIComponent(searchTerm)}`);
       } else {
         console.error('검색 오류:', response.status);
       }
     } catch (error) {
       console.error('검색 오류:', error);
     }
-    // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
-
   };
 
   const handleEnterKeyPress = (event) => {
@@ -87,9 +130,11 @@ const ShowWishlist = () => {
   const handleProductManagement = () => {
     navigate('/ProductManagement');
   };
+
   const handleShowWishlist = () => {
     navigate('/ShowWishlist');
   };
+
   const handleShowMyInfoPage = () => {
     navigate('/MyInfo');
   };
@@ -111,28 +156,30 @@ const ShowWishlist = () => {
     setShowNavMenu(false);
   };
 
-  
-  useEffect(() => {
-    const fetchWishlistItems = async () => {
-      try {
-        const response = await fetch(`${serverHost}:4000/favorites`, {
-          headers: {
-            'user_id': userId
-          }
-        });
+  const handleToggleFavorite = async (productId) => {
+    try {
+      const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId })
+      });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+      if (response.ok) {
         const data = await response.json();
-        setWishlistItems(data);
-      } catch (error) {
-        console.error('Error fetching wishlist:', error);
+        setWishlistItems((prevItems) =>
+          prevItems.map((item) =>
+            item.product_id === productId ? { ...item, isFavorite: data.isFavorite } : item
+          )
+        );
+      } else {
+        console.error('찜 상태 토글 실패:', response.status);
       }
-    };
-
-    fetchWishlistItems();
-  }, [userId]);
+    } catch (error) {
+      console.error('찜 상태 토글 오류:', error);
+    }
+  };
 
   return (
     <div className="container-main">
@@ -151,22 +198,31 @@ const ShowWishlist = () => {
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
-        setShowRecentSearches={setShowRecentSearches}
-        userInfo
-        onSearchSubmit={handleSearchProduct}
-        recentSearches={[]}
       />
-      {searchError && (
-          <p className="search-error">{searchError}</p>
-        )}
-      <h1>찜목록</h1>
-      <ul>
-        {wishlistItems.map(item => (
-          <li key={item.id}>
-            <strong>{item.product_name}</strong> - {item.price ? item.price.toLocaleString() + '원' : '가격 정보 없음'}
-          </li>
+      <h1 className="wishlist-title">찜 목록</h1>
+      <div className="wishlist-container">
+        {wishlistItems.map((product) => (
+          <div key={product.id} className="wishlist-item">
+            <div className="wishlist-badge" onClick={() => handleToggleFavorite(product.product_id)}>
+              {product.isFavorite ? <Favorite /> : <FavoriteBorder />}
+            </div>
+            <img
+              src={`${serverHost}:4000/uploads/${product.image}`}
+              alt={product.product_name}
+              className="wish-image"
+              onClick={() => handleProductClick(product.product_id)}
+            />
+            <div className="wish-details">
+              <p className="wish-name">
+                <span className="wish-name-text">{product.product_name}</span>
+              </p>
+              <p className="wish-price">
+                <span className="wish-price-text">{product.price.toLocaleString()}원</span>
+              </p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -68,13 +68,9 @@ function UserEdit({ userInfo, onAccountDeleted }) {
     }
   };
 
-  const handleChangePassword = () => {
-    navigate('/ChangePw');
-  };
-
   return (
     <div className="user-edit">
-      <h2>회원 정보 수정</h2>
+      <h2 style={{ marginTop: '30px', marginBottom: '25px' }}>회원 정보 수정</h2>
       <p className="user-id">학번 : {userInfo.id}</p>
       <div className="form-group">
         <input
@@ -121,13 +117,10 @@ function UserEdit({ userInfo, onAccountDeleted }) {
           <option value="4">4학년</option>
         </select>
       </div>
-
-      <div className="button-groupP">
+      <div>
         <button className="save-button" onClick={handleSave}>저장</button>
-        <button className="changepw-button" onClick={handleChangePassword}>비밀번호 변경</button>
-        <button className="withdrawal" onClick={handleDeleteAccount}>회원 탈퇴</button>
       </div>
-
+      <button className="withdrawal-button" onClick={handleDeleteAccount}>회원 탈퇴</button>
       {/* 모달 */}
       <Modal className="withdrawal-modal" isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
         <h2 className="withdrawal-title">회원 탈퇴</h2>
@@ -319,7 +312,8 @@ function MyInfo() {
                 <ul>
                   <li><a href="/ShowWishlist">찜한 상품</a></li>
                   <li><a href="/ProductManagement">등록한 상품</a></li>
-                  <li><a href="/payments">구매한 상품</a></li>
+                  <li><a href="/Payments">구매한 상품</a></li>
+                  <li><a href="/ChangePw">비밀번호 변경</a></li>
                 </ul>
               </aside>
               <div className="myinfo-container">

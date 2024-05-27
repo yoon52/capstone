@@ -4,8 +4,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
-import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material'; // 추가: Favorite 아이콘
+import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material';
 import Modal from 'react-modal';
+import CloseIcon from '@mui/icons-material/Close';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ChatComponent from '../messages/ChatComponent';
@@ -308,10 +309,6 @@ const ProductDetail = () => {
     }
   };
 
-  const handleReport = () => {
-    // 신고하기 핸들러
-  };
-
   const handleDelete = async () => {
     if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
       alert("작성자만 삭제할 수 있습니다.");
@@ -332,7 +329,7 @@ const ProductDetail = () => {
         console.log('상품이 삭제되었습니다.');
         alert("상품이 삭제되었습니다.");
         // 메인 페이지로 이동
-        navigate('/Main/*');
+        navigate('/Main');
 
       } else {
         console.error('상품 삭제 오류:', response.status);
@@ -353,6 +350,24 @@ const ProductDetail = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const getBarColorClass = (rates) => {
+    const ratesValue = parseFloat(rates);
+    if (ratesValue >= 0 && ratesValue < 1.0) {
+      return 'bar-color-01'; // 빨간색
+    } else if (ratesValue >= 1.0 && ratesValue < 2.0) {
+      return 'bar-color-02'; // 주황색
+    } else if (ratesValue >= 2.0 && ratesValue < 3.0) {
+      return 'bar-color-03'; // 연두색
+    } else if (ratesValue >= 3.0 && ratesValue < 4.0) {
+      return 'bar-color-04'; // 파란색
+    } else if (ratesValue >= 4.0 && ratesValue <= 4.5) {
+      return 'bar-color-05'; // 남색
+    } else {
+      return ''; // 기본 색상
+    }
+  };
+
 
   return (
     <div className="container-main">
@@ -411,22 +426,19 @@ const ProductDetail = () => {
               color={isFavorite ? 'secondary' : 'primary'}
               className="favorite-button"
             >
-              {isFavorite ? <Favorite /> : <FavoriteBorder />}
-              {isFavorite ? '찜 해제' : '찜하기'}
+              {isFavorite ? <Favorite style={{ color: 'red' }} /> : <FavoriteBorder />}
+              {isFavorite ? '찜해제' : '찜하기'}
             </Button>
 
 
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
 
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
-
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-
-              <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
           </div>
@@ -460,7 +472,9 @@ const ProductDetail = () => {
         >
           <div>
             <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-            <Button onClick={() => setIsChatModalOpen(false)}>닫기</Button>
+            <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
+              <CloseIcon />
+            </IconButton>
           </div>
         </MuiModal>
 
@@ -485,18 +499,22 @@ const ProductDetail = () => {
                   {rates}
                 </dd>
               </dl>
-              <div className="meters">
-                <div className="bar bar-color-03" style={{ width: `${barLength}%` }}></div>
+              <div className={`meters ${getBarColorClass(rates)}`}>
+                <div className={`bar ${getBarColorClass(rates)}`} style={{ width: `${barLength}%` }}></div>
+
               </div>
+
+
               <div className="face face-03"></div>
             </div>
           </div>
 
         </section>
 
-        <div className="related-products">
-          <DetailList />
+        <div className="product-list">
+          <DetailList currentProductId={product.id} />
         </div>
+
       </div>
     </div>
   );

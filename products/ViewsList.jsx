@@ -25,7 +25,7 @@ function ViewsList() {
 
   return (
     <div className='h2-font'>
-      <h2 className='text-center article-list-title' >중고거래 인기 매물</h2>
+      <h2 className='text-center article-list-title'>중고거래 인기 매물</h2>
       <ProductList filteredProducts={filteredProducts} />
     </div>
   );

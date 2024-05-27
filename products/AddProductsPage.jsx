@@ -11,18 +11,18 @@ function AddProducts() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [priceError, setPriceError] = useState('');
   const [image, setImage] = useState(null); // 이미지 파일 상태 추가
   const [imagePreview, setImagePreview] = useState(null); // State for image preview
-  const [, setFilteredProducts] = useState([]);
+  const [setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [, setSavedSearchTerm] = useState('');
-  const [, setShowSearchResults] = useState(false);
+  const [setSavedSearchTerm] = useState('');
+  const [setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [, setSearchError] = useState('');
-
+  const [setSearchError] = useState('');
+  const [descriptionCharCount, setDescriptionCharCount] = useState(0);
   const searchInputRef = useRef(null);
-  const [, setShowRecentSearches] = useState(false);
-
+  const [setShowRecentSearches] = useState(false);
   const navigate = useNavigate();
 
   const handleNameChange = (event) => {
@@ -35,31 +35,47 @@ function AddProducts() {
       event.preventDefault(); // 기본 엔터키 동작 방지
       // 현재 설명값에 엔터키 추가하여 설정
       setDescription(prevDescription => prevDescription + '\n');
+      setDescriptionCharCount(prevCount => prevCount + 1);
     } else {
-      // 엔터키가 아닌 경우에는 설명값 업데이트
-      setDescription(event.target.value);
+      const newDescription = event.target.value;
+      if (newDescription.length <= 1000) {
+        setDescription(newDescription);
+        setDescriptionCharCount(newDescription.length);
+      }
     }
   };
 
-
   const handlePriceChange = (event) => {
-    setPrice(event.target.value);
+    const value = event.target.value;
+    if (/^\d*$/.test(value) && value.length <= 8) {
+      setPrice(value);
+      setPriceError('');
+    } else {
+      setPriceError('가격은 숫자 8자리까지만 입력 가능합니다.');
+    }
   };
 
   const handleImageChange = (event) => {
     const selectedImage = event.target.files[0];
-    setImage(selectedImage);
-    // Preview image
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result);
-    };
-    reader.readAsDataURL(selectedImage);
+    if (selectedImage) {
+      setImage(selectedImage);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(selectedImage);
+    } else {
+      setImage(null);
+      setImagePreview(null);
+    }
   };
 
   const handleAddProduct = async (event) => {
-    event.preventDefault(); // 폼 제출의 기본 동작 방지
-
+    event.preventDefault();
+    if (priceError) {
+      alert('가격 입력을 확인해 주세요.');
+      return;
+    }
     // 상품 추가 요청
     try {
       const formData = new FormData();
@@ -171,7 +187,7 @@ function AddProducts() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -190,7 +206,6 @@ function AddProducts() {
 
   return (
     <div className="container-main">
-
       <Header
         toggleNavMenu={toggleNavMenu}
         showNavMenu={showNavMenu}
@@ -211,17 +226,19 @@ function AddProducts() {
         onSearchSubmit={handleSearchProduct}
         recentSearches={[]}
       />
-      <div className="main-container">
-        <h2>상품등록 페이지</h2>
+      <div className="add-container">
         <form onSubmit={handleAddProduct}>
           <div className="image-upload">
+            <label htmlFor="image" style={{ marginBottom: '10px' }}>상품 이미지</label>
             <label htmlFor="imageInput">
               {imagePreview ? (
-                <img src={imagePreview} alt="Product Preview" className="preview-image" />
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="Product Preview" className="preview-image" />
+                </div>
               ) : (
                 <div className="no-image-preview">
                   <CameraAltIcon fontSize="large" />
-                  <span>이미지를 선택하세요</span>
+                  <span>이미지 등록</span>
                 </div>
               )}
             </label>
@@ -229,19 +246,32 @@ function AddProducts() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="name">상품명 :</label>
-            <input type="text" placeholder="상품명" value={name} onChange={handleNameChange} required />
+            <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
+            <input type="text" placeholder="상품명을 입력해 주세요." value={name} onChange={handleNameChange} required />
           </div>
           <div className="form-group">
-            <label htmlFor="description">설명 :</label>
+            <label htmlFor="description" style={{ marginTop: '30px' }}>상품 설명</label>
             <textarea
               id="description"
-              placeholder="설명"
+              placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
               value={description}
               onChange={handleDescriptionChange}
             />
-            <label htmlFor="price">가격 :</label>
-            <input type="text" placeholder="가격" value={price} onChange={handlePriceChange} required />
+            <p className="char-count">{descriptionCharCount} / 1000</p> {/* Character count display */}
+          </div>
+          <div className="form-group">
+            <label htmlFor="price">가격</label>
+            <div className="price-input">
+              <input
+                type="price"
+                placeholder="가격을 입력해 주세요."
+                value={price}
+                onChange={handlePriceChange}
+                required
+              />
+              <span>원</span>
+            </div>
+            {priceError && <p className="error-message">{priceError}</p>}
           </div>
           <button type="submit" className="add-product-button">추가</button>
         </form>
