@@ -224,6 +224,7 @@ const ProductManagementForm = () => {
         <div className="form-group">
           <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
           <input type="text"
+            name="name"
             placeholder="상품명을 입력해 주세요."
             value={editedProduct.name}
             onChange={handleInputChange} />
