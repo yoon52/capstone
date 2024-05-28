@@ -184,10 +184,31 @@
   background-color: #ddd;
 }
 
-.bar-color-03 {
-  background-color: #f0c419;
-  /* 막대의 색상을 변경하려면 이 색상을 수정하세요 */
+.bar-color-01 {
+  background-color: #de5d06;
+  /* 빨간색 */
 }
+
+.bar-color-02 {
+  background-color: #df9100;
+  /* 주황색 */
+}
+
+.bar-color-03 {
+  background-color: #319e45;
+  /* 연두색 */
+}
+
+.bar-color-04 {
+  background-color: #1561a9;
+  /* 파란색 */
+}
+
+.bar-color-05 {
+  background-color: #0d3a65;
+  /* 남색 */
+}
+
 
 /*--------------------------------------------------------------------------------*/
 
@@ -332,7 +353,7 @@ label {
   font-weight: bold;
 }
 
-/* add-product 상품 설명 */
+/* add-product 설명 */
 textarea {
   width: calc(100% - 20px);
   padding: 15px;
@@ -404,58 +425,75 @@ input[type="price"] {
 }
 
 /*--------------------------------------------------------------------------------*/
+.wishlist-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2em;
+}
 
 .wishlist-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: flex-start;
-  padding-right: 40px;
+  margin-left: 85px;
 }
 
 .wishlist-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex: 0 0 calc(33.333% - 20px);
-  border: 1px solid #ddd;
-  border-radius: 5px;
   padding: 10px;
-  box-sizing: border-box;
-  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 250px;
+  height: 290px; /* 고정 높이 설정 */
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.wish-two {
-  margin-top: 60px;
+.wishlist-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+.wishlist-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  color: #fc3f3f;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.9em;
 }
 
 .wish-image {
-  max-width: 150px;
-  max-height: 150px;
-  width: 150px;
-  height: 150px;
-  border-radius: 5px;
-  margin-right: 20px;
+  width: 100%;
+  height: 200px; /* 고정 높이 설정 */
+  object-fit: cover; /* 이미지 비율을 유지하면서 크기 조정 */
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-
-.wishlist-item span {
+.wish-details {
   margin-top: 10px;
 }
 
-.select-delete-button {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+.wish-name-text {
+  font-size: 1.1em;
+  font-weight: bold;
 }
 
-.wish-check {
-  position: absolute;
-  bottom: 70px;
-  left: 350px;
+.wish-price-text {
+  font-size: 1em;
+  color: #888;
 }
 
-/*--------------------------------------------------------------------------------*/
 
+/* managementform.css */
 /* managementform.css */
 .product-manage {
   flex-grow: 1;

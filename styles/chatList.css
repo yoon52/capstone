@@ -1,7 +1,8 @@
 /* 사이드바 스타일 */
 .chatsidebar-container {
   display: flex;
-  height: calc(100vh - 140px);
+  max-height: 1000px;
+  height: calc(300vh - 140px);
   overflow-y: auto;
   background-color: #ffffff;
   border: none;
@@ -15,8 +16,9 @@
   width: 300px;
   max-width: 300px;
   background-color: #f4f4f4;
-  padding: 10px;
+
   border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
 }
 
 /* 채팅 헤더*/

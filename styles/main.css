@@ -131,6 +131,8 @@ input[type="search"] {
   font-size: 16px;
   color: white;
   margin-bottom: 10px;
+  white-space: nowrap;
+
 }
 
 
@@ -304,16 +306,59 @@ input[type="search"] {
   display: block;
   text-decoration: none;
   color: inherit;
+  
 }
-
+.card-link-1 {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 15px;
+}
 /* 카드 이미지 */
-.card-photo img {
+.card-photo {
+  position: relative;
   width: 230px;
+  /* 이미지 너비 설정 */
   height: 230px;
+  /* 이미지 높이 설정 */
   max-width: 230px;
   max-height: 230px;
+}
+
+.card-photo img {
+  width: 100%;
+  /* 이미지 너비를 부모 요소의 너비에 맞춤 */
+  height: 100%;
+  /* 이미지 높이를 부모 요소의 높이에 맞춤 */
   object-fit: cover;
+  /* 이미지를 자르지 않고 부모 요소에 맞춤 */
   border-radius: 5px;
+  /* 이미지 모서리를 둥글게 만듦 */
+}
+
+/* 판매 상태 레이블 */
+.sale-status-label {
+  position: absolute;
+  /* 절대 위치 지정 */
+  bottom: 5px;
+  /* 아래쪽으로부터의 거리 */
+  right: 5px;
+  /* 오른쪽으로부터의 거리 */
+  background-color: rgba(104, 102, 102, 0.5);
+  /* 배경색과 투명도 설정 */
+  padding: 5px 10px;
+  /* 안쪽 여백 설정 */
+  border-radius: 5px;
+  /* 모서리를 둥글게 만듦 */
+  font-size: 12px;
+  /* 글꼴 크기 설정 */
+  color: white;
+}
+
+/* 판매완료 레이블의 배경색 */
+.sold-out-label {
+  background-color: rgba(104, 102, 102, 0.5);
+  /* 배경색과 투명도 설정 */
 }
 
 /* 카드 정보 */
