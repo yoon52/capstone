@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'reac
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import serverHost from './host';
 
 function Signup() {
   const navigation = useNavigation();
@@ -60,7 +61,7 @@ function Signup() {
     });
 
     try {
-      const response = await fetch('http://192.168.219.165:4000/signup', {
+      const response = await fetch(`${serverHost}:4000/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -86,7 +87,7 @@ function Signup() {
 
   const handleCheckAvailability = async () => {
     try {
-      const response = await fetch(`http://192.168.219.165:4000/checkUser?id=${formData.id}`);
+      const response = await fetch(`${serverHost}:4000/checkUser?id=${formData.id}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -188,7 +189,6 @@ function Signup() {
           onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
           style={[styles.picker]}
           itemStyle={styles.pickerItem}
-          mode="dropdown"
         >
           <Picker.Item label="학과 선택" value="" style={styles.pickerItem} />
           <Picker.Item label="컴퓨터 공학과" value="computer_science" style={styles.pick} />
@@ -202,7 +202,6 @@ function Signup() {
           selectedValue={formData.grade}
           onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
           style={[styles.picker]}
-          mode="dropdown"
         >
           <Picker.Item label="학년 선택" value="" style={styles.pickerItem} />
           <Picker.Item label="1학년" value="1" style={styles.pick} />

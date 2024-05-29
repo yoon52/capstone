@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal,
 import { Ionicons } from '@expo/vector-icons';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import serverHost from './host';
 const ChatModal = ({ chatRoomId, productId, onClose }) => {
   const [userId, setUserId] = useState(null);
   const [userType, setUserType] = useState(null);
@@ -40,7 +40,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
   }, []);
 
   useEffect(() => {
-    socket.current = io('http://192.168.219.165:4001/', {
+    socket.current = io(`${serverHost}:4001/`, {
       query: { productId, receiver }
     });
 
@@ -82,7 +82,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`http://192.168.219.165:4001/messages/${productId}`, {
+      const response = await fetch(`${serverHost}:4001/messages/${productId}`, {
         headers: {
           'receiver': receiver
         }
@@ -111,7 +111,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
       <KeyboardAvoidingView behavior="padding" style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Ionicons name="close" size={24} color="black" />
+            <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.heading}>채팅방 번호: {chatRoomId}</Text>
           <ScrollView ref={messageContainerRef} style={styles.chatContainer}>
@@ -120,13 +120,22 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
                 key={index}
                 style={[
                   styles.messageContainer,
-                  isCurrentUser(message.sender) ? styles.sentMessage : styles.receivedMessage
+                  isCurrentUser(message.sender) ? styles.sentMessage : styles.receivedMessage,
+                  !isCurrentUser(message.sender) && { backgroundColor: '#e6e6e6' } // 받은 메시지일 때 파란 배경색 적용
                 ]}
               >
-
                 {/* 메시지 텍스트 */}
-                <Text style={styles.messageText}>{message.text}</Text>
+                <Text
+                  style={[
+                    styles.messageText,
+                    isCurrentUser(message.sender) && { color: 'white' }, // 보낸 메시지일 때 검은 글자색 적용
+                    !isCurrentUser(message.sender) && { color: 'black' } // 받은 메시지일 때 흰색 글자색 적용
+                  ]}
+                >
+                  {message.text}
+                </Text>
               </View>
+
             ))}
           </ScrollView>
           <View style={styles.inputContainer}>
@@ -137,7 +146,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
               onChangeText={setNewMessage}
             />
             <TouchableOpacity onPress={handleMessageSubmit} style={styles.sendButton}>
-              <Ionicons name="send" size={24} color="white" />
+              <Ionicons name="send" size={24} color="#103260" />
             </TouchableOpacity>
           </View>
         </View>
@@ -183,21 +192,23 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
-    color: 'black',
+    color: 'black'
   },
   senderText: {
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
+
+
   },
   sentMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: 'white',
+    backgroundColor: '#204b80',
     color: 'black',
   },
   receivedMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#0084FF',
+    backgroundColor: '#e6e6e6',
     color: 'white',
   },
   inputContainer: {
@@ -217,7 +228,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: 'blue',
+    
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
