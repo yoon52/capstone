@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import '../../styles/myinfo.css';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
-
+import swal from 'sweetalert';
 Modal.setAppElement('#root');
 
 function UserEdit({ userInfo, onAccountDeleted }) {
@@ -29,15 +29,18 @@ function UserEdit({ userInfo, onAccountDeleted }) {
 
       if (response.ok) {
         const data = await response.json();
-        alert(data.message); // 수정이 완료되었습니다. 메시지 표시
+        swal("성공", data.message, "success"); // 수정이 완료되었습니다. 메시지 표시
         navigate('/'); // Main 페이지로 이동
       } else {
         console.error('사용자 정보 수정 실패');
+        swal("오류", "사용자 정보 수정 실패", "error");
       }
     } catch (error) {
       console.error('사용자 정보 수정 오류:', error);
+      swal("오류", "사용자 정보 수정 중 오류가 발생했습니다.", "error");
     }
   };
+
 
   const handleDeleteAccount = () => {
     setIsModalOpen(true);
@@ -54,19 +57,20 @@ function UserEdit({ userInfo, onAccountDeleted }) {
       });
 
       if (response.ok) {
-        alert('회원 탈퇴되었습니다.');
+        swal("성공", "회원 탈퇴되었습니다.", "success");
         sessionStorage.removeItem('userId');
         onAccountDeleted();
         navigate('/Login'); // Login 페이지로 이동
       } else {
         const data = await response.json();
-        alert(data.error);
+        swal("오류", data.error, "error");
       }
     } catch (error) {
       console.error('회원 탈퇴 오류:', error);
-      alert('회원 탈퇴 중 오류가 발생했습니다.');
+      swal("오류", "회원 탈퇴 중 오류가 발생했습니다.", "error");
     }
   };
+
 
   return (
     <div className="user-edit">
@@ -166,7 +170,7 @@ function MyInfo() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      // console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
 
@@ -190,7 +194,7 @@ function MyInfo() {
       console.error('검색 오류:', error);
     }
     // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
+    // console.log("검색어:", searchTerm);
 
   };
 
@@ -269,11 +273,11 @@ function MyInfo() {
         setUserInfo(data);
         setIsPasswordConfirmed(true);
       } else {
-        alert('비밀번호가 일치하지 않습니다.');
+        swal("오류", "비밀번호가 일치하지 않습니다.", "error");
       }
     } catch (error) {
       console.error('내 정보 확인 오류:', error);
-      alert('내 정보를 가져오는 중 오류가 발생했습니다.');
+      swal("오류", "내 정보를 가져오는 중 오류가 발생했습니다.", "error");
     }
   };
 

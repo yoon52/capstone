@@ -14,7 +14,7 @@ import '../../styles/product.css';
 import Header from '../header/Header';
 import DetailList from './DetailList';
 import serverHost from '../../utils/host';
-
+import swal from 'sweetalert';
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {
@@ -172,6 +172,17 @@ const ProductDetail = () => {
 
   const handleToggleFavorite = async () => {
     try {
+      // 본인의 게시물인지 확인
+      if (userId === product.user_id) {
+        swal({
+          title: "찜 실패",
+          text: "본인의 게시물은 찜할 수 없습니다.",
+          icon: "error",
+          buttons: '확인'
+        });
+        return;
+      }
+
       // 서버에 찜 상태 토글 요청
       const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
         method: 'PUT',
@@ -191,6 +202,7 @@ const ProductDetail = () => {
       console.error('찜 상태 토글 오류:', error);
     }
   };
+
 
   if (!product) {
     return <div className="loading">Loading...</div>;
@@ -311,31 +323,43 @@ const ProductDetail = () => {
 
   const handleDelete = async () => {
     if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
-      alert("작성자만 삭제할 수 있습니다.");
+      swal("작성자만 삭제할 수 있습니다!", "", "error");
       return;
     }
 
-    try {
-      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'user_id': userId // 사용자 ID를 헤더에 포함하여 서버로 전송
+    // 작성자인 경우, 정말 삭제할 것인지 확인하는 메시지 표시
+    const confirmed = await swal({
+      title: "정말 삭제하시겠습니까?",
+      text: "한 번 삭제된 데이터는 복구할 수 없습니다.",
+      icon: "warning",
+      buttons: {
+        cancel: "취소",
+        confirm: "확인"
+      },
+    });
+
+
+    if (confirmed) {
+      try {
+        const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'user_id': userId // 사용자 ID를 헤더에 포함하여 서버로 전송
+          }
+        });
+
+        if (response.ok) {
+          // 삭제가 성공적으로 처리된 경우에 대한 처리
+          swal("상품이 삭제되었습니다.", "", "success")
+          // 메인 페이지로 이동
+          navigate('/Main');
+        } else {
+          console.error('상품 삭제 오류:', response.status);
         }
-      });
-
-      if (response.ok) {
-        // 삭제가 성공적으로 처리된 경우에 대한 처리
-        console.log('상품이 삭제되었습니다.');
-        alert("상품이 삭제되었습니다.");
-        // 메인 페이지로 이동
-        navigate('/Main');
-
-      } else {
-        console.error('상품 삭제 오류:', response.status);
+      } catch (error) {
+        console.error('상품 삭제 오류:', error);
       }
-    } catch (error) {
-      console.error('상품 삭제 오류:', error);
     }
   };
 
@@ -371,7 +395,7 @@ const ProductDetail = () => {
   const handleEdit = () => {
     // 만약 현재 사용자가 상품의 작성자가 아니라면 수정할 수 없음
     if (userId !== product.user_id) {
-      alert("본인이 작성한 상품만 수정할 수 있습니다.");
+      swal("작성자만 수정할수있습니다!", "", "error")
       return;
     }
 
@@ -494,9 +518,12 @@ const ProductDetail = () => {
         <section id="article-profile">
           <div className="seller-profile">
             <div>
-              <div>
-                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png" />
-
+              <div className="profileimage-container">
+                <img
+                  src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
+                  className="rounded-image"
+                  alt="Profile"
+                />
               </div>
               <div className="article-profile-left">
                 <div className="space-between">

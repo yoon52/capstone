@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import swal from 'sweetalert';
 import {
   AppBar,
   Toolbar,
@@ -97,10 +98,11 @@ function AdminPage() {
 
       // 사용자 승인 후 알람 표시 및 모달 닫기
       if (newStatus === 'approved') {
-        alert('사용자가 승인되었습니다.');
+        swal("사용자가 승인되었습니다.", "", "success")
+
         handleAdminModalClose();
       } else if (newStatus === 'rejected') {
-        alert('사용자가 거부되었습니다.');
+        swal("사용자가 거부되었습니다.", "", "error");
         handleAdminModalClose();
       }
     } catch (error) {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../../styles/myinfo.css';
 import logo from '../../image/logo.png';
 import serverHost from '../../utils/host';
-
+import swal from 'sweetalert';
 function ChangePw() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -11,12 +11,12 @@ function ChangePw() {
   const handleChangePassword = async () => {
     try {
       if (!currentPassword || !newPassword || !confirmNewPassword) {
-        alert('모든 필드를 입력해주세요.');
+        swal("오류", "모든 필드를 입력해주세요.", "error");
         return;
       }
 
       if (newPassword !== confirmNewPassword) {
-        alert('새 비밀번호가 일치하지 않습니다.');
+        swal("오류", "새 비밀번호가 일치하지 않습니다.", "error");
         return;
       }
 
@@ -33,15 +33,18 @@ function ChangePw() {
       });
 
       if (response.ok) {
-        alert('비밀번호가 변경되었습니다.');
-        window.location.href = '/Login';
+        swal("성공", "비밀번호가 변경되었습니다.", "success").then(() => {
+          window.location.href = '/Login';
+        });
+
       } else {
         const data = await response.json();
-        alert(data.message);
+        swal("오류", data.message, "error");
+
       }
     } catch (error) {
       console.error('비밀번호 변경 오류:', error);
-      alert('비밀번호 변경 중 오류가 발생했습니다.');
+      swal("오류", "비밀번호 변경 중 오류가 발생했습니다.", "error");
     }
   };
 

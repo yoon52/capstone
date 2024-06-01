@@ -7,6 +7,7 @@ import Modal from 'react-modal';
 import '../../styles/product.css';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
+import swal from 'sweetalert';
 
 Modal.setAppElement('#root');
 
@@ -164,15 +165,16 @@ const ProductManagementForm = () => {
       });
       if (response.ok) {
         setProduct(editedProduct);
-        alert('상품이 성공적으로 업데이트되었습니다.');
-        navigate('/ProductManagement')
+        swal("성공", "상품이 성공적으로 업데이트되었습니다.", "success").then(() => {
+          navigate('/ProductManagement');
+        });
       } else {
         console.error('상품 업데이트 오류:', response.status);
-        alert('상품 업데이트 중 오류가 발생했습니다.');
+        swal("오류", "상품 업데이트 중 오류가 발생했습니다.", "error");
       }
     } catch (error) {
       console.error('상품 업데이트 오류:', error);
-      alert('상품 업데이트 중 오류가 발생했습니다.');
+      swal("오류", "상품 업데이트 중 오류가 발생했습니다.", "error");
     } finally {
       setIsSaving(false);
     }

@@ -27,7 +27,7 @@ const Header = ({
   const navigate = useNavigate(); // Get navigate function from react-router-dom
 
   const handleSearchInputFocus = () => {
-    console.log('Input clicked'); // 검색 인풋창 클릭시 "Input clicked"를 콘솔에 출력
+    // console.log('Input clicked'); // 검색 인풋창 클릭시 "Input clicked"를 콘솔에 출력
 
   };
 

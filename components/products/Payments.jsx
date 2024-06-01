@@ -99,7 +99,7 @@ const Payments = () => {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch');
+      // console.log('touch');
       return;
     }
 
@@ -121,7 +121,7 @@ const Payments = () => {
       console.error('검색 오류:', error);
     }
 
-    console.log("검색어:", searchTerm);
+    // console.log("검색어:", searchTerm);
   };
 
   const handleEnterKeyPress = (event) => {

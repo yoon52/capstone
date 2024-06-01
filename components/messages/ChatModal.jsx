@@ -29,7 +29,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
     });
 
     socket.current.on('connect', () => {
-      console.log('Client reconnected');
+      // console.log('Client reconnected');
       fetchMessages();
     });
 
@@ -86,7 +86,7 @@ const ChatPage = ({ chatRoomId, productId }) => {
 
   const handlePayment = () => {
     navigate(`/sandbox?productId=${productId}&userId=${userId}`);
-    console.log('결제 처리 로직을 추가하세요.');
+    // console.log('결제 처리 로직을 추가하세요.');
   };
 
   const isCurrentUser = (senderId) => senderId === userId;

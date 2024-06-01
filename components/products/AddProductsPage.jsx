@@ -5,7 +5,7 @@ import '../../styles/product.css';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
-
+import swal from 'sweetalert';
 function AddProducts() {
   const userId = sessionStorage.getItem('userId');
   const [name, setName] = useState('');
@@ -72,8 +72,24 @@ function AddProducts() {
 
   const handleAddProduct = async (event) => {
     event.preventDefault();
+    
+    if (!name || !description || !price || !image) {
+      swal({
+        title: "입력 오류",
+        text: "모든 필드를 입력해 주세요.",
+        icon: "error",
+      });
+      return;
+    }
+
+
     if (priceError) {
-      alert('가격 입력을 확인해 주세요.');
+      swal({
+        title: "입력 오류",
+        text: "가격 입력을 확인해 주세요.",
+        icon: "warning",
+      });
+      
       return;
     }
     // 상품 추가 요청
@@ -99,8 +115,16 @@ function AddProducts() {
         setPrice('');
         setImage(null); // 이미지 파일 초기화
         // 상품 추가 후 메인 페이지로 이동
-        navigate('/Main');
-        console.log('상품이 추가되었습니다.');
+        setImagePreview(null); // 이미지 프리뷰 초기화
+        swal({
+          title: "성공",
+          text: "상품이 추가되었습니다.",
+          icon: "success",
+        }).then(() => {
+          // 상품 추가 후 메인 페이지로 이동
+          navigate('/Main');
+        });
+
       } else {
         // 상품 추가 실패 시 오류 메시지 출력
         console.error('상품 추가 실패:', response.statusText);
@@ -114,7 +138,7 @@ function AddProducts() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      // console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
 
@@ -138,7 +162,7 @@ function AddProducts() {
       console.error('검색 오류:', error);
     }
     // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
+    // console.log("검색어:", searchTerm);
 
   };
 

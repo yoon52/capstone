@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Modal from "react-modal";
 import serverHost from "../../utils/host";
+import swal from "sweetalert";
 
 export function SuccessPage() {
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -64,14 +65,17 @@ export function SuccessPage() {
       });
       if (response.ok) {
         // 알림 표시
-        alert('상품이 판매되었습니다.');
+        swal("성공", "상품이 판매되었습니다.", "success");
       } else {
         console.error('상품 판매완료 처리 실패:', response.status);
+        swal("오류", "상품 판매완료 처리에 실패했습니다.", "error");
       }
     } catch (error) {
       console.error('상품 판매완료 처리 실패:', error);
+      swal("오류", "상품 판매완료 처리 중 오류가 발생했습니다.", "error");
     }
   };
+
 
   // Function to update the seller rating
   const updateSellerRating = async () => {
@@ -95,14 +99,16 @@ export function SuccessPage() {
         console.log('Seller rating updated successfully.');
         // 평점 제출 상태 업데이트
         setRatingSubmitted(true);
-        alert("평점 등록 성공")
+        swal("성공", "평점 등록 성공", "success");
       } else {
         // 평점 업데이트 실패 시
         console.error('Failed to update seller rating:', response.status);
+        swal("오류", "평점 등록에 실패했습니다.", "error");
       }
     } catch (error) {
       // 오류 처리
       console.error('Error updating seller rating:', error);
+      swal("오류", "평점 등록 중 오류가 발생했습니다.", "error");
     }
   };
 

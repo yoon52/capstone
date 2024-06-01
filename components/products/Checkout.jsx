@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { loadPaymentWidget } from "@tosspayments/payment-widget-sdk";
 import { nanoid } from "nanoid";
 import serverHost from "../../utils/host";
+import swal from "sweetalert";
 // 구매자의 고유 아이디를 불러와서 customerKey로 설정하세요.
 // 이메일・전화번호와 같이 유추가 가능한 값은 안전하지 않습니다.
 const widgetClientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
@@ -17,12 +18,12 @@ export function CheckoutPage() {
   const [productId, setProductId] = useState(null);
 
   useEffect(() => {
-      const storedUserId = sessionStorage.getItem('userId');
-      const storedProductId = sessionStorage.getItem('productId');
-      setUserId(storedUserId);
-      setProductId(storedProductId);
+    const storedUserId = sessionStorage.getItem('userId');
+    const storedProductId = sessionStorage.getItem('productId');
+    setUserId(storedUserId);
+    setProductId(storedProductId);
 
-      const fetchProductAndUser = async () => {
+    const fetchProductAndUser = async () => {
       // 상품 정보 가져오기
       if (storedProductId) {
         try {
@@ -36,12 +37,16 @@ export function CheckoutPage() {
 
             if (productData.status === "판매완료") {
               // 상품이 판매완료된 경우 알람 표시 및 메인 페이지로 이동
-              alert('판매완료된 상품입니다.');
-              navigateToMainPage("/Main"); // 메인 페이지로 이동
+              swal("알림", "판매완료된 상품입니다.", "info").then(() => {
+                navigateToMainPage("/Main"); // 메인 페이지로 이동
+              });
+
             } else if (storedUserId && productData.user_id === storedUserId) {
               // 상품이 현재 로그인한 사용자의 것일 경우 결제를 막음
-              alert('본인의 상품은 결제할 수 없습니다.');
-              navigateToMainPage("/Main"); // 메인 페이지로 이동
+              swal("알림", "본인의 상품은 결제할 수 없습니다.", "info").then(() => {
+                navigateToMainPage("/Main"); // 메인 페이지로 이동
+              });
+
             }
 
           } else {
@@ -135,9 +140,9 @@ export function CheckoutPage() {
       <div id="payment-widget" />
       <div id="agreement" />
       {/* 결제하기 버튼 */}
-      <button 
-      className="btn w-100"
-      onClick={handlePaymentRequest}>결제하기</button>
+      <button
+        className="btn w-100"
+        onClick={handlePaymentRequest}>결제하기</button>
     </div>
   );
 }
