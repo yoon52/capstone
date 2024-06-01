@@ -105,7 +105,8 @@
 
 /* Additional styling for Toolbar */
 .admin-toolbar {
-  background-color: #1976d2; /* Blue */
+  background-color: #1976d2;
+  /* Blue */
   color: #fff;
 }
 
