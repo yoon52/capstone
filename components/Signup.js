@@ -108,7 +108,7 @@ function Signup() {
   const handleImageSelect = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
-      alert("갤러리에 접근할 수 있는 권한이 필요합니다.");
+      Alert.alert("갤러리에 접근할 수 있는 권한이 필요합니다.");
       return;
     }
 
@@ -119,7 +119,7 @@ function Signup() {
         ...prevState,
         studentIdImage: selectedImageUri,
       }));
-      alert('이미지가 선택되었습니다.');
+      Alert.alert('이미지가 선택되었습니다.');
     } else {
       console.error('Selected image URI is undefined');
     }

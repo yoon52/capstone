@@ -25,11 +25,11 @@ function MyInfo() {
         setUserInfo(data);
         setIsPasswordConfirmed(true);
       } else {
-        alert('비밀번호가 일치하지 않습니다.');
+        Alert.alert('비밀번호가 일치하지 않습니다.');
       }
     } catch (error) {
       console.error('내 정보 확인 오류:', error);
-      alert('내 정보를 가져오는 중 오류가 발생했습니다.');
+      Alert.alert('내 정보를 가져오는 중 오류가 발생했습니다.');
     }
   };
 

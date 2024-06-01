@@ -36,7 +36,7 @@ const SearchResults = ({ route, navigation }) => {
                   <Text numberOfLines={2} style={styles.productName}>
                     {item.name}
                   </Text>
-                  <Text style={styles.productPrice}>가격: {item.price}원</Text>
+                  <Text style={styles.productPrice}>{item.price}원</Text>
                 </View>
               </View>
             </TouchableOpacity>

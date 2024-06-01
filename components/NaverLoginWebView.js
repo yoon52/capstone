@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -26,11 +27,25 @@ function NaverLoginWebView() {
   }
 
   return (
-    <WebView
-      source={{ uri: naverOAuthUrl }}
-      onNavigationStateChange={handleNavigationStateChange}
-    />
+    <View style={styles.container}>
+      <WebView
+        source={{ uri: naverOAuthUrl }}
+        onNavigationStateChange={handleNavigationStateChange}
+        style={styles.webView}
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 40, // 마진 탑 60 적용
+  },
+  webView: {
+    flex: 1,
+  },
+});
+
 
 export default NaverLoginWebView;

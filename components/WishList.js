@@ -45,7 +45,7 @@ function WishList() {
         style={styles.itemImage} />
       <View style={styles.itemInfo}>
         <Text style={styles.itemName}>{item.product_name}</Text>
-        <Text style={styles.itemPrice}>가격: {item.price}원</Text>
+        <Text style={styles.itemPrice}>{item.price}원</Text>
         {/* 다른 상품 정보 표시 */}
       </View>
     </View>

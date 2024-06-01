@@ -54,11 +54,11 @@ function Login() {
           const responseData = await response.json();
           if (responseData.error === '승인 대기 중입니다. 관리자의 승인을 기다려주세요.') {
             setPendingUser(true);
-            alert('승인 대기 중입니다. 관리자의 승인을 기다려주세요.');
+            Alert.alert('승인 대기 중입니다. 관리자의 승인을 기다려주세요.');
           } else {
             // 반려된 사용자일 경우
             const rejectionReason = responseData.rejectionReason || '관리자에게 문의하세요.';
-            alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
+            Alert.alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
           }
         }
       }

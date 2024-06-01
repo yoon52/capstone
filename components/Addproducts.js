@@ -137,7 +137,7 @@ function AddProducts() {
           onChangeText={setDescription}
           multiline={true}
         />
-                <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
+        <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
           <Text style={styles.buttonText}>작성 완료</Text>
         </TouchableOpacity>
 

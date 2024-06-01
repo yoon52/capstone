@@ -1,12 +1,13 @@
 // 로컬
-// const serverHost = "http://172.30.1.2"; // 여기에 서버 주소를 입력하세요
+const serverHost = "http://172.30.1.80"; // 여기에 서버 주소를 입력하세요
 
 //학교IP
 // const serverHost = "http://192.168.199.120"; // 여기에 서버 주소를 입력하세요
 
 //ec2
 // const serverHost = "https://ec2caps.liroocapstone.shop";
-//학교IP
-const serverHost = "http://192.168.45.205"; // 여기에 서버 주소를 입력하세요
+
+//집
+// const serverHost = "http://192.168.45.239"; // 여기에 서버 주소를 입력하세요
 
 export default serverHost;

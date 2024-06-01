@@ -10,7 +10,7 @@ function UserEdit({ userInfo }) {
 
 
   const navigation = useNavigation();
-  
+
   const handleChange = (field, value) => {
     setEditedUserInfo({ ...editedUserInfo, [field]: value });
   };
@@ -25,10 +25,10 @@ function UserEdit({ userInfo }) {
         },
         body: JSON.stringify({ userId, editedUserInfo })
       });
-  
+
       if (response.ok) {
         const data = await response.json();
-        alert(data.message); // 수정이 완료되었습니다. 메시지 표시
+        Alert.alert(data.message); // 수정이 완료되었습니다. 메시지 표시
         navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
       } else {
         console.error('사용자 정보 수정 실패');
@@ -37,7 +37,7 @@ function UserEdit({ userInfo }) {
       console.error('사용자 정보 수정 오류:', error);
     }
   };
-  
+
   const handleDeleteAccount = async () => {
     setIsModalOpen(true);
   };
@@ -53,16 +53,16 @@ function UserEdit({ userInfo }) {
       });
 
       if (response.ok) {
-        alert('회원 탈퇴되었습니다.');
+        Alert.alert('회원 탈퇴되었습니다.');
         sessionStorage.removeItem('userId');
         navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
       } else {
         const data = await response.json();
-        alert(data.error);
+        Alert.alert(data.error);
       }
     } catch (error) {
       console.error('회원 탈퇴 오류:', error);
-      alert('회원 탈퇴 중 오류가 발생했습니다.');
+      Alert.alert('회원 탈퇴 중 오류가 발생했습니다.');
     }
   };
 
@@ -103,26 +103,26 @@ function UserEdit({ userInfo }) {
         <Text style={styles.buttonText}>회원 탈퇴</Text>
       </TouchableOpacity>
       <Modal visible={isModalOpen} animationType="slide" transparent>
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalTitle}>회원 탈퇴</Text>
-      <Text style={styles.modalText}>회원 탈퇴와 함께 K'du-re 에 등록된 모든 개인정보는 삭제, 폐기 처리되며 복구되지 않습니다.</Text>
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="비밀번호를 입력하세요"
-        secureTextEntry={true}
-      />
-      <TouchableOpacity style={styles.confirmButton} onPress={confirmDeleteAccount}>
-        <Text style={styles.buttonText}>확인</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.cancelButton} onPress={() => setIsModalOpen(false)}>
-        <Text style={styles.buttonText}>취소</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>회원 탈퇴</Text>
+            <Text style={styles.modalText}>회원 탈퇴와 함께 K'du-re 에 등록된 모든 개인정보는 삭제, 폐기 처리되며 복구되지 않습니다.</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="비밀번호를 입력하세요"
+              secureTextEntry={true}
+            />
+            <TouchableOpacity style={styles.confirmButton} onPress={confirmDeleteAccount}>
+              <Text style={styles.buttonText}>확인</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setIsModalOpen(false)}>
+              <Text style={styles.buttonText}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
     </View>
   );
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  
+
 });
 
 export default UserEdit;

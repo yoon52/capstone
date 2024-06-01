@@ -100,7 +100,7 @@ const ChatComponent = ({ route }) => {
   };
 
   const handlePayment = () => {
-    navigation.navigate('Sandbox', { productId, userId });
+    navigation.navigate('CheckoutPage', { productId, userId });
     console.log('Add payment logic here');
   };
 

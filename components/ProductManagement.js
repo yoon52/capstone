@@ -100,7 +100,7 @@ function ProductManagement() {
 
       if (response.ok) {
         fetchProducts(); // 판매 완료 후에 상품 목록 다시 불러오기
-        alert('상품이 판매되었습니다.');
+        Alert.alert('상품이 판매되었습니다.');
       } else {
         console.error('상품 판매완료 처리 실패:', response.status);
       }
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
-    
+
   },
   buttonText: {
     fontSize: 16,

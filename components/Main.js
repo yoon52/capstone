@@ -9,14 +9,15 @@ import AddProducts from './Addproducts';
 import ChatList from './ChatList';
 import Sidebar from './SideBar';
 import serverHost from './host';
+import { useTheme } from 'react-native-paper';
 
 const Tab = createMaterialBottomTabNavigator();
 
 function MainScreen() {
   const [, setProducts] = useState([]);
-  
+
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [sortType, ] = useState('recommend');
+  const [sortType,] = useState('recommend');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -104,35 +105,38 @@ function MainScreen() {
 }
 
 const BottomTabNavigator = () => {
+  const theme = useTheme();
+  theme.colors.secondaryContainer = "transperent"
+
   return (
     <Tab.Navigator
       shifting={true}
       barStyle={{ backgroundColor: 'white' }}
     >
       <Tab.Screen
-        name="MainScreen"
+        name="메인화면"
         component={MainScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="list" size={24} color={color} />
+          tabBarIcon: () => (
+            <Ionicons name="list" size={24} color="#103260" />
           ),
         }}
       />
       <Tab.Screen
-        name="AddProduct"
+        name="상품 등록"
         component={AddProducts}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="add-circle" size={24} color={color} />
+          tabBarIcon: () => (
+            <Ionicons name="add-circle" size={24} color="#103260" />
           ),
         }}
       />
       <Tab.Screen
-        name="ChatList"
+        name="채팅 목록"
         component={ChatList}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="chatbubbles" size={24} color={color} />
+          tabBarIcon: () => (
+            <Ionicons name="chatbubbles" size={24} color="#103260" />
           ),
         }}
       />
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    
+
   },
 });
 

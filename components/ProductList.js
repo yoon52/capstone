@@ -53,6 +53,8 @@ function ProductList({ filteredProducts }) {
         await AsyncStorage.setItem(viewedProductKey, 'true');
       }
 
+      await AsyncStorage.setItem('productId', productId.toString()); // Ensure productId is stored as string
+
       navigation.navigate('ProductDetail', { productId });
     } catch (error) {
       console.error('Error updating views:', error);
@@ -60,6 +62,7 @@ function ProductList({ filteredProducts }) {
       setLoading(false);
     }
   };
+
 
   if (!filteredProducts || filteredProducts.length === 0) {
     return <Text style={styles.emptyText}>No products found</Text>;
@@ -85,7 +88,7 @@ function ProductList({ filteredProducts }) {
               <Text numberOfLines={2} style={styles.productName}>
                 {product.name}
               </Text>
-              <Text style={styles.productPrice}>가격: {product.price}원</Text>
+              <Text style={styles.productPrice}>{product.price}원</Text>
               <Text style={styles.productPrice}>{product.formattedCreatedAt}</Text>
             </View>
           </View>
