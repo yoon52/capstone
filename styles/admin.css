@@ -120,3 +120,8 @@
     width: 600px;
   }
 }
+
+.admin-button, .main-button {
+  
+  margin: 5px; /* 버튼 간격 조절 */
+}

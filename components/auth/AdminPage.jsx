@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import swal from 'sweetalert';
 import {
   AppBar,
@@ -23,6 +25,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PeopleIcon from '@mui/icons-material/People';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // 로그인 페이지 아이콘 추가
 import CloseIcon from '@mui/icons-material/Close'; // CloseIcon 추가
 import serverHost from '../../utils/host';
 import '../../styles/admin.css';
@@ -30,6 +33,9 @@ import '../../styles/admin.css';
 const drawerWidth = 240;
 
 function AdminPage() {
+
+  const navigate = useNavigate(); // 네비게이트 훅 사용
+
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [verificationResult, setVerificationResult] = useState('');
@@ -131,10 +137,40 @@ function AdminPage() {
       });
       const result = await response.json();
 
-      if (result && result.similarity !== undefined) {
-        setVerificationResult(`유사도: ${result.similarity.toFixed(2)}%`);
+      if (result && result.similarity !== undefined && result.ocrResult !== undefined) {
+        if (result.similarity >= 70) {
+          swal({
+            title: "학생증 확인",
+            text: `유사도: ${result.similarity.toFixed(2)}%`,
+            content: {
+              element: "div",
+              attributes: {
+                innerHTML: `추출결과: [${result.ocrResult}]`
+              }
+            },
+            icon: "success",
+            buttons: false, // 버튼 비활성화
+          });
+        } else {
+          swal({
+            title: "학생증 확인",
+            text: `유사도: ${result.similarity.toFixed(2)}%`,
+            content: {
+              element: "div",
+              attributes: {
+                innerHTML: `추출결과: [${result.ocrResult}]`
+              }
+            },
+            icon: "error",
+            buttons: false, // 버튼 비활성화
+          });
+        }
       } else {
-        setVerificationResult('학생증 확인중에 오류가 발생했습니다.');
+        swal({
+          title: "오류",
+          text: "학생증 확인 중 오류가 발생했습니다.",
+          icon: "error",
+        });
       }
     } catch (error) {
       console.error('Error in OCR verification:', error);
@@ -185,11 +221,24 @@ function AdminPage() {
 
 
   const handleDeleteUser = (userId) => {
-    const result = window.confirm('정말로 이 사용자를 삭제하시겠습니까?');
-    if (result) {
-      deleteUser(userId);
-    }
+    swal({
+      title: "정말로 삭제하시겠습니까?",
+      text: "삭제 후에는 복구할 수 없습니다!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteUser(userId);
+        swal("사용자가 삭제되었습니다!", {
+          icon: "success",
+        });
+      } else {
+        swal("사용자 삭제가 취소되었습니다.");
+      }
+    });
   };
+
 
   const deleteUser = async (userId) => {
     try {
@@ -198,15 +247,30 @@ function AdminPage() {
       });
       if (response.ok) {
         await fetchUsers(); // 사용자 목록을 업데이트함
-        window.location.reload(); // 페이지 새로고침
+        swal("사용자가 삭제되었습니다!", {
+          icon: "success",
+        }).then(() => {
+          window.location.reload(); // 페이지 새로고침
+        });
       } else {
         console.error('Error deleting user');
+        swal("사용자 삭제에 실패했습니다. 다시 시도해 주세요.", {
+          icon: "error",
+        });
       }
     } catch (error) {
       console.error('Error deleting user:', error);
+      swal("오류가 발생했습니다. 다시 시도해 주세요.", {
+        icon: "error",
+      });
     }
   };
 
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAdmin'); // 세션에서 isAdmin 정보 삭제
+    navigate('/Login'); // 로그인 페이지로 이동
+  };
 
 
   return (
@@ -233,6 +297,11 @@ function AdminPage() {
             <ListItemIcon><PeopleIcon /></ListItemIcon>
             <ListItemText primary="승인된 사용자 보기" />
           </ListItem>
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+            <ListItemText primary="로그인 페이지" />
+          </ListItem>
+
         </List>
       </Drawer>
       {showNavMenu && <div className="overlay" onClick={toggleSidebar}></div>} {/* Overlay for closing sidebar */}
@@ -305,11 +374,14 @@ function AdminPage() {
             >
               <CloseIcon />
             </IconButton>
-            <img
-              src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`}
-              alt="Student ID"
-              style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
-            />
+            <a href={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`} target="_blank" rel="noopener noreferrer">
+              <img
+                src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`}
+                alt="Student ID"
+                style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
+              />
+            </a>
+
             {verificationResult && <Typography id="admin-modal-modal-description" sx={{ mt: 2 }}>{verificationResult}</Typography>}
             <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
               <Button variant="contained" onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>상세 정보 보기</Button>

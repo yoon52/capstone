@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from '../components/auth/Login';
 import Signup from '../components/auth/Signup';
+import RejectUserEdit from '../components/auth/RejectUserEdit'
 import FindId from '../components/profile/FindId';
 import FindPw from '../components/profile/FindPw';
-
 import Main from '../components/auth/Main';
 import AdminPage from '../components/auth/AdminPage';
 import SearchKeyword from '../components/header/SearchKeyword';
@@ -28,6 +28,12 @@ import { FailPage } from '../components/products/Fail';
 import ShowWishlist from '../components/products/ShowWishlist'; // showWishlist 컴포넌트 파일 import
 import Payments from '../components/products/Payments';
 import '../styles/main.css';
+import { Navigate } from 'react-router-dom';
+
+const PrivateRoute = ({ children }) => {
+  const isAdmin = sessionStorage.getItem('isAdmin');
+  return isAdmin === 'true' ? children : <Navigate to="/Login" />;
+};
 
 function App() {
   return (
@@ -36,12 +42,18 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
-          
+          <Route path="/RejectUserEdit/:userId" element={<RejectUserEdit />} />
+          <Route path="/Main" element={<Main />} />
+          <Route path="/AdminPage" element={
+            <PrivateRoute>
+              <AdminPage />
+            </PrivateRoute>
+          } />
+
           <Route path="/Signup" element={<Signup />} />
           <Route path="/FindId" element={<FindId />} />
           <Route path="/FindPw" element={<FindPw />} />
-          <Route path="/Main" element={<Main />} />
-          <Route path="/AdminPage" element={<AdminPage />} />
+
           <Route path="/SearchKeyword" element={<SearchKeyword />} />
           <Route path="/searchResultsP/:searchTerm/*" element={<SearchResults />} />
           <Route path="/AddProducts" element={<AddProducts />} />

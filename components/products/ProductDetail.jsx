@@ -32,7 +32,6 @@ const ProductDetail = () => {
   const searchInputRef = useRef(null);
   const [, setFilteredProducts] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [, setRelatedProducts] = useState([]);
 
   const [isFavorite, setIsFavorite] = useState(false); // 추가: 찜 상태
   const [sellerId, setSellerId] = useState(null); // 판매자 ID 상태
@@ -118,24 +117,6 @@ const ProductDetail = () => {
   useEffect(() => {
     sessionStorage.setItem('productId', productId);
   }, [productId]);
-
-  useEffect(() => {
-    const fetchRelatedProducts = async () => {
-      try {
-        const response = await fetch(`${serverHost}:4000/products`);
-        if (response.ok) {
-          const data = await response.json();
-          setRelatedProducts(data);
-        } else {
-          console.error('Failed to fetch related products:', response.status);
-        }
-      } catch (error) {
-        console.error('Error fetching related products:', error);
-      }
-    };
-
-    fetchRelatedProducts();
-  }, []);
 
   const handleChatButtonClick = async () => {
     try {
@@ -338,7 +319,6 @@ const ProductDetail = () => {
       },
     });
 
-
     if (confirmed) {
       try {
         const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
@@ -455,7 +435,6 @@ const ProductDetail = () => {
                 {availability}
               </p>
             </div>
-
             <Button
               onClick={handleToggleFavorite}
               variant="contained"
@@ -465,10 +444,7 @@ const ProductDetail = () => {
               {isFavorite ? <Favorite style={{ color: 'red' }} /> : <FavoriteBorder />}
               {isFavorite ? '찜해제' : '찜하기'}
             </Button>
-
-
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
-
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
             <Menu
               anchorEl={anchorEl}
@@ -487,8 +463,6 @@ const ProductDetail = () => {
             <div key={index} className="product-d-description">{line}</div>
           ))}
         </div>
-
-
         <MuiModal
           open={isChatModalOpen}
           onClose={() => setIsChatModalOpen(false)}
@@ -505,8 +479,7 @@ const ProductDetail = () => {
             boxShadow: 24,
             p: 4,
             borderRadius: 2,
-          }}
-        >
+          }}>
           <div>
             <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
             <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
@@ -514,7 +487,6 @@ const ProductDetail = () => {
             </IconButton>
           </div>
         </MuiModal>
-
         <section id="article-profile">
           <div className="seller-profile">
             <div>
@@ -541,20 +513,14 @@ const ProductDetail = () => {
               </dl>
               <div className={`meters ${getBarColorClass(rates)}`}>
                 <div className={`bar ${getBarColorClass(rates)}`} style={{ width: `${barLength}%` }}></div>
-
               </div>
-
-
               <div className="face face-03"></div>
             </div>
           </div>
-
         </section>
-
         <div className="product-list">
           <DetailList currentProductId={product.id} />
         </div>
-
       </div>
     </div>
   );

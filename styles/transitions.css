@@ -1,0 +1,10 @@
+/* src/styles/main.css */
+.App {
+  overflow: hidden; /* Prevents scrollbars during transitions */
+  position: relative;
+}
+
+.motion-div {
+  position: absolute;
+  width: 100%;
+}

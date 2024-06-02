@@ -19,6 +19,7 @@ function Login() {
   const [loginSuccess, setLoginSuccess] = useState(true);
   // 승인 대기 상태 관리
   const [, setPendingUser] = useState(false);
+  const [, setIsAdmin] = useState(false);
 
   // 페이지 이동 기능을 위한 navigate 함수 사용
   const navigate = useNavigate();
@@ -36,7 +37,6 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 백엔드 서버로 로그인 요청 전송
       const response = await fetch(`${serverHost}:4000/login`, {
         method: 'POST',
         headers: {
@@ -48,19 +48,19 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         sessionStorage.setItem('userId', data.id);
+        sessionStorage.setItem('isAdmin', data.isAdmin); // 관리자인지 여부 저장
 
-        // 여기서 관리자 여부 확인
         if (data.isAdmin) {
-          navigate('/AdminPage'); // 관리자 페이지로 이동
+          setIsAdmin(true);
+          showAdminOption();
+
         } else {
           navigate('/Main'); // 일반 사용자 페이지로 이동
         }
       } else {
         console.error('로그인 실패:', response.status);
         setLoginSuccess(false);
-        // 반려된 사용자일 경우
         if (response.status === 403) {
-          // 승인 대기 중인 사용자인 경우
           const responseData = await response.json();
           if (responseData.error === '승인 대기 중입니다. 관리자의 승인을 기다려주세요.') {
             setPendingUser(true);
@@ -70,20 +70,29 @@ function Login() {
               icon: "info",
               html: true
             });
-
           } else {
-            // 반려된 사용자일 경우
             const rejectionReason = responseData.rejectionReason || '관리자에게 문의하세요.';
             swal({
               title: "승인이 거절되었습니다.",
               text: `사유: ${rejectionReason}`,
               icon: "error",
-              html: true
+              buttons: {
+                cancel: "닫기",
+                editProfile: {
+                  text: "프로필 수정하기",
+                  value: "editProfile",
+                },
+              },
+            }).then((value) => {
+              if (value === "editProfile") {
+                // rejectuseredit 페이지로 이동하는 로직 추가
+                navigate(`/RejectUserEdit/${formData.id}`); // 사용자 ID와 함께 RejectUserEdit 페이지로 이동
+              }
             });
-            
           }
         }
       }
+
     } catch (error) {
       console.error('로그인 오류:', error);
       setLoginSuccess(false);
@@ -154,6 +163,38 @@ function Login() {
   const handleFindPassword = () => {
     navigate('/FindPw');
   };
+
+  const showAdminOption = () => {
+    swal({
+      title: "관리자 모드",
+      text: "어디로 이동하시겠습니까?",
+      icon: "info",
+      buttons: {
+        admin: {
+          text: "관리자 페이지",
+          value: "admin",
+          className: "admin-button" // 추가한 부분
+
+        },
+        main: {
+          text: "메인 페이지",
+          value: "main",
+          className: "admin-button" // 추가한 부분
+
+        },
+      },
+      className: "admin-button" // 추가한 부분
+
+    })
+      .then((value) => {
+        if (value === "admin") {
+          navigate('/AdminPage');
+        } else {
+          navigate('/Main');
+        }
+      });
+  };
+
 
   return (
     <div className="container-login">
