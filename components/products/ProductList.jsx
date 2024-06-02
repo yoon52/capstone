@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Transition } from '@headlessui/react';
+
+import classNames from 'classnames';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
-import '../../styles/transitions.css'; // Import the CSS for transitions
 
-function ProductList({ filteredProducts }) {
+
+const ProductList = ({ filteredProducts }) => {
   const navigate = useNavigate();
   const [formattedProducts, setFormattedProducts] = useState([]);
 
@@ -55,6 +56,7 @@ function ProductList({ filteredProducts }) {
         sessionStorage.setItem(viewedProductKey, 'true');
       } catch (error) {
         console.error('Error updating views:', error);
+        alert('조회수 업데이트에 실패했습니다.');
       }
     }
 
@@ -65,46 +67,38 @@ function ProductList({ filteredProducts }) {
   return (
     <div className="cards-wrap">
       {formattedProducts.map((product) => (
-        <Transition
-          key={product.id}
-          show={true}
-          enter="transition-opacity duration-500 ease-in-out"
-          enterFrom="opacity-0 translate-y-2"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition-opacity duration-500 ease-in-out"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 translate-y-2"
+        <article
+          className={classNames('card-top', { 'sold-out': product.status === '판매완료' })}
+          onClick={(e) => handleProductClick(e, product.id)}
         >
-          <article className={`card-top ${product.status === '판매완료' ? 'sold-out' : ''}`} onClick={(e) => handleProductClick(e, product.id)}>
-            <div className="card-link" data-event-label={product.id}>
-              <div className="card-photo">
-                <img
-                  src={`${serverHost}:4000/uploads/${product.image}`}
-                  alt={product.title}
-                />
-                {product.status && (
-                  <div className={`sale-status-label ${product.status === '판매완료' ? 'sold-out-label' : ''}`}>
-                    {product.status === '판매완료' ? '판매 완료' : '구매 가능'}
-                  </div>
-                )}
-              </div>
-              <div className="card-desc">
-                <h2 className="card-title">{product.name}</h2>
-                <div className="card-price">{product.price}원</div>
-                <div className="card-info">
-                  <div className="card-views">
-                    <VisibilityIcon style={{ marginRight: '5px' }} />
-                    {product.views}
-                  </div>
-                  <p className="card-time">{product.formattedCreatedAt}</p>
+          <div className="card-link" data-event-label={product.id}>
+            <div className="card-photo">
+              <img
+                src={`${serverHost}:4000/uploads/${product.image}`}
+                alt={product.title}
+              />
+              {product.status && (
+                <div className={classNames('sale-status-label', { 'sold-out-label': product.status === '판매완료' })}>
+                  {product.status === '판매완료' ? '판매 완료' : '구매 가능'}
                 </div>
+              )}
+            </div>
+            <div className="card-desc">
+              <h2 className="card-title">{product.name}</h2>
+              <div className="card-price">{product.price}원</div>
+              <div className="card-info">
+                <div className="card-views">
+                  <VisibilityIcon style={{ marginRight: '5px' }} />
+                  {product.views}
+                </div>
+                <p className="card-time">{product.formattedCreatedAt}</p>
               </div>
             </div>
-          </article>
-        </Transition>
+          </div>
+        </article>
       ))}
     </div>
   );
-}
+};
 
 export default ProductList;
