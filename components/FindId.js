@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 import { useNavigation } from '@react-navigation/native';
-
+import serverHost from './host';
 const FindId = () => {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ const FindId = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://192.168.219.190:4000/find-id', {
+      const response = await fetch(`${serverHost}:4000/find-id`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -73,7 +74,6 @@ const FindId = () => {
           onValueChange={(itemValue, itemIndex) => handleChange('department', itemValue)}
           style={[styles.picker]}
           itemStyle={styles.pickerItem}
-          mode="dropdown"
         >
           <Picker.Item label="학과 선택" value="" style={styles.pickerItem} />
           <Picker.Item label="컴퓨터 공학과" value="computer_science" style={styles.pick} />
@@ -87,7 +87,6 @@ const FindId = () => {
           selectedValue={formData.grade}
           onValueChange={(itemValue, itemIndex) => handleChange('grade', itemValue)}
           style={[styles.picker]}
-          mode="dropdown"
         >
           <Picker.Item label="학년 선택" value="" style={styles.pickerItem} />
           <Picker.Item label="1학년" value="1" style={styles.pick} />

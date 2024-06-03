@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import naverLogo from '../image/naver.png';
-import kakaoLogo from '../image/kakao.png';
-
+import serverHost from './host';
 function Login() {
   const [formData, setFormData] = useState({
+
     id: '',
     password: ''
   });
 
   const [loginSuccess, setLoginSuccess] = useState(true);
+  // 로그인 상태 관리
+  // 승인 대기 상태 관리
+  const [, setPendingUser] = useState(false);
+
   const navigation = useNavigation();
   const handleChange = (value, name) => {
     setFormData(prevState => ({
@@ -26,7 +29,7 @@ function Login() {
       return;
     }
     try {
-      const response = await fetch('http://192.168.219.190:4000/login', {
+      const response = await fetch(`${serverHost}:4000/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -43,22 +46,37 @@ function Login() {
         // 로그인 성공 시 필요한 작업 수행
         navigation.navigate('Main');
       } else {
-        console.error('Login failed:', response.status);
+        console.error('로그인 실패:', response.status);
         setLoginSuccess(false);
+        // 반려된 사용자일 경우
+        if (response.status === 403) {
+          // 승인 대기 중인 사용자인 경우
+          const responseData = await response.json();
+          if (responseData.error === '승인 대기 중입니다. 관리자의 승인을 기다려주세요.') {
+            setPendingUser(true);
+            alert('승인 대기 중입니다. 관리자의 승인을 기다려주세요.');
+          } else {
+            // 반려된 사용자일 경우
+            const rejectionReason = responseData.rejectionReason || '관리자에게 문의하세요.';
+            alert(`승인이 거절되었습니다. 사유: ${rejectionReason}`);
+          }
+        }
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('로그인 오류:', error);
       setLoginSuccess(false);
     }
   };
 
   const handleNaverLogin = () => {
-    // Handle Naver login
+    navigation.navigate('NaverLoginWebView');
   };
 
   const handleKakaoLogin = () => {
-    // Handle Kakao login
+    navigation.navigate('KakaoLoginWebView');
   };
+
+
 
   return (
     <View style={styles.container}>
@@ -96,19 +114,26 @@ function Login() {
         </TouchableOpacity>
       </View>
       <View style={styles.restButtonGroup}>
-        <TouchableOpacity style={styles.restButton} onPress={handleNaverLogin}>
-          <Image source={naverLogo} style={styles.restButtonIcon} />
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleNaverLogin}>
+          <Image source={require('../image/naver.png')} style={styles.socialLoginIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.restButton} onPress={handleKakaoLogin}>
-          <Image source={kakaoLogo} style={styles.restButtonIcon} />
+
+        <TouchableOpacity style={styles.socialLoginButton} onPress={handleKakaoLogin}>
+          <Image source={require('../image/kakao.png')} style={styles.socialLoginIcon} />
         </TouchableOpacity>
+
+
       </View>
+      {/* 네이버 로그인 웹뷰 */}
+
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 0,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -159,7 +184,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000000',
     fontSize: 13,
-    
+
   },
   separator: {
     width: 1,
@@ -182,6 +207,12 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 5
   },
+  socialLoginIcon: {
+    width: 120,
+    height: 40,
+    resizeMode: 'contain',
+  },
+
 });
 
 export default Login;

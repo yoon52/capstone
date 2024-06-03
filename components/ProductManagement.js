@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import serverHost from './host';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ function ProductManagement() {
   const fetchProducts = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch('http://192.168.219.190:4000/productsmanage', {
+      const response = await fetch(`${serverHost}:4000/productsmanage`, {
         headers: {
           'user_id': userId
         }
@@ -36,7 +37,7 @@ function ProductManagement() {
   const handleDeleteProduct = async (productId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://192.168.219.190:4000/productsmanage/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
         method: 'DELETE',
         headers: {
           'user_id': userId
@@ -61,7 +62,7 @@ function ProductManagement() {
   const handleSaveEdit = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://192.168.219.190:4000/productsmanage/${editingProduct.id}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/${editingProduct.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ function ProductManagement() {
   const handleSellProduct = async (productId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(`http://192.168.219.190:4000/productsmanage/sold/${productId}`, {
+      const response = await fetch(`${serverHost}:4000/productsmanage/sold/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +121,7 @@ function ProductManagement() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>상품 관리</Text>
-      <View style={styles.productContainer}>
+      <ScrollView style={styles.productContainer}>
         {products.map(product => (
           <View key={product.id} style={styles.productItem}>
             <Text style={styles.productName}>{product.name}</Text>
@@ -136,7 +137,7 @@ function ProductManagement() {
             )}
           </View>
         ))}
-      </View>
+      </ScrollView>
 
       {editingProduct && (
         <View style={styles.editContainer}>
@@ -184,6 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    marginTop: 80
   },
   header: {
     fontSize: 24,
@@ -210,6 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
+    
   },
   buttonText: {
     fontSize: 16,
