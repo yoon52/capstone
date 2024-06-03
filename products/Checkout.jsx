@@ -131,17 +131,6 @@ export function CheckoutPage() {
 
   return (
     <div>
-      {/* 할인 쿠폰 */}
-      <label htmlFor="coupon-box">
-        <input
-          id="coupon-box"
-          type="checkbox"
-          onChange={(event) => {
-            setPrice(event.target.checked ? price - 5_000 : price + 5_000);
-          }}
-        />
-        <span>5,000원 쿠폰 적용</span>
-      </label>
       {/* 결제 UI, 이용약관 UI 영역 */}
       <div id="payment-widget" />
       <div id="agreement" />

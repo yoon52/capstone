@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Card, Spinner, Button, Row, Col } from 'react-bootstrap';
+import { Container, Card, Spinner, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
@@ -145,6 +145,32 @@ const Payments = () => {
     }
   };
 
+  const handleProductClick = async (event, productId) => {
+    event.preventDefault(); // 기본 동작 막기
+
+    const viewedProductKey = `viewed_product_${productId}`;
+
+    // 세션 스토리지에서 해당 상품의 조회 기록 확인
+    const isProductViewed = sessionStorage.getItem(viewedProductKey);
+
+    if (!isProductViewed) {
+      try {
+        // 서버에 조회수 업데이트 요청
+        await fetch(`${serverHost}:4000/updateViews/${productId}`, {
+          method: 'POST',
+        });
+
+        // 세션 스토리지에 조회 기록 저장
+        sessionStorage.setItem(viewedProductKey, 'true');
+      } catch (error) {
+        console.error('Error updating views:', error);
+      }
+    }
+
+    // 상품 상세 페이지로 이동
+    navigate(`/ProductDetail/${productId}`);
+  };
+
   return (
     <div className='container-main'>
       <Header
@@ -176,11 +202,11 @@ const Payments = () => {
           <Row>
             {payments.map((payment) => (
               <Col md={6} lg={3} key={payment.id} className="mb-4">
-                <Card>
+                <Card onClick={(e) => handleProductClick(e, payment.product_id)} style={{ cursor: 'pointer' }}>
                   <Card.Body>
                     <Card.Title>{payment.productName}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">주문 번호: {payment.orderId}</Card.Subtitle>
-                    <Card.Text>금액: {payment.amount.toLocaleString()}원</Card.Text>
+                    <Card.Text>금액: {parseInt(payment.amount).toLocaleString()}원</Card.Text>
                     <Card.Text>일시: {formatDate(payment.createdAt)}</Card.Text>
                   </Card.Body>
                 </Card>

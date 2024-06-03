@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+
+import classNames from 'classnames';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
 
-function ProductList({ filteredProducts }) {
+
+const ProductList = ({ filteredProducts }) => {
   const navigate = useNavigate();
   const [formattedProducts, setFormattedProducts] = useState([]);
 
@@ -53,27 +56,36 @@ function ProductList({ filteredProducts }) {
         sessionStorage.setItem(viewedProductKey, 'true');
       } catch (error) {
         console.error('Error updating views:', error);
+        alert('조회수 업데이트에 실패했습니다.');
       }
     }
-    
+
     // 상품 상세 페이지로 이동
     navigate(`/ProductDetail/${productId}`);
-};
+  };
 
   return (
     <div className="cards-wrap">
       {formattedProducts.map((product) => (
-        <article className="card-top" key={product.id} onClick={(e) => handleProductClick(e, product.id)}>
+        <article
+          className={classNames('card-top', { 'sold-out': product.status === '판매완료' })}
+          onClick={(e) => handleProductClick(e, product.id)}
+        >
           <div className="card-link" data-event-label={product.id}>
             <div className="card-photo">
               <img
                 src={`${serverHost}:4000/uploads/${product.image}`}
                 alt={product.title}
               />
+              {product.status && (
+                <div className={classNames('sale-status-label', { 'sold-out-label': product.status === '판매완료' })}>
+                  {product.status === '판매완료' ? '판매 완료' : '구매 가능'}
+                </div>
+              )}
             </div>
             <div className="card-desc">
-              <h2 className="card-title">상품명 : {product.name}</h2>
-              <div className="card-price">가격 : {product.price}원</div>
+              <h2 className="card-title">{product.name}</h2>
+              <div className="card-price">{product.price}원</div>
               <div className="card-info">
                 <div className="card-views">
                   <VisibilityIcon style={{ marginRight: '5px' }} />
@@ -86,8 +98,7 @@ function ProductList({ filteredProducts }) {
         </article>
       ))}
     </div>
-
   );
-}
+};
 
 export default ProductList;

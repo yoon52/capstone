@@ -57,10 +57,7 @@ function FindId() {
   };
 
   return (
-    <div>
-      <a href="/Login">
-        <img src={logo} id='logo' alt="로고" />
-      </a>
+    <div><img src={logo} id='logo' alt="로고" />
       <h1 className="findid-header">아이디 찾기</h1>
       <div className="findid-container">
         <form onSubmit={handleSubmit}>
@@ -75,6 +72,8 @@ function FindId() {
               required
             />
           </div>
+
+          {/* 학과/학년 선택 셀렉트 */}
           <div className="select-group">
             <select
               name="department"

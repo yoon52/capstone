@@ -20,6 +20,7 @@ const ChatListComponent = () => {
   const [, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
+  const [, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     fetchChatRooms();
@@ -137,7 +138,11 @@ const ChatListComponent = () => {
   const closeNavMenu = () => {
     setShowNavMenu(false);
   };
-  const [, setFilteredProducts] = useState([]);
+  
+
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
   return (
     <div className="container-main">
       <Header
@@ -154,6 +159,7 @@ const ChatListComponent = () => {
         handleChangeSearchTerm={handleChangeSearchTerm}
         handleEnterKeyPress={handleEnterKeyPress}
         searchInputRef={searchInputRef}
+        handleShowWishlist={handleShowWishlist}
       />
       <div className="chatsidebar-container">
         <div className="chatsidebar">

@@ -198,31 +198,38 @@ export function SuccessPage() {
           </div>
         </div>
       )}
-      {/* Seller rating modal */}
-      <Modal isOpen={isModalOpen} onRequestClose={closeModal}>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        className="rate-ReactModal__Content"
+        overlayClassName="rate-ReactModal__Overlay"
+      >
         {ratingSubmitted ? (
-          <>
-            <h2>평점이 제출되었습니다!</h2>
-            <p>판매자 평점을 확인하고 수정하려면 아래 버튼을 클릭하세요.</p>
-            <button onClick={closeModal}>Close</button>
-          </>
+          <div className="rate-modal-content">
+            <h2 className="rate-h2">평점이 제출되었습니다!</h2>
+            <button className="rate-button" onClick={closeModal}>닫기</button>
+          </div>
         ) : (
-          <>
-            <h2>Rate Seller</h2>
-            <input
-              type="range"
-              min="0"
-              max="45"
-              step="0.1"
-              value={rating * 10}
-              onChange={(e) => handleRatingChange(e.target.value / 10)}
-            />
-            <span>{rating}</span>
-            <button onClick={updateSellerRating}>Submit Rating</button>
-            <button onClick={closeModal}>Close</button>
-          </>
+          <div className="rate-modal-content">
+            <h2 className="rate-h2">사용자 평점 등록</h2>
+            <div className="rate-rating-section">
+              <input
+                type="range"
+                min="0"
+                max="4.5"
+                step="0.1"
+                value={rating}
+                onChange={(e) => handleRatingChange(e.target.value)}
+                className="rate-input-range"
+              />
+              <span className="rate-rating-value">{rating.toFixed(1)}</span>
+            </div>
+            <button className="rate-button" onClick={updateSellerRating}>평점 등록</button>
+            <button className="rate-button" onClick={closeModal}>닫기</button>
+          </div>
         )}
       </Modal>
+
     </div>
   );
 }

@@ -105,7 +105,8 @@
 
 /* Additional styling for Toolbar */
 .admin-toolbar {
-  background-color: #1976d2; /* Blue */
+  background-color: #1976d2;
+  /* Blue */
   color: #fff;
 }
 
@@ -118,4 +119,8 @@
   .MuiPaper-modal {
     width: 600px;
   }
+}
+
+.admin-button, .main-button {
+  margin: 5px; /* 버튼 간격 조절 */
 }

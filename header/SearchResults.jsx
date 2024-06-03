@@ -50,7 +50,7 @@ const SearchResults = () => {
       const currentTime = new Date();
       const productTime = new Date(createdAt);
       const timeDifference = Math.floor((currentTime - productTime) / (1000 * 60));
-    
+
       if (timeDifference < 30) {
         return '방금 전';
       } else if (timeDifference < 60 * 24) {
@@ -71,15 +71,30 @@ const SearchResults = () => {
     setFormattedProducts(formatted);
   }, [filteredProducts]);
 
-  const handleProductClick = async (productId) => {
-    try {
-      await fetch(`${serverHost}:4000/updateViews/${productId}`, {
-        method: 'POST',
-      });
-      navigate(`/ProductDetail/${productId}`);
-    } catch (error) {
-      console.error('Error updating views or navigating to product detail:', error);
+  const handleProductClick = async (event, productId) => {
+    event.preventDefault(); // 기본 동작 막기
+
+    const viewedProductKey = `viewed_product_${productId}`;
+
+    // 세션 스토리지에서 해당 상품의 조회 기록 확인
+    const isProductViewed = sessionStorage.getItem(viewedProductKey);
+
+    if (!isProductViewed) {
+      try {
+        // 서버에 조회수 업데이트 요청
+        await fetch(`${serverHost}:4000/updateViews/${productId}`, {
+          method: 'POST',
+        });
+
+        // 세션 스토리지에 조회 기록 저장
+        sessionStorage.setItem(viewedProductKey, 'true');
+      } catch (error) {
+        console.error('Error updating views:', error);
+      }
     }
+
+    // 상품 상세 페이지로 이동
+    navigate(`/ProductDetail/${productId}`);
   };
 
   const handleSearchProduct = async () => {
@@ -188,7 +203,7 @@ const SearchResults = () => {
                   <p className="no-results-message">검색하신 상품이 없습니다!</p>
                 ) : (
                   formattedProducts.map((product) => (
-                    <div key={product.id} className="product-item" onClick={() => handleProductClick(product.id)}>
+                    <div key={product.id} className="product-item" onClick={(e) => handleProductClick(e, product.id)}>
                       <div className="product-image-container">
                         {product.image && (
                           <img
@@ -206,7 +221,9 @@ const SearchResults = () => {
                         <div className="product-views">
                           <VisibilityIcon sx={{ fontSize: 15, marginRight: 0.5, marginBottom: -0.3 }} />
                           {product.views}
-                          <p className="product-time"> {product.formattedCreatedAt}</p>
+                          </div>
+                          <div className="product-time">
+                          <p> {product.formattedCreatedAt}</p>
                         </div>
                       </div>
                     </div>

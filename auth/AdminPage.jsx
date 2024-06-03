@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import swal from 'sweetalert';
 import {
   AppBar,
   Toolbar,
@@ -16,12 +18,14 @@ import {
   Button,
   Modal,
   Box,
-  TextField
+  TextField,
+  Menu,
+  MenuItem
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PeopleIcon from '@mui/icons-material/People';
-import ReportIcon from '@mui/icons-material/Report';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // 로그인 페이지 아이콘 추가
 import CloseIcon from '@mui/icons-material/Close'; // CloseIcon 추가
 import serverHost from '../../utils/host';
 import '../../styles/admin.css';
@@ -29,6 +33,9 @@ import '../../styles/admin.css';
 const drawerWidth = 240;
 
 function AdminPage() {
+
+  const navigate = useNavigate(); // 네비게이트 훅 사용
+
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [verificationResult, setVerificationResult] = useState('');
@@ -39,8 +46,7 @@ function AdminPage() {
   const [showApprovedUsers, setShowApprovedUsers] = useState(false);
   const [showOptionsForUser, setShowOptionsForUser] = useState(null);
   const [showNavMenu, setShowNavMenu] = useState(false); // State for controlling overlay
-
-  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -98,10 +104,11 @@ function AdminPage() {
 
       // 사용자 승인 후 알람 표시 및 모달 닫기
       if (newStatus === 'approved') {
-        alert('사용자가 승인되었습니다.');
+        swal("사용자가 승인되었습니다.", "", "success")
+
         handleAdminModalClose();
       } else if (newStatus === 'rejected') {
-        alert('사용자가 거부되었습니다.');
+        swal("사용자가 거부되었습니다.", "", "error");
         handleAdminModalClose();
       }
     } catch (error) {
@@ -130,10 +137,40 @@ function AdminPage() {
       });
       const result = await response.json();
 
-      if (result && result.similarity !== undefined) {
-        setVerificationResult(`Similarity: ${result.similarity.toFixed(2)}%`);
+      if (result && result.similarity !== undefined && result.ocrResult !== undefined) {
+        if (result.similarity >= 70) {
+          swal({
+            title: "학생증 확인",
+            text: `유사도: ${result.similarity.toFixed(2)}%`,
+            content: {
+              element: "div",
+              attributes: {
+                innerHTML: `추출결과: [${result.ocrResult}]`
+              }
+            },
+            icon: "success",
+            buttons: false, // 버튼 비활성화
+          });
+        } else {
+          swal({
+            title: "학생증 확인",
+            text: `유사도: ${result.similarity.toFixed(2)}%`,
+            content: {
+              element: "div",
+              attributes: {
+                innerHTML: `추출결과: [${result.ocrResult}]`
+              }
+            },
+            icon: "error",
+            buttons: false, // 버튼 비활성화
+          });
+        }
       } else {
-        setVerificationResult('No similarity result available.');
+        swal({
+          title: "오류",
+          text: "학생증 확인 중 오류가 발생했습니다.",
+          icon: "error",
+        });
       }
     } catch (error) {
       console.error('Error in OCR verification:', error);
@@ -172,16 +209,36 @@ function AdminPage() {
     setShowApprovedUsers(!showApprovedUsers);
   };
 
-  const handleToggleOptions = (userId) => {
+  const handleToggleOptions = (userId, event) => {
     setShowOptionsForUser((prevUserId) => (prevUserId === userId ? null : userId));
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleDeleteUser = (userId) => {
-    const result = window.confirm('Are you sure you want to delete this user?');
-    if (result) {
-      deleteUser(userId);
-    }
+
+  const handleCloseOptions = () => {
+    setAnchorEl(null);
   };
+
+
+  const handleDeleteUser = (userId) => {
+    swal({
+      title: "정말로 삭제하시겠습니까?",
+      text: "삭제 후에는 복구할 수 없습니다!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteUser(userId);
+        swal("사용자가 삭제되었습니다!", {
+          icon: "success",
+        });
+      } else {
+        swal("사용자 삭제가 취소되었습니다.");
+      }
+    });
+  };
+
 
   const deleteUser = async (userId) => {
     try {
@@ -189,18 +246,32 @@ function AdminPage() {
         method: 'DELETE'
       });
       if (response.ok) {
-        fetchUsers();
+        await fetchUsers(); // 사용자 목록을 업데이트함
+        swal("사용자가 삭제되었습니다!", {
+          icon: "success",
+        }).then(() => {
+          window.location.reload(); // 페이지 새로고침
+        });
       } else {
         console.error('Error deleting user');
+        swal("사용자 삭제에 실패했습니다. 다시 시도해 주세요.", {
+          icon: "error",
+        });
       }
     } catch (error) {
       console.error('Error deleting user:', error);
+      swal("오류가 발생했습니다. 다시 시도해 주세요.", {
+        icon: "error",
+      });
     }
   };
 
-  const handleReport = async () => {
-    navigate('/ReportList');
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAdmin'); // 세션에서 isAdmin 정보 삭제
+    navigate('/Login'); // 로그인 페이지로 이동
   };
+
 
   return (
     <div className="admin-container">
@@ -226,10 +297,11 @@ function AdminPage() {
             <ListItemIcon><PeopleIcon /></ListItemIcon>
             <ListItemText primary="승인된 사용자 보기" />
           </ListItem>
-          <ListItem button onClick={handleReport}>
-            <ListItemIcon><ReportIcon /></ListItemIcon>
-            <ListItemText primary="신고내역 보기" />
+          <ListItem button onClick={handleLogout}>
+            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+            <ListItemText primary="로그인 페이지" />
           </ListItem>
+
         </List>
       </Drawer>
       {showNavMenu && <div className="overlay" onClick={toggleSidebar}></div>} {/* Overlay for closing sidebar */}
@@ -251,16 +323,20 @@ function AdminPage() {
               </CardContent>
               <CardActions>
                 <div className="admin-options-container">
-                  <IconButton onClick={() => handleToggleOptions(user.id)} style={{ position: 'absolute', top: 8, right: 8 }}>
+                  <IconButton onClick={(event) => handleToggleOptions(user.id, event)} style={{ position: 'absolute', top: 8, right: 8 }}>
                     <MoreHorizIcon />
                   </IconButton>
-                  {showOptionsForUser === user.id && (
-                    <div className="admin-options">
-                      <Button size="small" onClick={() => handleAdminModalOpen(user)}>학생증 확인</Button>
-                      <Button size="small" onClick={() => { handleDeleteUser(user.id); handleToggleOptions(user.id); }}>유저 삭제</Button>
-                    </div>
-                  )}
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl && showOptionsForUser === user.id)}
+                    onClose={handleCloseOptions}
+                  >
+                    <MenuItem onClick={() => handleAdminModalOpen(user)}>학생증 확인</MenuItem>
+                    <MenuItem onClick={() => { handleDeleteUser(user.id); handleCloseOptions(); }}>유저 삭제</MenuItem>
+                  </Menu>
                 </div>
+
+
               </CardActions>
             </Card>
           ))}
@@ -298,11 +374,14 @@ function AdminPage() {
             >
               <CloseIcon />
             </IconButton>
-            <img
-              src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`}
-              alt="Student ID"
-              style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
-            />
+            <a href={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`} target="_blank" rel="noopener noreferrer">
+              <img
+                src={`${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`}
+                alt="Student ID"
+                style={{ width: '100%', maxWidth: '300px', height: 'auto' }}
+              />
+            </a>
+
             {verificationResult && <Typography id="admin-modal-modal-description" sx={{ mt: 2 }}>{verificationResult}</Typography>}
             <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
               <Button variant="contained" onClick={() => handleDetailModalOpen(selectedUser.id, `${serverHost}:4000/uploads_id/${selectedUser.id}.jpg`)}>상세 정보 보기</Button>

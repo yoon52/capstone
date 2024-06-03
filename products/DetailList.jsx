@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DetailProductList from './Detail';
 import serverHost from '../../utils/host';
-function DetailList() {
+
+function DetailList({ currentProductId }) {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     const fetchViewsProducts = async () => {
       try {
-        const response = await fetch(`${serverHost}:4000/products/views`);
+        const response = await fetch(`${serverHost}:4000/products/morelist?currentProductId=${currentProductId}`);
         if (response.ok) {
           const data = await response.json();
           setFilteredProducts(data);
@@ -20,7 +21,7 @@ function DetailList() {
     };
 
     fetchViewsProducts();
-  }, []);
+  }, [currentProductId]);
 
   return (
     <div className='h2-font-1'>

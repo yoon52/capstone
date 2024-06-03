@@ -33,7 +33,7 @@ function AddProducts() {
     // 엔터키 입력 감지
     if (event.key === 'Enter') {
       event.preventDefault(); // 기본 엔터키 동작 방지
-      // 현재 상품 설명값에 엔터키 추가하여 설정
+      // 현재 설명값에 엔터키 추가하여 설정
       setDescription(prevDescription => prevDescription + '\n');
       setDescriptionCharCount(prevCount => prevCount + 1);
     } else {
@@ -202,6 +202,8 @@ function AddProducts() {
     setShowNavMenu(false);
   };
 
+
+
   return (
     <div className="container-main">
       <Header
@@ -242,6 +244,7 @@ function AddProducts() {
             </label>
             <input type="file" onChange={handleImageChange} id="imageInput" accept="image/*" style={{ display: 'none' }} />
           </div>
+
           <div className="form-group">
             <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
             <input type="text" placeholder="상품명을 입력해 주세요." value={name} onChange={handleNameChange} required />

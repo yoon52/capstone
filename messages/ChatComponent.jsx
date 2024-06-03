@@ -18,8 +18,8 @@ const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [productDetails, setProductDetails] = useState(null); // 상품 정보를 상태로 관리
-  
-  
+
+
 
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
@@ -87,7 +87,7 @@ const ChatComponent = () => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`${serverHost}:4001/api/products/${productId}`);
+      const response = await fetch(`${serverHost}:4000/api/products/${productId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product details');
       }

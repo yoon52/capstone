@@ -31,7 +31,7 @@ function Main() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      // console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
 
@@ -148,7 +148,7 @@ function Main() {
       <div className="main">
         <section className="fleamarket-cover">
           <div className="cover-content">
-            <h1 className="cover-title">믿을만한<br />대학교 교내 중고거래</h1>
+            <h1 className="cover-title">믿을만한<br />교내 중고거래</h1>
             <span className="cover-description">학생들과 가깝고 따뜻한 거래를<br />지금 경험해보세요.</span>
             <div className="cover-image">
               <span className="fleamarket-cover-image">

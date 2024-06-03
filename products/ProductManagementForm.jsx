@@ -14,17 +14,16 @@ const ProductManagementForm = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const [, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [, setFilteredProducts] = useState([]);
   const [editedProduct, setEditedProduct] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [description, setDescription] = useState('');
   const [descriptionCharCount, setDescriptionCharCount] = useState(0);
 
   useEffect(() => {
@@ -59,8 +58,6 @@ const ProductManagementForm = () => {
   if (!product) {
     return <div className="loading">Loading...</div>;
   }
-
-  const availability = product.status === 'available' ? '구매 가능' : '판매 완료';
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -227,6 +224,7 @@ const ProductManagementForm = () => {
         <div className="form-group">
           <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
           <input type="text"
+            name="name"
             placeholder="상품명을 입력해 주세요."
             value={editedProduct.name}
             onChange={handleInputChange} />

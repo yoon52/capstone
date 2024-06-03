@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate, Routes, Route, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/searchkeyword.css';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
@@ -7,21 +7,15 @@ import Header from '../header/Header';
 function SearchKeyword() {
   const [searchKeywords, setSearchKeywords] = useState([]);
   const [userId, setUserId] = useState('');
-  const [wishlistItems, setWishlistItems] = useState([]);
-  const { productId } = useParams();
-  const [product, setProduct] = useState(null);
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
-  const [chatRooms, setChatRooms] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [savedSearchTerm, setSavedSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [, setSavedSearchTerm] = useState('');
+  const [, setShowSearchResults] = useState(false);
   const [showNavMenu, setShowNavMenu] = useState(false);
-  const [searchError, setSearchError] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [, setSearchError] = useState('');
+  const [, setFilteredProducts] = useState([]);
 
   // 현재 로그인된 사용자의 ID를 가져오는 함수
   const fetchUserId = useCallback(() => {
@@ -122,7 +116,7 @@ function SearchKeyword() {
   const handleKeywordManagement = () => {
     navigate('/SearchKeyword');
   };
-    
+
 
   const handleShowWishlist = () => {
     navigate('/ShowWishlist');
@@ -183,7 +177,7 @@ function SearchKeyword() {
         searchInputRef={searchInputRef}
         handleShowWishlist={handleShowWishlist}
       />
-      
+
       <h1 className="search-keyword-header">검색 기록</h1>
       <div className="search-keyword-container">
         {searchKeywords.map((keyword) => (

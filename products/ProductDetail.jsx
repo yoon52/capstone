@@ -14,7 +14,7 @@ import '../../styles/product.css';
 import Header from '../header/Header';
 import DetailList from './DetailList';
 import serverHost from '../../utils/host';
-
+import swal from 'sweetalert';
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {
@@ -32,7 +32,6 @@ const ProductDetail = () => {
   const searchInputRef = useRef(null);
   const [, setFilteredProducts] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [, setRelatedProducts] = useState([]);
 
   const [isFavorite, setIsFavorite] = useState(false); // 추가: 찜 상태
   const [sellerId, setSellerId] = useState(null); // 판매자 ID 상태
@@ -119,24 +118,6 @@ const ProductDetail = () => {
     sessionStorage.setItem('productId', productId);
   }, [productId]);
 
-  useEffect(() => {
-    const fetchRelatedProducts = async () => {
-      try {
-        const response = await fetch(`${serverHost}:4000/products`);
-        if (response.ok) {
-          const data = await response.json();
-          setRelatedProducts(data);
-        } else {
-          console.error('Failed to fetch related products:', response.status);
-        }
-      } catch (error) {
-        console.error('Error fetching related products:', error);
-      }
-    };
-
-    fetchRelatedProducts();
-  }, []);
-
   const handleChatButtonClick = async () => {
     try {
       const response = await fetch(`${serverHost}:4001/api/chat-rooms?productId=${productId}&userId=${userId}`);
@@ -172,6 +153,17 @@ const ProductDetail = () => {
 
   const handleToggleFavorite = async () => {
     try {
+      // 본인의 게시물인지 확인
+      if (userId === product.user_id) {
+        swal({
+          title: "찜 실패",
+          text: "본인의 게시물은 찜할 수 없습니다.",
+          icon: "error",
+          buttons: '확인'
+        });
+        return;
+      }
+
       // 서버에 찜 상태 토글 요청
       const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
         method: 'PUT',
@@ -191,6 +183,7 @@ const ProductDetail = () => {
       console.error('찜 상태 토글 오류:', error);
     }
   };
+
 
   if (!product) {
     return <div className="loading">Loading...</div>;
@@ -309,37 +302,44 @@ const ProductDetail = () => {
     }
   };
 
-  const handleReport = () => {
-    // 신고하기 핸들러
-  };
-
   const handleDelete = async () => {
     if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
-      alert("작성자만 삭제할 수 있습니다.");
+      swal("작성자만 삭제할 수 있습니다!", "", "error");
       return;
     }
 
-    try {
-      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'user_id': userId // 사용자 ID를 헤더에 포함하여 서버로 전송
+    // 작성자인 경우, 정말 삭제할 것인지 확인하는 메시지 표시
+    const confirmed = await swal({
+      title: "정말 삭제하시겠습니까?",
+      text: "한 번 삭제된 데이터는 복구할 수 없습니다.",
+      icon: "warning",
+      buttons: {
+        cancel: "취소",
+        confirm: "확인"
+      },
+    });
+
+    if (confirmed) {
+      try {
+        const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'user_id': userId // 사용자 ID를 헤더에 포함하여 서버로 전송
+          }
+        });
+
+        if (response.ok) {
+          // 삭제가 성공적으로 처리된 경우에 대한 처리
+          swal("상품이 삭제되었습니다.", "", "success")
+          // 메인 페이지로 이동
+          navigate('/Main');
+        } else {
+          console.error('상품 삭제 오류:', response.status);
         }
-      });
-
-      if (response.ok) {
-        // 삭제가 성공적으로 처리된 경우에 대한 처리
-        console.log('상품이 삭제되었습니다.');
-        alert("상품이 삭제되었습니다.");
-        // 메인 페이지로 이동
-        navigate('/Main/*');
-
-      } else {
-        console.error('상품 삭제 오류:', response.status);
+      } catch (error) {
+        console.error('상품 삭제 오류:', error);
       }
-    } catch (error) {
-      console.error('상품 삭제 오류:', error);
     }
   };
 
@@ -353,6 +353,34 @@ const ProductDetail = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const getBarColorClass = (rates) => {
+    const ratesValue = parseFloat(rates);
+    if (ratesValue >= 0 && ratesValue < 1.0) {
+      return 'bar-color-01'; // 빨간색
+    } else if (ratesValue >= 1.0 && ratesValue < 2.0) {
+      return 'bar-color-02'; // 주황색
+    } else if (ratesValue >= 2.0 && ratesValue < 3.0) {
+      return 'bar-color-03'; // 연두색
+    } else if (ratesValue >= 3.0 && ratesValue < 4.0) {
+      return 'bar-color-04'; // 파란색
+    } else if (ratesValue >= 4.0 && ratesValue <= 4.5) {
+      return 'bar-color-05'; // 남색
+    } else {
+      return ''; // 기본 색상
+    }
+  };
+
+  const handleEdit = () => {
+    // 만약 현재 사용자가 상품의 작성자가 아니라면 수정할 수 없음
+    if (userId !== product.user_id) {
+      swal("작성자만 수정할수있습니다!", "", "error")
+      return;
+    }
+
+    // 작성자인 경우, 상품 수정 페이지로 이동
+    navigate(`/ProductManagementForm/${product.id}`);
   };
 
   return (
@@ -378,11 +406,13 @@ const ProductDetail = () => {
 
       <div className="product-detail">
         <div style={{ display: 'flex', width: '100%' }}>
-          <img
-            className="product-d-image"
-            src={`${serverHost}:4000/uploads/${product.image}`}
-            alt={product.name}
-          />
+          <a href={`${serverHost}:4000/uploads/${product.image}`} target="_blank" rel="noopener noreferrer">
+            <img
+              className="product-d-image"
+              src={`${serverHost}:4000/uploads/${product.image}`}
+              alt={product.name}
+            />
+          </a>
           <div className="product-content">
             <p className="product-d-name">
               {product.name}
@@ -405,42 +435,34 @@ const ProductDetail = () => {
                 {availability}
               </p>
             </div>
-
             <Button
               onClick={handleToggleFavorite}
               variant="contained"
               color={isFavorite ? 'secondary' : 'primary'}
               className="favorite-button"
             >
-              {isFavorite ? <Favorite /> : <FavoriteBorder />}
+              {isFavorite ? <Favorite style={{ color: 'red' }} /> : <FavoriteBorder />}
               {isFavorite ? '찜해제' : '찜하기'}
             </Button>
-
-
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
-
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
-
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-
-              <MenuItem onClick={handleReport}>신고하기</MenuItem>
+              <MenuItem onClick={handleEdit}>수정하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
           </div>
         </div>
         <div className="product-d-description-container">
           <p className="product-d-description-header">상품정보</p>
-          {/* 상품 설명칸의 내용을 div 태그로 감싸고 내용을 개행 문자(\n)를 기준으로 분할하여 각각의 div로 렌더링 */}
+          {/* 설명칸의 내용을 div 태그로 감싸고 내용을 개행 문자(\n)를 기준으로 분할하여 각각의 div로 렌더링 */}
           {product.description.split('\n').map((line, index) => (
             <div key={index} className="product-d-description">{line}</div>
           ))}
         </div>
-
-
         <MuiModal
           open={isChatModalOpen}
           onClose={() => setIsChatModalOpen(false)}
@@ -457,22 +479,23 @@ const ProductDetail = () => {
             boxShadow: 24,
             p: 4,
             borderRadius: 2,
-          }}
-        >
-           <div>
-          <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-          <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
-            <CloseIcon />
-          </IconButton>
-        </div>
+          }}>
+          <div>
+            <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
+            <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
+              <CloseIcon />
+            </IconButton>
+          </div>
         </MuiModal>
-
         <section id="article-profile">
           <div className="seller-profile">
             <div>
-              <div>
-                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png" />
-
+              <div className="profileimage-container">
+                <img
+                  src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
+                  className="rounded-image"
+                  alt="Profile"
+                />
               </div>
               <div className="article-profile-left">
                 <div className="space-between">
@@ -488,17 +511,15 @@ const ProductDetail = () => {
                   {rates}
                 </dd>
               </dl>
-              <div className="meters">
-                <div className="bar bar-color-03" style={{ width: `${barLength}%` }}></div>
+              <div className={`meters ${getBarColorClass(rates)}`}>
+                <div className={`bar ${getBarColorClass(rates)}`} style={{ width: `${barLength}%` }}></div>
               </div>
               <div className="face face-03"></div>
             </div>
           </div>
-
         </section>
-
         <div className="product-list">
-          <DetailList />
+          <DetailList currentProductId={product.id} />
         </div>
       </div>
     </div>

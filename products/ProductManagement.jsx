@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
 
@@ -194,7 +193,7 @@ function ProductManagement() {
         <div className="cards-wrap1">
           {products.map((product) => (
             <article className="card-top" key={product.id}>
-              <a className="card-link" href={`/ProductManagementForm/${product.id}`} data-event-label={product.id}>
+              <a className="card-link-1" href={`/ProductManagementForm/${product.id}`} data-event-label={product.id}>
                 <div className="card-photo">
                   <img
                     src={`${serverHost}:4000/uploads/${product.image}`}
@@ -202,15 +201,9 @@ function ProductManagement() {
                   />
                 </div>
                 <div className="card-desc">
-                  <h2 className="card-title">상품명 : {product.name}</h2>
-                  <div className="card-price">가격 : {product.price}원</div>
-                  <div className="card-info">
-                    <div className="card-views">
-                      <VisibilityIcon style={{ marginRight: '5px' }} />
-                      {product.views}
-                    </div>
-                    <p className="card-time">{product.formattedCreatedAt}</p>
-                  </div>
+                  <h2 className="card-title">{product.name}</h2>
+                  <div className="card-price">{product.price}원</div>
+                  
                 </div>
               </a>
             </article>
@@ -224,4 +217,4 @@ function ProductManagement() {
   );
 }
 
-export default ProductManagement
+export default ProductManagement;
