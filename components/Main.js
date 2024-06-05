@@ -71,13 +71,9 @@ function MainScreen() {
     navigation.navigate('SearchPage');
   };
 
-  const handleLogout = () => {
-    navigation.navigate('Login');
-  };
-
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-    console.log('touched')
+    // console.log('touched')
   };
 
   return (
@@ -93,6 +89,7 @@ function MainScreen() {
         </TouchableOpacity>
       </View>
       <ScrollView
+        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
         style={styles.productContainer}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >

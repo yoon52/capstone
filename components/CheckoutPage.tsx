@@ -71,7 +71,9 @@ function CheckoutPage() {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+      >
         <PaymentMethodWidget
           selector="payment-methods"
           onLoadEnd={() => {
@@ -143,7 +145,7 @@ function CheckoutPage() {
               productId: productId, // 상품 ID 전달
             };
 
-            console.log('Sending payment request with the following data:', paymentData);
+            // console.log('Sending payment request with the following data:', paymentData);
 
             await paymentWidgetControl.requestPayment(paymentData).then((result: Result) => {
               if (result?.success) {
@@ -155,7 +157,7 @@ function CheckoutPage() {
                   userId,
                 };
                 navigation.navigate('SuccessPage', navigationParams);
-                console.log('Payment success:', result.success);
+                // console.log('Payment success:', result.success);
 
 
               } else if (result?.fail) {

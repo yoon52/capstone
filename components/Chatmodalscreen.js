@@ -114,7 +114,10 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
             <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.heading}>채팅방 번호: {chatRoomId}</Text>
-          <ScrollView ref={messageContainerRef} style={styles.chatContainer}>
+          <ScrollView
+            showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+            ref={messageContainerRef} style={styles.chatContainer}
+          >
             {messages.map((message, index) => (
               <View
                 key={index}
@@ -149,6 +152,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
               <Ionicons name="send" size={24} color="#103260" />
             </TouchableOpacity>
           </View>
+
         </View>
       </KeyboardAvoidingView>
     </Modal>

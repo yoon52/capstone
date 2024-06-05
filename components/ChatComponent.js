@@ -17,6 +17,7 @@ const ChatComponent = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const navigation = useNavigation();
+  const [productDetails, setProductDetails] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,8 +36,9 @@ const ChatComponent = ({ route }) => {
           });
 
           socket.current.on('connect', () => {
-            console.log('Client reconnected');
+            // console.log('Client reconnected');
             fetchMessages();
+            fetchProductDetails();
           });
 
           return () => {
@@ -101,11 +103,37 @@ const ChatComponent = ({ route }) => {
 
   const handlePayment = () => {
     navigation.navigate('CheckoutPage', { productId, userId });
-    console.log('Add payment logic here');
+    // console.log('Add payment logic here');
+  };
+
+  const fetchProductDetails = async () => {
+    try {
+      const response = await fetch(`${serverHost}:4000/api/products/${productId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product details');
+      }
+      const data = await response.json();
+      setProductDetails(data);
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
   };
 
   return (
     <View style={styles.container}>
+      {productDetails && (
+        <View style={styles.chatHeader}>
+          <Image
+            source={{ uri: `${serverHost}:4000/uploads/${productDetails.image}` }}
+            style={styles.productImage}
+          />
+          <View style={styles.productInfo}>
+            <Text style={styles.productName}>상품명: {productDetails.name}</Text>
+            <Text style={styles.productPrice}>가격: {productDetails.price}원</Text>
+          </View>
+        </View>
+      )}
+
       <ScrollView ref={messageContainerRef} style={styles.messagesContainer}>
         {messages.map((message, index) => (
           <View key={index} style={[styles.messageContainer, message.sender === userId ? styles.ownMessage : styles.otherMessage]}>
@@ -153,6 +181,40 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
     overflow: 'hidden',
   },
+  chatHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    
+    padding: 10, // 내부 여백 추가
+    borderRadius: 10, // 모서리를 둥글게 만듭니다.
+    
+    
+    
+  },
+  
+  productImage: {
+    width: 65,
+    height: 65,
+    borderRadius: 25,
+    marginRight: 20,
+  },
+  productInfo: {
+    flex: 1,
+    justifyContent: 'center', // 상품 정보를 세로 중앙 정렬합니다.
+  },
+  productName: {
+    fontSize: 20, // 상품명의 폰트 크기 조정
+    fontWeight: 'bold', // 굵은 글꼴 설정
+    color: '#333', // 상품명 색상 변경
+  },
+  productPrice: {
+    marginTop: 5,
+    fontSize: 18, // 가격의 폰트 크기 조정
+    color: '#666', // 가격 색상 변경
+  },
+  
+
   messagesContainer: {
     flex: 1,
   },

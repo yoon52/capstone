@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,7 +25,7 @@ function Login() {
 
   const handleSubmit = async () => {
     if (!formData.id || !formData.password) {
-      console.log('Please enter both id and password');
+      // console.log('Please enter both id and password');
       return;
     }
     try {
@@ -38,9 +38,9 @@ function Login() {
       });
       if (response.ok) {
         const { message, id, isAdmin } = await response.json();
-        console.log(message); // 로그인 메시지 출력
-        console.log('User ID:', id); // 사용자 ID 출력
-        console.log('Is Admin:', isAdmin); // 관리자 여부 출력
+        // console.log(message); // 로그인 메시지 출력
+        // console.log('User ID:', id); // 사용자 ID 출력
+        // console.log('Is Admin:', isAdmin); // 관리자 여부 출력
         // 사용자 ID를 AsyncStorage에 저장
         await AsyncStorage.setItem('userId', id);
         // 로그인 성공 시 필요한 작업 수행
@@ -68,6 +68,19 @@ function Login() {
     }
   };
 
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const userId = await AsyncStorage.getItem('userId');
+  
+      if (userId) {
+        navigation.navigate('Main');
+      }
+    };
+  
+    checkLoginStatus();
+  }, [navigation]);
+  
+
   const handleNaverLogin = () => {
     navigation.navigate('NaverLoginWebView');
   };
@@ -75,8 +88,6 @@ function Login() {
   const handleKakaoLogin = () => {
     navigation.navigate('KakaoLoginWebView');
   };
-
-
 
   return (
     <View style={styles.container}>

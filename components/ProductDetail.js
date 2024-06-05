@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Modal, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatComponent from './ChatComponent'; // Assuming ChatComponent is correctly defined
-import socket from 'socket.io-client';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
 import { Alert } from 'react-native';
 import serverHost from './host';
-
+import socket from 'socket.io-client';
 const ProductDetail = ({ route }) => {
   const { productId } = route.params;
   const [product, setProduct] = useState(null);
@@ -18,7 +18,6 @@ const ProductDetail = ({ route }) => {
   const [barLength, setBarLength] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false); // Initialize state for the image modal
-
 
   useEffect(() => {
     // rates 값이 변경될 때마다 막대기 길이 업데이트
@@ -47,7 +46,6 @@ const ProductDetail = ({ route }) => {
 
     fetchFavoriteStatus();
   }, [productId, userId]);
-
 
   const getBarColor = (rates) => {
     const ratesValue = parseFloat(rates);
@@ -154,10 +152,6 @@ const ProductDetail = ({ route }) => {
     }
   };
 
-  if (!product) {
-    return <View style={styles.container}><Text>Loading...</Text></View>;
-  }
-
   const handleToggleFavorite = async () => {
     try {
       // 서버에 찜 상태 토글 요청
@@ -187,11 +181,12 @@ const ProductDetail = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.contentContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+        style={styles.contentContainer}>
         <TouchableOpacity onPress={() => { setIsImageModalOpen(!isImageModalOpen); }}>
           <Image style={styles.productImage} source={{ uri: `${serverHost}:4000/uploads/${product.image}` }} />
         </TouchableOpacity>
-
 
         <View style={styles.userInfoContainer}>
           <Image
@@ -212,32 +207,16 @@ const ProductDetail = ({ route }) => {
             <View style={styles.barContainer}>
               <View style={[styles.bar, { width: `${barLength}%`, backgroundColor: getBarColor(rates) }]}></View>
             </View>
-
-
           </View>
         </View>
 
-
         <View style={styles.productInfoContainer}>
           <Text style={styles.productTitle}>{product.name}</Text>
-
           <Text style={styles.productDescription}>{product.description}</Text>
           <Text style={styles.productNote}>{product.note}</Text>
         </View>
 
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.favoriteButton} onPress={handleToggleFavorite}>
-            <FontAwesome name={isFavorite ? 'heart' : 'heart-o'} size={24} color={isFavorite ? 'red' : 'black'} />
-          </TouchableOpacity>
-
-          <View style={styles.priceContainer}>
-            <Text style={styles.price}>{product.price.toLocaleString()}원</Text>
-            <TouchableOpacity style={styles.chatButton} onPress={handleChatButtonClick}>
-              <Text style={styles.chatButtonText}>채팅하기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
+        {/* Modals */}
         <Modal
           visible={isChatModalOpen}
           animationType="slide"
@@ -264,8 +243,22 @@ const ProductDetail = ({ route }) => {
             </TouchableOpacity>
           </View>
         </Modal>
-
       </ScrollView>
+
+      {/* Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.favoriteButton} onPress={handleToggleFavorite}>
+          <FontAwesome name={isFavorite ? 'heart' : 'heart-o'} size={24} color={isFavorite ? 'red' : 'black'} />
+        </TouchableOpacity>
+
+        <View style={styles.priceContainer}>
+          <Text style={styles.price}>{product.price.toLocaleString()}원</Text>
+          <TouchableOpacity style={styles.chatButton} onPress={handleChatButtonClick}>
+            <Entypo name="chat" size={24} color="#fff" style={styles.icon} />
+            <Text style={styles.chatButtonText}>채팅하기</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -281,7 +274,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
   },
-
   productImage: {
     width: '100%',
     height: 300,
@@ -338,7 +330,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: 100,
   },
-
   barContainer: {
     height: 10,
     backgroundColor: '#DCDCDC',
@@ -346,10 +337,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: 100,
   },
-
   bar: {
     height: '100%',
-    backgroundColor: '#FF4500',
     borderRadius: 5,
   },
   face: {
@@ -366,7 +355,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#dcdcdc',
     marginBottom: 20,
-
   },
   productTitle: {
     color: '#000000',
@@ -391,12 +379,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
     backgroundColor: '#fff', // Footer의 배경색
   },
   heartButton: {
-    marginRight: 10,
+    marginLeft: 5,
   },
   priceContainer: {
     flexDirection: 'row',
@@ -404,22 +392,26 @@ const styles = StyleSheet.create({
   },
   price: {
     marginRight: 10,
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333', // 가격 텍스트의 색상
   },
   chatButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#ff4500',
+    padding: 6.5,
     borderRadius: 5,
   },
   chatButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff', // 채팅하기 버튼의 텍스트 색상
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 5,
   },
-
+  icon: {
+    marginRight: 5,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'flex',
@@ -432,12 +424,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.9)', // Semi-transparent background color
   },
-
   fullImage: {
     width: '100%',
     height: '100%',
   },
-
   modalContent: {
     backgroundColor: '#FFFFFF',
     width: '80%',
@@ -447,4 +437,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductDetail; // Exporting ProductDetail as the default export
+export default ProductDetail;

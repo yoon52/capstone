@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Button, Alert, Modal, TouchableOpacity } from '
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import serverHost from './host';
 
@@ -95,7 +94,7 @@ const SuccessPage = ({ route }) => {
       });
 
       if (response.ok) {
-        console.log('Seller rating updated successfully.');
+        // console.log('Seller rating updated successfully.');
         setRatingSubmitted(true);
         Alert.alert('평점 등록 성공');
       } else {
@@ -125,13 +124,13 @@ const SuccessPage = ({ route }) => {
           <Text style={styles.label}>결제 금액: {price}</Text>
           <Text style={styles.label}>주문번호: {paymentData.orderId}</Text>
           <Text style={styles.label}>결제 ID: {paymentData.paymentKey}</Text>
-          <Button title="메인으로 이동" onPress={navigateToMainPage} color="#6c63ff" />
+          <Button title="메인으로 이동" onPress={navigateToMainPage} color="#103260" />
         </View>
       ) : (
         <View style={styles.confirmContainer}>
           <Text style={styles.title}>결제 요청까지 성공했어요.</Text>
           <Text style={styles.label}>결제 승인하고 완료해보세요.</Text>
-          <Button title="결제 승인하기" onPress={confirmPayment} color="#6c63ff" />
+          <Button title="결제 승인하기" onPress={confirmPayment} color="#103260" />
         </View>
       )}
       <Modal visible={isModalOpen} transparent={true} animationType="slide" onRequestClose={closeModal}>
@@ -140,7 +139,7 @@ const SuccessPage = ({ route }) => {
             {ratingSubmitted ? (
               <View>
                 <Text style={styles.modalTitle}>평점이 제출되었습니다!</Text>
-                <Button title="닫기" onPress={closeModal} color="#6c63ff" />
+                <Button title="닫기" onPress={closeModal} color="#103260" />
               </View>
             ) : (
               <View>
@@ -207,15 +206,6 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
   },
-  buttonContainer: {
-    marginTop: 20,
-    width: '80%',
-    alignItems: 'center',
-  },
-  buttonWrapper: {
-    alignItems: 'center',
-    width: '100%',
-  },
   modalBackground: {
     flex: 1,
     justifyContent: 'center',
@@ -233,7 +223,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
-
   },
   modalTitle: {
     fontSize: 22,
@@ -257,7 +246,7 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   submitButton: {
-    backgroundColor: '#6c63ff',
+    backgroundColor: '#103260',
     padding: 12,
     borderRadius: 5,
     marginBottom: 10,
@@ -282,7 +271,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 
 
 export default SuccessPage;

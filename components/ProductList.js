@@ -69,7 +69,11 @@ function ProductList({ filteredProducts }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+
+    >
       {formattedProducts.map(product => (
         <TouchableOpacity
           key={product.id}

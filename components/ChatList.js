@@ -47,7 +47,10 @@ const ChatList = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+    style={styles.container}
+    showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+    >
       <View style={styles.chatListContainer}>
         <Text style={styles.heading}>참여중인 채팅</Text>
         {chatRooms.length === 0 ? (

@@ -35,7 +35,7 @@ function AddProducts() {
 
       return () => {
         // 컴포넌트가 화면에서 벗어날 때 실행할 코드
-        console.log('Component lost focus');
+        // console.log('Component lost focus');
       };
     }, [])
   );
