@@ -12,7 +12,7 @@ function KakaoLoginWebView() {
   const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}`;
 
   const handleNavigationStateChange = (navState) => {
-    if (navState.url.includes(`http://192.168.199.120:8081/Main`)) {
+    if (navState.url.includes(`http://192.168.219.241:8081/Main`)) {
       setIsLoggedIn(true);
     }
   };

@@ -1,125 +1,174 @@
-// WishList.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'; // ScrollView 추가
+import { useNavigation } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import serverHost from './host';
 
-function WishList() {
-  const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ShowWishlist = () => {
+  const [userId, setUserId] = useState(null);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    loadFavorites();
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(storedUserId);
+      } catch (error) {
+        console.error('Error fetching user id:', error);
+      }
+    };
+
+    fetchUserId();
   }, []);
 
-  const loadFavorites = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
+  useEffect(() => {
+    if (userId) {
+      const fetchWishlistItems = async () => {
+        try {
+          const response = await fetch(`${serverHost}:4000/favorites?userId=${userId}`);
+          if (response.ok) {
+            const data = await response.json();
+            setWishlistItems(data);
+          } else {
+            console.error('Error fetching wishlist items:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching wishlist items:', error);
+        }
+      };
 
-      const response = await fetch(`${serverHost}:4000/favorites?userId=${userId}`, {
-        method: 'GET',
+      fetchWishlistItems();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      try {
+        const updatedItems = await Promise.all(
+          wishlistItems.map(async (product) => {
+            const favoriteResponse = await fetch(`${serverHost}:4000/products/isFavorite/${userId}/${product.product_id}`);
+            if (favoriteResponse.ok) {
+              const { isFavorite } = await favoriteResponse.json();
+              return { ...product, isFavorite };
+            } else {
+              console.error('찜 상태 확인 실패:', favoriteResponse.status);
+              return product;
+            }
+          })
+        );
+        setWishlistItems(updatedItems);
+      } catch (error) {
+        console.error('찜 상태 확인 오류:', error);
+      }
+    };
+
+    if (wishlistItems.length > 0) {
+      fetchFavoriteStatus();
+    }
+  }, [wishlistItems, userId]);
+
+  const handleProductClick = (productId) => {
+    navigation.navigate('ProductDetail', { productId });
+  };
+
+  const handleToggleFavorite = async (productId) => {
+    try {
+      const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
+        method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'user_id': userId,
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify({ userId })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch favorites');
+      if (response.ok) {
+        const data = await response.json();
+        setWishlistItems((prevItems) =>
+          prevItems.map((item) =>
+            item.product_id === productId ? { ...item, isFavorite: data.isFavorite } : item
+          )
+        );
+      } else {
+        console.error('찜 상태 토글 실패:', response.status);
       }
-
-      const data = await response.json();
-
-      setFavorites(data);
-      setLoading(false);
     } catch (error) {
-      console.error('Error loading favorites', error);
-      setLoading(false);
+      console.error('찜 상태 토글 오류:', error);
     }
   };
 
-  const renderFavoriteItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image
-        source={{ uri: `${serverHost}:4000/uploads/${item.image}` }}
-        style={styles.itemImage} />
-      <View style={styles.itemInfo}>
-        <Text style={styles.itemName}>{item.product_name}</Text>
-        <Text style={styles.itemPrice}>가격: {item.price}원</Text>
-        {/* 다른 상품 정보 표시 */}
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Wish List</Text>
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+      <Text style={styles.wishlistTitle}>찜 목록</Text>
+      <ScrollView
+        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+      >
+        <View style={styles.wishlistContainer}>
+          {wishlistItems.map((product) => (
+            <TouchableOpacity key={product.id} style={styles.wishlistItem} onPress={() => handleProductClick(product.product_id)}>
+              <TouchableOpacity style={styles.wishlistBadge} onPress={() => handleToggleFavorite(product.product_id)}>
+                {product.isFavorite ? <FontAwesome name="heart" size={24} color="red" /> : <FontAwesome name="heart-o" size={24} color="black" />}
+              </TouchableOpacity>
+              <Image
+                source={{ uri: `${serverHost}:4000/uploads/${product.image}` }}
+                style={styles.wishImage}
+                onPress={() => handleProductClick(product.product_id)}
+              />
+              <View style={styles.wishDetails}>
+                <Text style={styles.wishName}>{product.product_name}</Text>
+                <Text style={styles.wishPrice}>{product.price.toLocaleString()}원</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
-      ) : (
-        <FlatList
-          data={favorites}
-          renderItem={renderFavoriteItem}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      )}
+      </ScrollView>
     </View>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 20,
-    paddingTop: 40,
-
+    backgroundColor: '#fff',
+    padding: 20,
+    marginTop: 30
   },
-  title: {
+  wishlistTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  wishlistContainer: {
+    flexDirection: 'column',
   },
-  itemContainer: {
+  wishlistItem: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 20,
+    alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
-  itemImage: {
-    width: 80,
-    height: 80,
-    resizeMode: 'cover',
-    borderRadius: 8,
+  wishlistBadge: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1,
   },
-  itemInfo: {
-    marginLeft: 20,
-    justifyContent: 'center',
+  wishImage: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
   },
-  itemName: {
+  wishDetails: {
+    flex: 1,
+  },
+  wishName: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  wishPrice: {
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  itemPrice: {
-    fontSize: 14,
-    color: '#333',
   },
 });
 
-export default WishList;
+export default ShowWishlist;

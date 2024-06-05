@@ -12,7 +12,9 @@ const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       shifting={true}
-      barStyle={{ backgroundColor: 'white' }}
+      barStyle={{ backgroundColor: 'white' }} // 여기서 색상을 수정하세요
+     
+    
     >
       <Tab.Screen
         name="Main"
@@ -40,6 +42,7 @@ const BottomTabNavigator = () => {
             <Ionicons name="chatbubbles" size={24} color={color} />
           ),
         }}
+
       />
     </Tab.Navigator>
   );

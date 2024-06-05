@@ -15,7 +15,7 @@ function NaverLoginWebView() {
   const naverOAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=r59ZbtMFYtVGcCmLsGj5&redirect_uri=${serverHost}:4000/oauth/naver/callback/mob/&state=${state}`;
 
   const handleNavigationStateChange = (navState) => {
-    if (navState.url.includes(`http://192.168.199.120:8081/Main`)) {
+    if (navState.url.includes(`http://192.168.219.241:8081/Main`)) {
       setIsLoggedIn(true);
     }
   };

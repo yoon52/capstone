@@ -6,7 +6,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
 import { Alert } from 'react-native';
 import serverHost from './host';
-
+import socket from 'socket.io-client';
 const ProductDetail = ({ route }) => {
   const { productId } = route.params;
   const [product, setProduct] = useState(null);
@@ -181,7 +181,9 @@ const ProductDetail = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.contentContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+        style={styles.contentContainer}>
         <TouchableOpacity onPress={() => { setIsImageModalOpen(!isImageModalOpen); }}>
           <Image style={styles.productImage} source={{ uri: `${serverHost}:4000/uploads/${product.image}` }} />
         </TouchableOpacity>
@@ -436,4 +438,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProductDetail;
-

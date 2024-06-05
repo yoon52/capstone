@@ -20,12 +20,13 @@ function SearchInput({ searchTerm, handleChangeSearchTerm, handleSearchProduct }
 const styles = StyleSheet.create({
   searchContainer: {
     // 컨테이너 스타일링
+    
   },
   searchInputContainer: {
     // 검색 입력 필드 컨테이너 스타일링
   },
   searchInput: {
-    // 검색 입력 필드 스타일링
+    // 검색 입력 필드 스타일
   },
 });
 

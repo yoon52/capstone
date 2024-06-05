@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
 import { useNavigation } from '@react-navigation/native';
@@ -87,6 +87,9 @@ const Sidebar = ({ onClose }) => {
     onClose(); // 사이드바 닫기
     navigation.navigate('Payments'); // ProductManagement 화면으로 이동
   };
+  const handleLogout = () => {
+    navigation.navigate('Login');
+  }
 
   return (
     <View style={styles.sidebar}>
@@ -115,26 +118,28 @@ const Sidebar = ({ onClose }) => {
       <TouchableOpacity onPress={onClose} style={styles.closeButton}>
         <Ionicons name="close" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleMyinfo} style={styles.menuItem} >
-      <Ionicons name="person-outline" size={20} color="black"/>
-      <Text>내 정보</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleWishList}>
-      <FontAwesome name="heart-o" size={20} color="black"/>
-        <Text>찜한 상품</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleProductManagement}>
-      <Ionicons name="create-outline"size={20} color="black"/>
-        <Text>내 상품 관리</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleSelling}>
-      <Ionicons name="card-outline"size={20} color="black"/>
-        <Text>구매 및 판매 내역</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem}>
-      <Ionicons name="log-out-outline"size={20} color="black"/>
-        <Text>로그아웃</Text>
-      </TouchableOpacity>
+      <ScrollView>
+        <TouchableOpacity onPress={handleMyinfo} style={styles.menuItem}>
+          <Ionicons name="person-outline" size={20} color="black" />
+          <Text>내 정보</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleWishList}>
+          <FontAwesome name="heart-o" size={20} color="black" />
+          <Text>찜한 상품</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleProductManagement}>
+          <Ionicons name="create-outline" size={20} color="black" />
+          <Text>내 상품 관리</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleSelling}>
+          <Ionicons name="card-outline" size={20} color="black" />
+          <Text>구매 및 판매 내역</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={20} color="black" />
+          <Text>로그아웃</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };

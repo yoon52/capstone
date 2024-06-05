@@ -3,14 +3,14 @@ import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import serverHost from './host';
+
 function UserEdit({ userInfo }) {
   const [editedUserInfo, setEditedUserInfo] = useState({ ...userInfo });
   const [password, setPassword] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   const navigation = useNavigation();
-  
+
   const handleChange = (field, value) => {
     setEditedUserInfo({ ...editedUserInfo, [field]: value });
   };
@@ -25,7 +25,7 @@ function UserEdit({ userInfo }) {
         },
         body: JSON.stringify({ userId, editedUserInfo })
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         alert(data.message); // 수정이 완료되었습니다. 메시지 표시
@@ -37,7 +37,7 @@ function UserEdit({ userInfo }) {
       console.error('사용자 정보 수정 오류:', error);
     }
   };
-  
+
   const handleDeleteAccount = async () => {
     setIsModalOpen(true);
   };
@@ -67,13 +67,13 @@ function UserEdit({ userInfo }) {
   };
 
   const handleChangePassword = () => {
-    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+    navigation.reset({ index: 0, routes: [{ name: 'ChangePw' }] });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>회원 정보 수정</Text>
-      <Text style={styles.userId}>ID: {userInfo.id}</Text>
+      <Text style={styles.userId}>학번: {userInfo.id}</Text>
       <View style={styles.formGroup}>
         <TextInput
           style={styles.input}
@@ -90,40 +90,38 @@ function UserEdit({ userInfo }) {
           onChangeText={(value) => handleChange('email', value)}
         />
       </View>
-      <View style={styles.selectGroup}>
-        {/* Add your select inputs here */}
-      </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.buttonText}>저장</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.changePwButton} onPress={handleChangePassword}>
-        <Text style={styles.buttonText}>비밀번호 변경</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.withdrawalButton} onPress={handleDeleteAccount}>
-        <Text style={styles.buttonText}>회원 탈퇴</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.changePwButton} onPress={handleChangePassword}>
+          <Text style={styles.buttonText}>비밀번호 변경</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.withdrawalButton} onPress={handleDeleteAccount}>
+          <Text style={styles.buttonText}>회원 탈퇴</Text>
+        </TouchableOpacity>
+      </View>
       <Modal visible={isModalOpen} animationType="slide" transparent>
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalTitle}>회원 탈퇴</Text>
-      <Text style={styles.modalText}>회원 탈퇴와 함께 K'du-re 에 등록된 모든 개인정보는 삭제, 폐기 처리되며 복구되지 않습니다.</Text>
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="비밀번호를 입력하세요"
-        secureTextEntry={true}
-      />
-      <TouchableOpacity style={styles.confirmButton} onPress={confirmDeleteAccount}>
-        <Text style={styles.buttonText}>확인</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.cancelButton} onPress={() => setIsModalOpen(false)}>
-        <Text style={styles.buttonText}>취소</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>회원 탈퇴</Text>
+            <Text style={styles.modalText}>회원 탈퇴와 함께 K'du-re 에 등록된 모든 개인정보는 삭제, 폐기 처리되며 복구되지 않습니다.</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="비밀번호를 입력하세요"
+              secureTextEntry={true}
+            />
+            <TouchableOpacity style={styles.confirmButton} onPress={confirmDeleteAccount}>
+              <Text style={styles.buttonText}>확인</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setIsModalOpen(false)}>
+              <Text style={styles.buttonText}>취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -137,43 +135,53 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
   userId: {
     fontSize: 16,
     marginBottom: 10,
+    textAlign: 'center',
   },
   formGroup: {
     marginBottom: 10,
+    alignItems: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#ddd',
     borderRadius: 5,
     padding: 10,
-  },
-  selectGroup: {
-    // Add styles for select inputs
+    backgroundColor: '#fff',
+    width: 300,
   },
   saveButton: {
     backgroundColor: '#103260',
     borderRadius: 5,
-    padding: 10,
+    padding: 15,
     alignItems: 'center',
+    marginTop: 5,
     marginBottom: 10,
+    width: 300,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
   },
   changePwButton: {
     backgroundColor: '#103260',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
-    marginBottom: 10,
+    width: '48%',
   },
   withdrawalButton: {
-    backgroundColor: '#FF0000',
+    backgroundColor: '#e74c3c',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
-    marginBottom: 10,
+    width: '48%',
+    marginLeft: 15,
   },
   buttonText: {
     color: 'white',
@@ -189,7 +197,7 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 20,
+    padding: 15,
     width: '80%',
   },
   modalTitle: {
@@ -200,22 +208,16 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 20,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
   confirmButton: {
     backgroundColor: '#103260',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
+    marginTop: 10,
     marginBottom: 10,
   },
   cancelButton: {
-    backgroundColor: '#FF0000',
+    backgroundColor: '#e74c3c',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
@@ -226,7 +228,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  
 });
 
 export default UserEdit;
