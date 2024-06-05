@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Import 
 
 import UserEdit from './UserEdit'; // Assuming this component exists
 import serverHost from './host';
+import { CurrentRenderContext } from '@react-navigation/native';
 
 function MyInfo() {
   const [password, setPassword] = useState('');
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    width: '80%',
+    width: 200,
     height: 40,
     borderWidth: 1,
     borderColor: 'gray',
@@ -100,8 +101,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#103260',
     padding: 10,
     borderRadius: 5,
+    width: 200,
+    
   },
   buttonText: {
+    textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,

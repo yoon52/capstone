@@ -4,6 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import serverHost from './host';
+
+
+
 const ChatModal = ({ chatRoomId, productId, onClose }) => {
   const [userId, setUserId] = useState(null);
   const [userType, setUserType] = useState(null);

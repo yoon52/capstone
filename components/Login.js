@@ -76,8 +76,6 @@ function Login() {
     navigation.navigate('KakaoLoginWebView');
   };
 
-
-
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>L O G I N</Text>
@@ -184,7 +182,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000000',
     fontSize: 13,
-
   },
   separator: {
     width: 1,
@@ -198,21 +195,15 @@ const styles = StyleSheet.create({
     width: '60%',
     marginTop: 10,
   },
-  restButton: {
+  socialLoginButton: {
     width: '30%',
     alignItems: 'center',
   },
-  restButtonIcon: {
+  socialLoginIcon: {
     width: 155,
     height: 40,
     borderRadius: 5
   },
-  socialLoginIcon: {
-    width: 120,
-    height: 40,
-    resizeMode: 'contain',
-  },
-
 });
 
 export default Login;
