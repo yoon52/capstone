@@ -124,6 +124,7 @@ const ChatListComponent = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 

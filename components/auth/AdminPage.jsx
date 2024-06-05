@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import Footer from './Footer';
 import swal from 'sweetalert';
 import {
   AppBar,
@@ -269,6 +269,7 @@ function AdminPage() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('isAdmin'); // 세션에서 isAdmin 정보 삭제
+    localStorage.removeItem('isAdmin'); // 세션에서 isAdmin 정보 삭제
     navigate('/Login'); // 로그인 페이지로 이동
   };
 
@@ -410,7 +411,9 @@ function AdminPage() {
           </Box>
         </Modal>
       )}
+      <Footer /> {/* Add Footer component here */}
     </div>
+        
   );
 }
 

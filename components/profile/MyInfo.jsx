@@ -5,6 +5,8 @@ import '../../styles/myinfo.css';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
 import swal from 'sweetalert';
+import Footer from '../auth/Footer';
+
 Modal.setAppElement('#root');
 
 function UserEdit({ userInfo, onAccountDeleted }) {
@@ -243,7 +245,8 @@ function MyInfo() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -341,6 +344,7 @@ function MyInfo() {
           )}
         </div>
       </div>
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

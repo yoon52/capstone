@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
+import Footer from '../auth/Footer';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -37,10 +38,6 @@ function ProductManagement() {
       console.error('상품 목록 가져오기 오류:', error);
     }
   };
-
-
-
-
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -83,8 +80,6 @@ function ProductManagement() {
     }
   };
 
-
-
   const saveSearchTerm = async (searchTerm) => {
     try {
       const userId = sessionStorage.getItem('userId');
@@ -124,6 +119,7 @@ function ProductManagement() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 
@@ -203,7 +199,7 @@ function ProductManagement() {
                 <div className="card-desc">
                   <h2 className="card-title">{product.name}</h2>
                   <div className="card-price">{product.price}원</div>
-                  
+
                 </div>
               </a>
             </article>
@@ -213,6 +209,7 @@ function ProductManagement() {
       {searchError && (
         <p className="search-error">{searchError}</p>
       )}
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

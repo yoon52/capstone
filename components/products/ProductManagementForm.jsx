@@ -3,13 +3,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Modal from 'react-modal';
 import '../../styles/product.css';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
 import swal from 'sweetalert';
-
-Modal.setAppElement('#root');
 
 const ProductManagementForm = () => {
   const { productId } = useParams();
@@ -133,7 +130,8 @@ const ProductManagementForm = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {

@@ -6,6 +6,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
 import swal from 'sweetalert';
+import Footer from '../auth/Footer';
 function AddProducts() {
   const userId = sessionStorage.getItem('userId');
   const [name, setName] = useState('');
@@ -211,6 +212,7 @@ function AddProducts() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 
@@ -300,6 +302,7 @@ function AddProducts() {
           <button type="submit" className="add-product-button">추가</button>
         </form>
       </div>
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

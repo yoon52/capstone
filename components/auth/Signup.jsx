@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/main.css';
 import logo from '../../image/logo.png';
 import serverHost from '../../utils/host';
-
+import Footer from './Footer';
 function Signup() {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -248,6 +248,7 @@ function Signup() {
         </form>
         <p>이미 계정이 있으신가요?&nbsp;&nbsp;<Link to="/Login">로그인</Link></p>
       </div>
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

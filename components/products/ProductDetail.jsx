@@ -15,6 +15,9 @@ import Header from '../header/Header';
 import DetailList from './DetailList';
 import serverHost from '../../utils/host';
 import swal from 'sweetalert';
+
+import Footer from '../auth/Footer';
+
 Modal.setAppElement('#root');
 
 const ProductDetail = () => {
@@ -264,7 +267,8 @@ const ProductDetail = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -522,6 +526,7 @@ const ProductDetail = () => {
           <DetailList currentProductId={product.id} />
         </div>
       </div>
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 };

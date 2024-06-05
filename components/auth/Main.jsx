@@ -12,6 +12,7 @@ import ShowWishlist from '../products/ShowWishlist';
 import '../../styles/main.css';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
+import Footer from './Footer';
 
 function Main() {
   const [, setFilteredProducts] = useState([]);
@@ -104,6 +105,7 @@ function Main() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 
@@ -162,7 +164,7 @@ function Main() {
           />
         </div>
         <div className="more-list">
-          <button className="more-button" onClick={handleMoreList}>전체 상품 보기</button>
+          <button className="main-more-button" onClick={handleMoreList}>전체 상품 보기</button>
         </div>
         <Routes>
           <Route path="/ProductDetail/:productId" element={<ProductDetail />} />
@@ -176,6 +178,7 @@ function Main() {
         )}
       </div>
       {showNavMenu && <div className="overlay" onClick={closeNavMenu}></div>}
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

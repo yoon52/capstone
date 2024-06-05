@@ -3,7 +3,7 @@ import { Container, Card, Spinner, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
-
+import Footer from '../auth/Footer';
 import '../../styles/payments.css';
 
 const Payments = () => {
@@ -77,7 +77,8 @@ const Payments = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -218,7 +219,7 @@ const Payments = () => {
           </Row>
         )}
       </Container>
-
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 };
