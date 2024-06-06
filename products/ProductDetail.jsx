@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Modal as MuiModal, Menu, MenuItem, IconButton } from '@mui/material';
-import { MoreVert, Favorite, FavoriteBorder, close } from '@mui/icons-material'; // 추가: Favorite 아이콘
+import { MoreVert, Favorite, FavoriteBorder } from '@mui/icons-material';
 import Modal from 'react-modal';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -39,6 +39,27 @@ const ProductDetail = () => {
   const [sellerName, setSellerName] = useState(null); // 판매자 ID 상태
   const [rates, setRates] = useState(null); // 판매자 ID 상태
   const [barLength, setBarLength] = useState(0);
+
+  // React 코드에서 수정된 부분
+  useEffect(() => {
+    const fetchFavoriteStatus = async () => {
+      try {
+        // 서버에서 찜 상태 확인
+        const favoriteResponse = await fetch(`${serverHost}:4000/products/isFavorite/${userId}/${productId}`);
+        if (favoriteResponse.ok) {
+          const { isFavorite } = await favoriteResponse.json();
+          setIsFavorite(isFavorite);
+        } else {
+          console.error('찜 상태 확인 실패:', favoriteResponse.status);
+        }
+      } catch (error) {
+        console.error('찜 상태 확인 오류:', error);
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [productId, userId]);
+
 
 
   useEffect(() => {
@@ -82,18 +103,7 @@ const ProductDetail = () => {
           setProduct(data);
 
           // 서버에서 찜 상태 확인
-          const favoriteResponse = await fetch(`${serverHost}:4000/products/checkFavorite/${productId}?userId=${userId}`, {
-            headers: {
-              Authorization: `Bearer ${userId}` // 사용자 토큰을 헤더에 포함하여 인증
-            }
-          });
 
-          if (favoriteResponse.ok) {
-            const { isFavorited } = await favoriteResponse.json();
-            setIsFavorite(isFavorited);
-          } else {
-            console.error('찜 상태 확인 실패:', favoriteResponse.status);
-          }
         } else {
           console.error('상품 상세 정보 가져오기 오류:', response.status);
         }
@@ -161,26 +171,26 @@ const ProductDetail = () => {
   };
 
   const handleToggleFavorite = async () => {
-  try {
-    const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ userId })
-    });
+    try {
+      // 서버에 찜 상태 토글 요청
+      const response = await fetch(`${serverHost}:4000/products/toggleFavorite/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId })
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      // 서버에서 받은 찜 상태로 업데이트
-      setIsFavorite(data.isFavorite);
-    } else {
-      console.error('찜 상태 토글 실패:', response.status);
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorite(data.isFavorite); // 서버에서 받은 찜 상태로 업데이트
+      } else {
+        console.error('찜 상태 토글 실패:', response.status);
+      }
+    } catch (error) {
+      console.error('찜 상태 토글 오류:', error);
     }
-  } catch (error) {
-    console.error('찜 상태 토글 오류:', error);
-  }
-};
+  };
 
   if (!product) {
     return <div className="loading">Loading...</div>;
@@ -299,11 +309,6 @@ const ProductDetail = () => {
     }
   };
 
-  const handleReport = () => {
-    navigate('/Report', { state: { sellerId: sellerId, sellerName: sellerName } });
-  };
-  
-
   const handleDelete = async () => {
     if (userId !== product.user_id) { // userId와 상품의 작성자 ID 비교
       alert("작성자만 삭제할 수 있습니다.");
@@ -324,7 +329,7 @@ const ProductDetail = () => {
         console.log('상품이 삭제되었습니다.');
         alert("상품이 삭제되었습니다.");
         // 메인 페이지로 이동
-        navigate('/Main/*');
+        navigate('/Main');
 
       } else {
         console.error('상품 삭제 오류:', response.status);
@@ -345,6 +350,24 @@ const ProductDetail = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const getBarColorClass = (rates) => {
+    const ratesValue = parseFloat(rates);
+    if (ratesValue >= 0 && ratesValue < 1.0) {
+      return 'bar-color-01'; // 빨간색
+    } else if (ratesValue >= 1.0 && ratesValue < 2.0) {
+      return 'bar-color-02'; // 주황색
+    } else if (ratesValue >= 2.0 && ratesValue < 3.0) {
+      return 'bar-color-03'; // 연두색
+    } else if (ratesValue >= 3.0 && ratesValue < 4.0) {
+      return 'bar-color-04'; // 파란색
+    } else if (ratesValue >= 4.0 && ratesValue <= 4.5) {
+      return 'bar-color-05'; // 남색
+    } else {
+      return ''; // 기본 색상
+    }
+  };
+
 
   return (
     <div className="container-main">
@@ -403,21 +426,19 @@ const ProductDetail = () => {
               color={isFavorite ? 'secondary' : 'primary'}
               className="favorite-button"
             >
-              {isFavorite ? <Favorite /> : <FavoriteBorder />}
-              {isFavorite ? '찜 해제' : '찜하기'}
+              {isFavorite ? <Favorite style={{ color: 'red' }} /> : <FavoriteBorder />}
+              {isFavorite ? '찜해제' : '찜하기'}
             </Button>
+
 
             <Button onClick={handleChatButtonClick} className="chat-button">채팅하기</Button>
 
             <IconButton onClick={handleClick} className="more-button"><MoreVert /></IconButton> {/* 케밥 아이콘 */}
-
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-
-              <MenuItem onClick={handleReport}>신고하기</MenuItem>
               <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
             </Menu>
           </div>
@@ -449,12 +470,12 @@ const ProductDetail = () => {
             borderRadius: 2,
           }}
         >
-           <div>
-          <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
-          <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
-            <CloseIcon />
-          </IconButton>
-        </div>
+          <div>
+            <ChatComponent chatRooms={chatRooms} onSendMessage={handleSendMessage} />
+            <IconButton onClick={() => setIsChatModalOpen(false)} className="close-button">
+              <CloseIcon />
+            </IconButton>
+          </div>
         </MuiModal>
 
         <section id="article-profile">
@@ -478,18 +499,22 @@ const ProductDetail = () => {
                   {rates}
                 </dd>
               </dl>
-              <div className="meters">
-                <div className="bar bar-color-03" style={{ width: `${barLength}%` }}></div>
+              <div className={`meters ${getBarColorClass(rates)}`}>
+                <div className={`bar ${getBarColorClass(rates)}`} style={{ width: `${barLength}%` }}></div>
+
               </div>
+
+
               <div className="face face-03"></div>
             </div>
           </div>
 
         </section>
 
-        <div className="related-products">
-          <DetailList />
+        <div className="product-list">
+          <DetailList currentProductId={product.id} />
         </div>
+
       </div>
     </div>
   );

@@ -250,10 +250,10 @@ function AddProducts() {
             <input type="text" placeholder="상품명을 입력해 주세요." value={name} onChange={handleNameChange} required />
           </div>
           <div className="form-group">
-            <label htmlFor="description" style={{ marginTop: '30px' }}>설명</label>
+            <label htmlFor="description" style={{ marginTop: '30px' }}>상품 설명</label>
             <textarea
               id="description"
-              placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
+              placeholder={"브랜드, 모델명, 구매시기, 하자 유무 등 상품 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다."}
               value={description}
               onChange={handleDescriptionChange}
             />

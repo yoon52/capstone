@@ -6,7 +6,6 @@ import serverHost from '../../utils/host';
 import SendIcon from '@mui/icons-material/Send';
 import PaymentIcon from '@mui/icons-material/Payment';
 import Button from '@mui/material/Button';
-import logo from '../../image/logo.png';
 
 const ChatComponent = () => {
   const userId = sessionStorage.getItem('userId');
@@ -19,8 +18,8 @@ const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [productDetails, setProductDetails] = useState(null); // 상품 정보를 상태로 관리
-  
-  
+
+
 
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
@@ -88,7 +87,7 @@ const ChatComponent = () => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`${serverHost}:4001/api/products/${productId}`);
+      const response = await fetch(`${serverHost}:4000/api/products/${productId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product details');
       }
@@ -118,15 +117,15 @@ const ChatComponent = () => {
     <div className="chat-component">
       <div className="chat-header">
         {productDetails && (
-          <div className="product-details">
+          <div className="product-chat-imamge">
             <img
               className="products-image"
               src={`${serverHost}:4000/uploads/${productDetails.image}`}
               alt="상품 이미지"
             />
             <div className="products-info">
-              <h3>상품명: {productDetails.name}</h3>
-              <p>가격: {productDetails.price}원</p>
+              <h3>상품명 : {productDetails.name}</h3>
+              <p>가격 : {productDetails.price}원</p>
             </div>
           </div>
         )}
@@ -152,29 +151,27 @@ const ChatComponent = () => {
           </div>
         ))}
       </div>
-      <form onSubmit={handleMessageSubmit} className="message-input-form1">
+      <form onSubmit={handleMessageSubmit} className="chat-form">
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="메시지를 입력하세요..."
+          placeholder="메시지를 입력하세요."
         />
-        <div className="button-group-1">
+        <div className="chat-button-group">
           <Button
             type="submit"
             variant="contained"
             startIcon={<SendIcon />}
             className="button"
           >
-            {/* 아이콘만 사용하고 텍스트는 비워둡니다 */}
           </Button>
           <Button
-            className="button Pay-button1"
             onClick={handlePayment}
             variant="contained"
             startIcon={<PaymentIcon />}
+            className="button"
           >
-            {/* 아이콘만 사용하고 텍스트는 비워둡니다 */}
           </Button>
         </div>
       </form>

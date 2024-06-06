@@ -61,6 +61,7 @@ const Header = ({
     navigate('/payments');
   };
 
+  
   return (
     <header className="header-main">
       <div className="header-content">
@@ -106,8 +107,10 @@ const Header = ({
                 </div>
                 <div className="user-info-container">
                   <p className="user-info">이름 : {userInfo.name}</p>
-                  <p className="user-info">매너 학점 : {userInfo.rates}</p>
-                  <p className="user-info">잔액 : {userInfo && userInfo.total_sales}</p>
+                  <p className="user-info">매너 학점 : {userInfo.rates}</p>                
+                  <p className="user-info">잔액: {userInfo && parseInt(userInfo.total_sales).toLocaleString()}원</p>
+  
+  
                 </div>
               </>
             )}

@@ -20,6 +20,7 @@ const ChatListComponent = () => {
   const [, setSearchError] = useState('');
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
+  const [, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     fetchChatRooms();
@@ -121,13 +122,9 @@ const ChatListComponent = () => {
     navigate('/MyInfo');
   };
 
-  const handleShowWishlist = () => {
-    navigate('/ShowWishlist');
-  };
-
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -141,7 +138,11 @@ const ChatListComponent = () => {
   const closeNavMenu = () => {
     setShowNavMenu(false);
   };
-  const [, setFilteredProducts] = useState([]);
+  
+
+  const handleShowWishlist = () => {
+    navigate('/ShowWishlist');
+  };
   return (
     <div className="container-main">
       <Header
