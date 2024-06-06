@@ -4,7 +4,7 @@ import Header from '../header/Header';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
-
+import Footer from '../auth/Footer';
 const ShowWishlist = () => {
   const userId = sessionStorage.getItem('userId');
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -141,7 +141,8 @@ const ShowWishlist = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -223,8 +224,8 @@ const ShowWishlist = () => {
           </div>
         ))}
       </div>
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 };
-
 export default ShowWishlist;

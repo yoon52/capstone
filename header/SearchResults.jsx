@@ -154,6 +154,7 @@ const SearchResults = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 
@@ -221,8 +222,8 @@ const SearchResults = () => {
                         <div className="product-views">
                           <VisibilityIcon sx={{ fontSize: 15, marginRight: 0.5, marginBottom: -0.3 }} />
                           {product.views}
-                          </div>
-                          <div className="product-time">
+                        </div>
+                        <div className="product-time">
                           <p> {product.formattedCreatedAt}</p>
                         </div>
                       </div>

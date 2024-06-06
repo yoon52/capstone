@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-
-import classNames from 'classnames';
 import '../../styles/product.css';
 import serverHost from '../../utils/host';
 
-
-const ProductList = ({ filteredProducts }) => {
+function ProductList({ filteredProducts }) {
   const navigate = useNavigate();
   const [formattedProducts, setFormattedProducts] = useState([]);
 
@@ -56,7 +53,6 @@ const ProductList = ({ filteredProducts }) => {
         sessionStorage.setItem(viewedProductKey, 'true');
       } catch (error) {
         console.error('Error updating views:', error);
-        alert('조회수 업데이트에 실패했습니다.');
       }
     }
 
@@ -67,10 +63,7 @@ const ProductList = ({ filteredProducts }) => {
   return (
     <div className="cards-wrap">
       {formattedProducts.map((product) => (
-        <article
-          className={classNames('card-top', { 'sold-out': product.status === '판매완료' })}
-          onClick={(e) => handleProductClick(e, product.id)}
-        >
+        <article className={`card-top ${product.status === '판매완료' ? 'sold-out' : ''}`} key={product.id} onClick={(e) => handleProductClick(e, product.id)}>
           <div className="card-link" data-event-label={product.id}>
             <div className="card-photo">
               <img
@@ -78,7 +71,7 @@ const ProductList = ({ filteredProducts }) => {
                 alt={product.title}
               />
               {product.status && (
-                <div className={classNames('sale-status-label', { 'sold-out-label': product.status === '판매완료' })}>
+                <div className={`sale-status-label ${product.status === '판매완료' ? 'sold-out-label' : ''}`}>
                   {product.status === '판매완료' ? '판매 완료' : '구매 가능'}
                 </div>
               )}
@@ -98,7 +91,9 @@ const ProductList = ({ filteredProducts }) => {
         </article>
       ))}
     </div>
+
+
   );
-};
+}
 
 export default ProductList;

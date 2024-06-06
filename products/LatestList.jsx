@@ -42,7 +42,7 @@ function LatestList() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      // console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
 
@@ -66,7 +66,7 @@ function LatestList() {
       console.error('검색 오류:', error);
     }
     // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
+    // console.log("검색어:", searchTerm);
 
   };
 
@@ -117,6 +117,7 @@ function LatestList() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 

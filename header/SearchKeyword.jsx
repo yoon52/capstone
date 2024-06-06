@@ -128,7 +128,8 @@ function SearchKeyword() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleProductManagement = () => {

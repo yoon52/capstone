@@ -3,12 +3,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Modal from 'react-modal';
 import '../../styles/product.css';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
-
-Modal.setAppElement('#root');
+import swal from 'sweetalert';
 
 const ProductManagementForm = () => {
   const { productId } = useParams();
@@ -25,6 +23,8 @@ const ProductManagementForm = () => {
   const [, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [descriptionCharCount, setDescriptionCharCount] = useState(0);
+  const [, setImageFile] = useState(null); // State variable for the selected image file
+  const [imagePreview, setImagePreview] = useState(null); // State variable for the image preview
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -130,7 +130,8 @@ const ProductManagementForm = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -162,15 +163,16 @@ const ProductManagementForm = () => {
       });
       if (response.ok) {
         setProduct(editedProduct);
-        alert('상품이 성공적으로 업데이트되었습니다.');
-        navigate('/ProductManagement')
+        swal("성공", "상품이 성공적으로 업데이트되었습니다.", "success").then(() => {
+          navigate('/ProductManagement');
+        });
       } else {
         console.error('상품 업데이트 오류:', response.status);
-        alert('상품 업데이트 중 오류가 발생했습니다.');
+        swal("오류", "상품 업데이트 중 오류가 발생했습니다.", "error");
       }
     } catch (error) {
       console.error('상품 업데이트 오류:', error);
-      alert('상품 업데이트 중 오류가 발생했습니다.');
+      swal("오류", "상품 업데이트 중 오류가 발생했습니다.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -191,6 +193,18 @@ const ProductManagementForm = () => {
       setEditedProduct({ ...editedProduct, [name]: value });
     }
   };
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageFile(selectedFile);
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
   return (
     <div className="container-main">
       <Header
@@ -214,13 +228,27 @@ const ProductManagementForm = () => {
 
       <div className="add-container">
         <div className="image-upload">
-          <label htmlFor="image" style={{ marginBottom: '10px' }}>상품 이미지</label>
-          <img
-            className="product-m-image"
-            src={`${serverHost}:4000/uploads/${editedProduct.image}`}
-            alt={editedProduct.name}
+          {/* Wrap the image with a label */}
+          <label htmlFor="image" style={{ marginBottom: '10px' }}>
+            {/* Display image preview */}
+            <img
+              className="product-m-image"
+              src={imagePreview || `${serverHost}:4000/uploads/${editedProduct.image}`}
+              alt={editedProduct.name}
+            />
+          </label>
+          {/* Hidden input for file selection */}
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: 'none' }}
           />
         </div>
+
+
         <div className="form-group">
           <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
           <input type="text"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/login.css';
 import naver from '../../image/naver.png';
@@ -6,7 +6,7 @@ import kakao from '../../image/kakao.png';
 import logo from '../../image/logo.png';
 import serverHost from '../../utils/host';
 import swal from 'sweetalert';
-
+import Footer from './Footer';
 // Login 컴포넌트 정의
 function Login() {
   // formData 상태 관리(state) 초기화
@@ -48,15 +48,18 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         sessionStorage.setItem('userId', data.id);
-        sessionStorage.setItem('isAdmin', data.isAdmin); // 관리자인지 여부 저장
+        sessionStorage.setItem('isAdmin', data.isAdmin.toString());
+        localStorage.setItem('userId', data.id);
+        localStorage.setItem('isAdmin', data.isAdmin.toString());
 
         if (data.isAdmin) {
           setIsAdmin(true);
           showAdminOption();
-
         } else {
           navigate('/Main'); // 일반 사용자 페이지로 이동
+          sessionStorage.setItem('isAdmin', 'false'); // 일반 사용자 세션 저장
         }
+
       } else {
         console.error('로그인 실패:', response.status);
         setLoginSuccess(false);
@@ -102,11 +105,16 @@ function Login() {
   const handleKeyDown = (e) => {
     const allowedKeys = [8, 46, 37, 39, 9]; // 백스페이스, Delete, 왼쪽 화살표, 오른쪽 화살표, Tab 키코드
     const charCode = e.which ? e.which : e.keyCode;
-    if (!((charCode >= 48 && charCode <= 57) || (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || allowedKeys.includes(charCode))) {
+
+    // 일반 숫자 키와 숫자패드 숫자 키를 모두 허용
+    if (!((charCode >= 48 && charCode <= 57) ||
+      (charCode >= 65 && charCode <= 90) ||
+      (charCode >= 97 && charCode <= 122) ||
+      (charCode >= 96 && charCode <= 105) ||
+      allowedKeys.includes(charCode))) {
       e.preventDefault();
     }
   };
-
 
 
   const handleInput = (e) => {
@@ -164,10 +172,10 @@ function Login() {
     navigate('/FindPw');
   };
 
-  const showAdminOption = () => {
+  const showAdminOption = useCallback(() => {
     swal({
       title: "관리자 모드",
-      text: "어디로 이동하시겠습니까?",
+      text: "환영합니다!",
       icon: "info",
       buttons: {
         admin: {
@@ -180,11 +188,9 @@ function Login() {
           text: "메인 페이지",
           value: "main",
           className: "admin-button" // 추가한 부분
-
         },
       },
       className: "admin-button" // 추가한 부분
-
     })
       .then((value) => {
         if (value === "admin") {
@@ -193,8 +199,34 @@ function Login() {
           navigate('/Main');
         }
       });
-  };
+  }, [navigate]);
 
+  // 컴포넌트가 처음 렌더링될 때 세션 스토리지 확인 및 자동 로그인
+  useEffect(() => {
+    let userId = sessionStorage.getItem('userId');
+    let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+  
+    if (!userId) {
+      userId = localStorage.getItem('userId');
+      isAdmin = localStorage.getItem('isAdmin') === 'true';
+  
+      if (userId) {
+        sessionStorage.setItem('userId', userId);
+        sessionStorage.setItem('isAdmin', isAdmin.toString());
+      }
+    }
+  
+    console.log(`User ID: ${userId}, Is Admin: ${isAdmin}`);
+  
+    if (userId) {
+      if (isAdmin) {
+        setIsAdmin(true);
+        showAdminOption();
+      } else {
+        navigate('/Main');
+      }
+    }
+  }, [navigate, showAdminOption]);
 
   return (
     <div className="container-login">
@@ -240,6 +272,7 @@ function Login() {
           </div>
         </form>
       </div>
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

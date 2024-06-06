@@ -17,9 +17,7 @@ const ChatComponent = () => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [productDetails, setProductDetails] = useState(null); // 상품 정보를 상태로 관리
-
-
+  const [productDetails, setProductDetails] = useState(null);
 
   useEffect(() => {
     socket.current = io(`${serverHost}:4001/`, {
@@ -31,17 +29,13 @@ const ChatComponent = () => {
       scrollToBottom();
     });
 
-    socket.current.on('connect', () => {
-      console.log('Client reconnected');
-      fetchMessages();
-    });
-
-    fetchProductDetails(); // 컴포넌트가 마운트될 때 상품 정보를 가져옴
+    socket.current.on('connect', fetchMessages);
+    fetchProductDetails();
 
     return () => {
       socket.current.disconnect();
     };
-  }, []);
+  }, [productId, receiver]);
 
   useEffect(() => {
     adjustMessageContainer();
@@ -54,10 +48,7 @@ const ChatComponent = () => {
   };
 
   const adjustMessageContainer = () => {
-    if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-      scrollToBottom();
-    }
+    scrollToBottom();
   };
 
   useEffect(() => {
@@ -84,7 +75,6 @@ const ChatComponent = () => {
     }
   };
 
-
   const fetchProductDetails = async () => {
     try {
       const response = await fetch(`${serverHost}:4000/api/products/${productId}`);
@@ -108,7 +98,6 @@ const ChatComponent = () => {
 
   const handlePayment = () => {
     navigate(`/sandbox?productId=${productId}&userId=${userId}`);
-    console.log('결제 처리 로직을 추가하세요.');
   };
 
   const isCurrentUser = (senderId) => senderId === userId;
@@ -143,7 +132,6 @@ const ChatComponent = () => {
                 alt="프로필 이미지"
               />
             )}
-
             <div className="message-content">
               <span className="message-sender">{isCurrentUser(message.sender) ? '' : message.sender}</span>
               <span className="message-text">{message.text}</span>

@@ -3,7 +3,7 @@ import { Container, Card, Spinner, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Header from '../header/Header';
 import serverHost from '../../utils/host';
-
+import Footer from '../auth/Footer';
 import '../../styles/payments.css';
 
 const Payments = () => {
@@ -29,6 +29,8 @@ const Payments = () => {
           throw new Error('Failed to fetch payments');
         }
         const data = await response.json();
+        // createdAt을 기준으로 내림차순으로 정렬
+        data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setPayments(data);
         setIsLoading(false);
       } catch (error) {
@@ -38,6 +40,7 @@ const Payments = () => {
     };
     fetchPayments();
   }, [userId]);
+  
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -47,7 +50,7 @@ const Payments = () => {
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      second: 'numeric',
+      
     });
   };
 
@@ -74,7 +77,8 @@ const Payments = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
-    navigate('/login');
+    localStorage.removeItem('userId');
+    navigate('/Login');
   };
 
   const handleShowChatList = () => {
@@ -96,7 +100,7 @@ const Payments = () => {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch');
+      // console.log('touch');
       return;
     }
 
@@ -118,7 +122,7 @@ const Payments = () => {
       console.error('검색 오류:', error);
     }
 
-    console.log("검색어:", searchTerm);
+    // console.log("검색어:", searchTerm);
   };
 
   const handleEnterKeyPress = (event) => {
@@ -191,7 +195,7 @@ const Payments = () => {
         setShowRecentSearches={setShowRecentSearches}
       />
       <Container className="my-4">
-        <h1 className="mb-4">구매 내역</h1>
+        <h1 className="mb-4">최근 구매 내역</h1>
         {isLoading ? (
           <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
             <Spinner animation="border" role="status">
@@ -207,7 +211,7 @@ const Payments = () => {
                     <Card.Title>{payment.productName}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">주문 번호: {payment.orderId}</Card.Subtitle>
                     <Card.Text>금액: {parseInt(payment.amount).toLocaleString()}원</Card.Text>
-                    <Card.Text>일시: {formatDate(payment.createdAt)}</Card.Text>
+                    <Card.Text>구매일: {formatDate(payment.createdAt)}</Card.Text>
                   </Card.Body>
                 </Card>
               </Col>
@@ -215,7 +219,7 @@ const Payments = () => {
           </Row>
         )}
       </Container>
-
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
+import Footer from '../auth/Footer';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -38,10 +39,6 @@ function ProductManagement() {
     }
   };
 
-
-
-
-
   const handleAddProduct = () => {
     navigate('/AddProducts');
   };
@@ -49,7 +46,7 @@ function ProductManagement() {
   const handleSearchProduct = async () => {
     if (!searchTerm) {
       setSearchError('검색어를 입력하세요.');
-      console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
+      // console.log('touch'); // 검색 인풋창 클릭시 "touch"를 콘솔에 출력
       return;
     }
 
@@ -73,7 +70,7 @@ function ProductManagement() {
       console.error('검색 오류:', error);
     }
     // 검색어가 유효할 때 콘솔에 검색어 출력
-    console.log("검색어:", searchTerm);
+    // console.log("검색어:", searchTerm);
 
   };
 
@@ -82,8 +79,6 @@ function ProductManagement() {
       handleSearchProduct();
     }
   };
-
-
 
   const saveSearchTerm = async (searchTerm) => {
     try {
@@ -124,6 +119,7 @@ function ProductManagement() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
     navigate('/Login');
   };
 
@@ -203,7 +199,7 @@ function ProductManagement() {
                 <div className="card-desc">
                   <h2 className="card-title">{product.name}</h2>
                   <div className="card-price">{product.price}원</div>
-                  
+
                 </div>
               </a>
             </article>
@@ -213,8 +209,9 @@ function ProductManagement() {
       {searchError && (
         <p className="search-error">{searchError}</p>
       )}
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }
 
-export default ProductManagement;
+export default ProductManagement

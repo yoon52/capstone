@@ -1,194 +1,170 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/chat.css';
-import '../../styles/chatList.css';
-import ChatModal from './ChatModal';
-import Header from '../header/Header';
+import io from 'socket.io-client';
 import serverHost from '../../utils/host';
+import SendIcon from '@mui/icons-material/Send';
+import PaymentIcon from '@mui/icons-material/Payment';
+import Button from '@mui/material/Button';
 
-const ChatListComponent = () => {
+const ChatComponent = () => {
   const userId = sessionStorage.getItem('userId');
+  const productId = sessionStorage.getItem('productId');
   const userType = sessionStorage.getItem('userType');
-  const [chatRooms, setChatRooms] = useState([]);
-  const [selectedRoomId, setSelectedRoomId] = useState(null);
-  const [selectedRoomProductId, setSelectedRoomProductId] = useState(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [, setSavedSearchTerm] = useState('');
-  const [, setShowSearchResults] = useState(false);
-  const [showNavMenu, setShowNavMenu] = useState(false);
-  const [, setSearchError] = useState('');
+  const receiver = userType === 'seller' ? 'buyer' : 'seller';
+  const messageContainerRef = useRef(null);
+  const socket = useRef(null);
   const navigate = useNavigate();
-  const searchInputRef = useRef(null);
-  const [, setFilteredProducts] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [productDetails, setProductDetails] = useState(null);
 
   useEffect(() => {
-    fetchChatRooms();
-  }, [userId, userType]);
+    socket.current = io(`${serverHost}:4001/`, {
+      query: { productId, receiver }
+    });
 
-  const fetchChatRooms = async () => {
+    socket.current.on('newMessage', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+      scrollToBottom();
+    });
+
+    socket.current.on('connect', fetchMessages);
+    fetchProductDetails();
+
+    return () => {
+      socket.current.disconnect();
+    };
+  }, [productId, receiver]);
+
+  useEffect(() => {
+    adjustMessageContainer();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  };
+
+  const adjustMessageContainer = () => {
+    scrollToBottom();
+  };
+
+  useEffect(() => {
+    socket.current.on('chatHistory', (chatHistory) => {
+      setMessages(chatHistory);
+      scrollToBottom();
+    });
+  }, []);
+
+  const fetchMessages = async () => {
     try {
-      const response = await fetch(`${serverHost}:4001/myChatRooms`, {
+      const response = await fetch(`${serverHost}:4001/messages/${productId}`, {
         headers: {
-          'user_id': userId,
-          'user_type': userType
+          'receiver': receiver
         }
       });
       if (!response.ok) {
-        throw new Error('Failed to fetch chat rooms');
+        throw new Error('Failed to fetch messages');
       }
       const data = await response.json();
-      setChatRooms(data);
+      setMessages(data);
     } catch (error) {
-      console.error('Error fetching chat rooms:', error);
+      console.error('Error fetching chat history:', error);
     }
   };
 
-  const openChat = (chatRoomId, productId) => {
-    setSelectedRoomId(chatRoomId);
-    setSelectedRoomProductId(productId);
-    setIsChatOpen(true);
-  };
-
-  const closeChat = () => {
-    setSelectedRoomId(null);
-    setSelectedRoomProductId(null);
-    setIsChatOpen(false);
-  };
-  const handleAddProduct = () => {
-    navigate('/AddProducts');
-  };
-
-  const handleSearchProduct = async () => {
-    if (!searchTerm) {
-      setSearchError('검색어를 입력하세요.');
-      return;
-    }
+  const fetchProductDetails = async () => {
     try {
-      const response = await fetch(`${serverHost}:4000/products?search=${searchTerm}`);
-      if (response.ok) {
-        const data = await response.json();
-        setFilteredProducts(data);
-        setSavedSearchTerm(searchTerm);
-        saveSearchTerm(searchTerm);
-        setShowSearchResults(true);
-        setSearchError('');
-      } else {
-        console.error('검색 오류:', response.status);
-      }
-    } catch (error) {
-      console.error('검색 오류:', error);
-    }
-  };
-
-  const handleEnterKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleSearchProduct();
-    }
-  };
-
-  const saveSearchTerm = async (searchTerm) => {
-    try {
-      const userId = sessionStorage.getItem('userId');
-      const response = await fetch(`${serverHost}:4000/searchHistory`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ searchTerm, userId })
-      });
+      const response = await fetch(`${serverHost}:4000/api/products/${productId}`);
       if (!response.ok) {
-        console.error('검색어 저장 오류:', response.status);
+        throw new Error('Failed to fetch product details');
       }
+      const data = await response.json();
+      setProductDetails(data);
     } catch (error) {
-      console.error('검색어 저장 오류:', error);
+      console.error('Error fetching product details:', error);
     }
   };
 
-  const handleChangeSearchTerm = (event) => {
-    setSearchTerm(event.target.value);
-    setSearchError('');
+  const handleMessageSubmit = (e) => {
+    e.preventDefault();
+    if (newMessage.trim() !== '') {
+      socket.current.emit('sendMessage', { text: newMessage, sender: userId, receiver, productId });
+      setNewMessage('');
+    }
   };
 
-  const handleKeywordManagement = () => {
-    navigate('/SearchKeyword');
+  const handlePayment = () => {
+    navigate(`/sandbox?productId=${productId}&userId=${userId}`);
   };
 
-  const handleProductManagement = () => {
-    navigate('/ProductManagement');
-  };
+  const isCurrentUser = (senderId) => senderId === userId;
 
-  const handleShowMyInfoPage = () => {
-    navigate('/MyInfo');
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem('userId');
-    navigate('/Login');
-  };
-
-  const handleShowChatList = () => {
-    navigate('/ChatListComponent');
-  };
-
-  const toggleNavMenu = () => {
-    setShowNavMenu(!showNavMenu);
-  };
-
-  const closeNavMenu = () => {
-    setShowNavMenu(false);
-  };
-  
-
-  const handleShowWishlist = () => {
-    navigate('/ShowWishlist');
-  };
   return (
-    <div className="container-main">
-      <Header
-        toggleNavMenu={toggleNavMenu}
-        showNavMenu={showNavMenu}
-        closeNavMenu={closeNavMenu}
-        handleAddProduct={handleAddProduct}
-        handleShowChatList={handleShowChatList}
-        handleShowMyInfoPage={handleShowMyInfoPage}
-        handleKeywordManagement={handleKeywordManagement}
-        handleProductManagement={handleProductManagement}
-        handleLogout={handleLogout}
-        searchTerm={searchTerm}
-        handleChangeSearchTerm={handleChangeSearchTerm}
-        handleEnterKeyPress={handleEnterKeyPress}
-        searchInputRef={searchInputRef}
-        handleShowWishlist={handleShowWishlist}
-      />
-      <div className="chatsidebar-container">
-        <div className="chatsidebar">
-          <h2 className="chat-heading">채팅</h2>
-          {chatRooms.length === 0 ? (
-            <p className="loading-text">채팅방을 로딩하는 중입니다.</p>
-          ) : (
-            <ul className="chat-room-list">
-              {chatRooms.map((chatRoom) => (
-                <li key={chatRoom.id} className={selectedRoomId === chatRoom.id ? 'selected' : 'chat-room-item'}>
-                  <button onClick={() => openChat(chatRoom.id, chatRoom.productId)} className="chat-room-button">
-                    <div className="chat-room-info">
-                      <span className="chat-room-name">상품명 : {chatRoom.productName}</span>
-                      <span className="last-message">{chatRoom.lastMessage}</span>
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        {isChatOpen && (
-          <div className={`chat-window ${isChatOpen ? 'chat-open' : ''}`}>
-            <ChatModal chatRoomId={selectedRoomId} productId={selectedRoomProductId} closeChat={closeChat} />
+    <div className="chat-component">
+      <div className="chat-header">
+        {productDetails && (
+          <div className="product-chat-imamge">
+            <img
+              className="products-image"
+              src={`${serverHost}:4000/uploads/${productDetails.image}`}
+              alt="상품 이미지"
+            />
+            <div className="products-info">
+              <h3>상품명 : {productDetails.name}</h3>
+              <p>가격 : {productDetails.price}원</p>
+            </div>
           </div>
         )}
       </div>
+      <div ref={messageContainerRef} className="chat-messages">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`message-container ${isCurrentUser(message.sender) ? 'own-message' : 'other-message'}`}
+          >
+            {!isCurrentUser(message.sender) && (
+              <img
+                src="https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png"
+                className="profile-image"
+                alt="프로필 이미지"
+              />
+            )}
+            <div className="message-content">
+              <span className="message-sender">{isCurrentUser(message.sender) ? '' : message.sender}</span>
+              <span className="message-text">{message.text}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <form onSubmit={handleMessageSubmit} className="chat-form">
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="메시지를 입력하세요."
+        />
+        <div className="chat-button-group">
+          <Button
+            type="submit"
+            variant="contained"
+            startIcon={<SendIcon />}
+            className="button"
+          >
+          </Button>
+          <Button
+            onClick={handlePayment}
+            variant="contained"
+            startIcon={<PaymentIcon />}
+            className="button"
+          >
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default ChatListComponent;
+export default ChatComponent;
