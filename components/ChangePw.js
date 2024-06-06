@@ -56,8 +56,8 @@ function ChangePw() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>비밀번호 재설정</Text>
-            <Text style={styles.label}>현재 비밀번호</Text>
+            <Text style={styles.header}>비밀번호 재설정</Text>
+            <Text style={styles.label}>현재 암호</Text>
             <TextInput
                 style={styles.input}
                 value={currentPassword}
@@ -65,7 +65,7 @@ function ChangePw() {
                 secureTextEntry={true}
                 placeholder="현재 비밀번호 입력"
             />
-            <Text style={styles.label}>새 암호:</Text>
+            <Text style={styles.label}>새 암호</Text>
             <TextInput
                 style={styles.input}
                 value={newPassword}
@@ -73,7 +73,7 @@ function ChangePw() {
                 secureTextEntry={true}
                 placeholder="새 비밀번호 입력"
             />
-            <Text style={styles.label}>새 암호 재입력:</Text>
+            <Text style={styles.label}>새 암호 재입력</Text>
             <TextInput
                 style={styles.input}
                 value={confirmNewPassword}
@@ -81,7 +81,6 @@ function ChangePw() {
                 secureTextEntry={true}
                 placeholder="새 비밀번호 재입력"
             />
-
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.button, styles.closeButton]} onPress={handleClose}>
                     <Text style={styles.buttonText}>닫기</Text>
@@ -98,20 +97,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f9f9f9',
     },
-    title: {
-        marginTop:65,
+    header: {
+        marginTop: 170,
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#333',
         textAlign: 'center',
     },
     label: {
         fontSize: 16,
         marginBottom: 5,
-        color: '#333',
     },
     input: {
         borderWidth: 1,

@@ -4,9 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import serverHost from './host';
-
-
-
 const ChatModal = ({ chatRoomId, productId, onClose }) => {
   const [userId, setUserId] = useState(null);
   const [userType, setUserType] = useState(null);
@@ -117,7 +114,10 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
             <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.heading}>채팅방 번호: {chatRoomId}</Text>
-          <ScrollView ref={messageContainerRef} style={styles.chatContainer}>
+          <ScrollView
+            showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+            ref={messageContainerRef} style={styles.chatContainer}
+          >
             {messages.map((message, index) => (
               <View
                 key={index}
@@ -152,6 +152,7 @@ const ChatModal = ({ chatRoomId, productId, onClose }) => {
               <Ionicons name="send" size={24} color="#103260" />
             </TouchableOpacity>
           </View>
+
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    
+
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,

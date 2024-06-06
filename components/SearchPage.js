@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons'; // 검색 아이콘을 추가로 import합니다.
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 import serverHost from './host';
 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -78,7 +81,8 @@ function SearchPage() {
   }, []);
 
   // 검색 버튼 클릭 시 검색 결과를 가져오는 함수
-  const handleSearch = async () => {
+  // 검색 버튼 클릭 시 검색 결과를 가져오는 함수
+  const handleSearch = async (searchTerm) => {
     try {
       // 검색어가 비어 있는지 확인
       if (!searchTerm.trim()) {
@@ -94,8 +98,9 @@ function SearchPage() {
         saveSearchTerm(searchTerm);
         setSavedSearchTerm(searchTerm);
         navigation.navigate('SearchResults', { searchResults, searchTerm });
-        console.log('검색 결과:', searchResults);
+        // console.log('검색 결과:', searchResults);
         // 검색어 저장
+        setSearchTerm(''); // 검색 완료 후 검색어 초기화
 
       } else {
         // 검색 오류 처리
@@ -106,8 +111,6 @@ function SearchPage() {
       console.error('검색 오류:', error);
     }
   };
-
-
   // 검색어 삭제 함수
   const deleteKeyword = async (keywordId) => {
     try {
@@ -139,8 +142,9 @@ function SearchPage() {
   // 검색어를 누르면 해당 검색어로 검색되도록 하는 함수
   const searchWithKeyword = async (keyword) => {
     setSearchTerm(keyword);
-    handleSearch();
+    handleSearch(keyword); // 검색어를 검색 함수에 전달하여 검색을 수행
   };
+
 
   return (
     <View style={styles.container}>
@@ -152,7 +156,7 @@ function SearchPage() {
           onChangeText={setSearchTerm}
           placeholder="검색어를 입력하세요"
         />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+        <TouchableOpacity style={styles.searchButton} onPress={() => handleSearch(searchTerm)}>
           <Ionicons name="search" size={24} color="#103260" />
         </TouchableOpacity>
       </View>
@@ -160,18 +164,22 @@ function SearchPage() {
       {/* 가장 많이 검색된 검색어 */}
       <View style={styles.topKeywordsContainer}>
         <Text style={styles.sectionTitle}>가장 많이 검색된 검색어</Text>
-        <ScrollView horizontal style={styles.topKeywords}>
+        <ScrollView
+          horizontal
+          style={styles.topKeywords}
+          showsHorizontalScrollIndicator={false} // 스크롤바 숨기기
+        >
           {topSearchKeywords.map((keyword, index) => (
-             <TouchableOpacity
-             key={index}
-             style={[
-               styles.keywordItem,
-               { backgroundColor: hoveredKeywordIndex === index ? '#d3d3d3' : '#f0f0f0' }
-             ]}
-             onPress={() => searchWithKeyword(keyword.search_term)}
-             onPressIn={() => setHoveredKeywordIndex(index)}
-             onPressOut={() => setHoveredKeywordIndex(null)}
-           >
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.keywordItem,
+                { backgroundColor: hoveredKeywordIndex === index ? '#d3d3d3' : '#f0f0f0' }
+              ]}
+              onPress={() => searchWithKeyword(keyword.search_term)}
+              onPressIn={() => setHoveredKeywordIndex(index)}
+              onPressOut={() => setHoveredKeywordIndex(null)}
+            >
               <Text style={styles.keywordText}>{keyword.search_term}</Text>
             </TouchableOpacity>
           ))}
@@ -181,9 +189,12 @@ function SearchPage() {
       {/* 최근 검색어 */}
       <View style={styles.recentContainer}>
         <Text style={styles.sectionTitle}>최근 검색어</Text>
-        <ScrollView style={styles.recentSearches}>
+        <ScrollView
+          style={styles.recentSearches}
+          showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+        >
           {searchKeywords.map((keyword) => (
-              <TouchableOpacity
+            <TouchableOpacity
               key={keyword.id}
               style={[
                 styles.recentItem,
@@ -193,10 +204,13 @@ function SearchPage() {
               onPressIn={() => setHoveredItemId(keyword.id)}
               onPressOut={() => setHoveredItemId(null)}
             >
+              <MaterialIcons name="history" size={18} color="black" style={styles.historyIcon} />
               <Text style={styles.recentText}>{keyword.search_term}</Text>
               <TouchableOpacity style={styles.deleteButton} onPress={() => deleteKeyword(keyword.id)}>
-              <Ionicons name="close-sharp" size={20} color="#103260" />
+                <Ionicons name="close-sharp" size={20} color="#103260" />
               </TouchableOpacity>
+
+
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -207,12 +221,13 @@ function SearchPage() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
     flex: 1,
     padding: 20,
+    marginTop: 30
   },
   searchBar: {
     flexDirection: 'row',
+    alignItems: 'center', // 세로 정렬
     marginBottom: 20,
   },
   input: {
@@ -220,69 +235,68 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginRight: 10, // 검색창과 버튼 사이 여백 추가
   },
   searchButton: {
     borderRadius: 10,
-    padding: 10,
-    marginLeft: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18, // 제목 크기 증가
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20, // 섹션 간격 증가
   },
   topKeywordsContainer: {
-    marginTop: 20,
-    marginBottom: 20, // 최근 검색어와의 간격 조정
+    marginBottom: 20, // 섹션 간격 증가
   },
   topKeywords: {
-    flexDirection: 'row', // 가로로 한 줄로 정렬
-    marginBottom: 10, // 검색어 아래 여백 추가
-    
+    flexDirection: 'row',
+    marginBottom: 15,
   },
   keywordItem: {
     marginRight: 10,
-    padding: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     backgroundColor: '#f0f0f0',
-    width: 55,
-    justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 10,
-    flexDirection: 'row', // 텍스트들이 가로로 정렬되도록 변경
-    overflow: 'hidden',
-    borderWidth: 1, // 테두리 두께 추가
-    borderColor: '#ccc', // 테두리 색상 추가
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
-
   keywordText: {
     fontSize: 14,
-
   },
   recentContainer: {
-    marginBottom: 20, // 검색 버튼 아래 여백 추가
+    marginBottom: 20,
   },
   recentSearches: {
-    marginRight: 20,
-    // overflow: 'hidden',
+    width: '100%', // 최근 검색어 목록 전체 너비 사용
   },
   recentItem: {
-    justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',
-    width: 'auto',
-    height: 40,
-    borderRadius: 15,
-    borderWidth: 0.5,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    marginBottom: 10, // 검색어 아래 여백 추가
-    backgroundColor: '#f0f0f0', // 최근 검색어 배경색 추가
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
+  historyIcon: {
+    marginRight: 10,
+  },
+
   recentText: {
-    marginRight: 5,
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#333', // 텍스트 색상 변경
   },
- 
+
+  deleteButton: {
+    marginLeft: 10,
+  },
+
 });
 
 export default SearchPage;

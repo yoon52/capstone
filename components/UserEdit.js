@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 import serverHost from './host';
 
 function UserEdit({ userInfo }) {
@@ -10,7 +11,7 @@ function UserEdit({ userInfo }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigation = useNavigation();
-  
+
   const handleChange = (field, value) => {
     setEditedUserInfo({ ...editedUserInfo, [field]: value });
   };
@@ -25,7 +26,7 @@ function UserEdit({ userInfo }) {
         },
         body: JSON.stringify({ userId, editedUserInfo })
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         alert(data.message); // 수정이 완료되었습니다. 메시지 표시
@@ -37,7 +38,7 @@ function UserEdit({ userInfo }) {
       console.error('사용자 정보 수정 오류:', error);
     }
   };
-  
+
   const handleDeleteAccount = async () => {
     setIsModalOpen(true);
   };
@@ -91,7 +92,29 @@ function UserEdit({ userInfo }) {
         />
       </View>
       <View style={styles.selectGroup}>
-        {/* Add your select inputs here */}
+        <Picker
+          selectedValue={editedUserInfo.department}
+          onValueChange={(itemValue) => handleChange('department', itemValue)}
+          style={[styles.picker, { color: editedUserInfo.department ? 'black' : 'gray' }]}
+        >
+          <Picker.Item label="학과를 선택하세요" value="" />
+          <Picker.Item label="컴퓨터 공학과" value="computer_science" />
+          <Picker.Item label="소프트웨어 공학과" value="software_engineering" />
+          <Picker.Item label="디자인학과" value="design" />
+          <Picker.Item label="경영학과" value="business-administration" />
+        </Picker>
+
+        <Picker
+          selectedValue={editedUserInfo.grade}
+          onValueChange={(itemValue) => handleChange('grade', itemValue)}
+          style={[styles.picker, { color: editedUserInfo.grade ? 'black' : 'gray' }]}
+        >
+          <Picker.Item label="학년을 선택하세요" value="" />
+          <Picker.Item label="1학년" value="1" />
+          <Picker.Item label="2학년" value="2" />
+          <Picker.Item label="3학년" value="3" />
+          <Picker.Item label="4학년" value="4" />
+        </Picker>
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.buttonText}>저장</Text>
@@ -133,6 +156,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#f9f9f9',
   },
   header: {
     fontSize: 24,
@@ -144,34 +168,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     textAlign: 'center',
+    color: '#555',
   },
   formGroup: {
-    marginBottom: 10,
+    marginBottom: 20,
     alignItems: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#ddd',
     borderRadius: 5,
     padding: 10,
-    width: 300,
-    height: 40,
+    backgroundColor: '#fff',
+    width: '100%',
   },
   selectGroup: {
-    // Add styles for select inputs
+    marginBottom: 20,
+  },
+  picker: {
+    height: 50,
+    marginVertical: 10,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    paddingLeft: 10,
   },
   saveButton: {
     backgroundColor: '#103260',
     borderRadius: 5,
-    padding: 10,
+    padding: 15,
     alignItems: 'center',
-    marginBottom: 10,
-    width: 300,
+    marginTop: 5,
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
   },
   changePwButton: {
     backgroundColor: '#103260',
@@ -181,12 +214,11 @@ const styles = StyleSheet.create({
     width: '48%',
   },
   withdrawalButton: {
-    backgroundColor: '#FF0000',
+    backgroundColor: '#e74c3c',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
     width: '48%',
-    marginLeft: 15,
   },
   buttonText: {
     color: 'white',
@@ -212,27 +244,23 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 20,
+    color: '#555',
   },
   confirmButton: {
     backgroundColor: '#103260',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
+    marginTop: 10,
     marginBottom: 10,
   },
   cancelButton: {
-    backgroundColor: '#FF0000',
+    backgroundColor: '#e74c3c',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
     marginBottom: 10,
   },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
 });
 
 export default UserEdit;
-
