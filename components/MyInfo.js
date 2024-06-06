@@ -40,7 +40,7 @@ function MyInfo() {
       <TouchableOpacity onPress={() => navigation.navigate('Main')}>
 
       </TouchableOpacity>
-      <Text style={styles.header}>내 정보</Text>
+      <Text style={styles.header}></Text>
       <View style={styles.myInfoContainer}>
         {!isPasswordConfirmed ? (
           <>

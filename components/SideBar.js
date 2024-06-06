@@ -99,9 +99,9 @@ const Sidebar = ({ onClose }) => {
             <Image source={{ uri: userInfo.profileImage || 'https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png' }} style={styles.profileImage} />
             <View style={styles.profileInfo}>
               <Text style={styles.userName}>{userInfo.name}</Text>
-              <Text>{`학번: ${userInfo.id}`}</Text>
-              <Text>{`학과: ${userInfo.department}`}</Text>
-              <Text>{`학년: ${userInfo.grade}`}</Text>
+              <Text>{`학번 : ${userInfo.id}`}</Text>
+              <Text>{`학과 : ${userInfo.department}`}</Text>
+              <Text>{`학년 : ${userInfo.grade}`}</Text>
             </View>
           </View>
           <View style={styles.balanceContainer}>
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     paddingTop: 50,
     paddingLeft: 20,
+    borderTopEndRadius: 10,
   },
   closeButton: {
     position: 'absolute',

@@ -1,5 +1,3 @@
-// ProductList.js
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -74,10 +72,13 @@ function ProductList({ filteredProducts }) {
       showsVerticalScrollIndicator={false} // 스크롤바 숨기기
 
     >
-      {formattedProducts.map(product => (
+      {formattedProducts.map((product, index) => (
         <TouchableOpacity
           key={product.id}
-          style={styles.productItem}
+          style={[
+            styles.productItem,
+            index === 0 && { marginTop: 0 }, // 첫 번째 상품 위 마진 제거
+          ]}
           onPress={() => handleProductClick(product.id)}
           disabled={loading}
         >
@@ -107,11 +108,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    padding: 10,
+    paddingHorizontal: 10,
   },
   productItem: {
     width: '100%',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   productCard: {
     flexDirection: 'row',

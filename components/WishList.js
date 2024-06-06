@@ -147,17 +147,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    borderWidth: 1, // 테두리 두께
+    borderColor: '#ddd', // 테두리 색상
+    borderRadius: 5, // 테두리의 모서리를 둥글게 설정
+    padding: 10, // 패딩 추가
+    backgroundColor: '#fff', // 배경색 추가
   },
   wishlistBadge: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: 10,
+    right: 10,
     zIndex: 1,
   },
   wishImage: {
     width: 100,
     height: 100,
     marginRight: 10,
+    borderRadius:5,
   },
   wishDetails: {
     flex: 1,

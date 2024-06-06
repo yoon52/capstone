@@ -72,8 +72,7 @@ function UserEdit({ userInfo }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>회원 정보 수정</Text>
-      <Text style={styles.userId}>학번: {userInfo.id}</Text>
+      <Text style={styles.userId}>학번 : {userInfo.id}</Text>
       <View style={styles.formGroup}>
         <TextInput
           style={styles.input}
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   userId: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 10,
     textAlign: 'center',
   },
