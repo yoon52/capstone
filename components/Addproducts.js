@@ -117,14 +117,14 @@ function AddProducts() {
         </TouchableOpacity>
         <TextInput
           style={styles.input}
-          placeholder="제목"
+          placeholder="상품명"
           value={name}
           onChangeText={setName}
         />
 
         <TextInput
           style={styles.input}
-          placeholder="가격을 입력해주세요."
+          placeholder="상품 가격"
           value={price}
           onChangeText={setPrice}
           keyboardType="numeric"
@@ -132,13 +132,13 @@ function AddProducts() {
 
         <TextInput
           style={styles.textarea}
-          placeholder="상세한 설명"
+          placeholder="상품 상세 설명"
           value={description}
           onChangeText={setDescription}
           multiline={true}
         />
         <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
-          <Text style={styles.buttonText}>작성 완료</Text>
+          <Text style={styles.buttonText}>상품 등록</Text>
         </TouchableOpacity>
 
       </View>
