@@ -96,7 +96,7 @@ const SuccessPage = ({ route }) => {
       if (response.ok) {
         // console.log('Seller rating updated successfully.');
         setRatingSubmitted(true);
-        Alert.alert('평점 등록 성공');
+        
       } else {
         console.error('Failed to update seller rating:', response.status);
       }
@@ -139,23 +139,24 @@ const SuccessPage = ({ route }) => {
             {ratingSubmitted ? (
               <View>
                 <Text style={styles.modalTitle}>평점이 제출되었습니다!</Text>
-                <Button title="닫기" onPress={closeModal} color="#103260" />
+                <Button title="닫기" onPress={closeModal} color="#6c63ff" />
               </View>
             ) : (
-              <View>
-                <Text style={styles.modalTitle}>사용자 평점 등록</Text>
-                <View style={styles.ratingSection}>
-                  <Slider
-                    style={styles.slider}
-                    minimumValue={0}
-                    maximumValue={4.5}
-                    step={0.1}
-                    value={rating}
-                    onValueChange={setRating}
-                    minimumTrackTintColor="#FFD700"
-                    maximumTrackTintColor="#ddd"
-                    thumbTintColor="#6c63ff"
-                  />
+              <View style={styles.centeredContent}>
+              <Text style={styles.modalTitle}>매너 평점 등록</Text>
+              <View style={styles.ratingSection}>
+                <Slider
+                  style={styles.slider}
+                  minimumValue={0}
+                  maximumValue={4.5}
+                  step={0.1}
+                  value={rating}
+                  onValueChange={setRating}
+                  minimumTrackTintColor="#FFD700"
+                  maximumTrackTintColor="#ddd"
+                  thumbTintColor="#6c63ff"
+                />
+
                   <Text style={styles.ratingValue}>{rating.toFixed(1)}</Text>
                 </View>
                 <TouchableOpacity style={styles.submitButton} onPress={updateSellerRating}>
@@ -270,6 +271,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  centeredContent: {
+    alignItems: 'center',
+  },
+
 });
 
 

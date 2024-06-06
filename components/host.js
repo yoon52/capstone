@@ -5,9 +5,9 @@
 // const serverHost = "http://192.168.199.120"; // 여기에 서버 주소를 입력하세요
 
 //ec2
-const serverHost = "https://ec2caps.liroocapstone.shop";
+// const serverHost = "https://ec2caps.liroocapstone.shop";
 
 //집
-// const serverHost = "http://192.168.219.135"; // 여기에 서버 주소를 입력하세요
+const serverHost = "http://192.168.45.22"; // 여기에 서버 주소를 입력하세요
 
 export default serverHost;

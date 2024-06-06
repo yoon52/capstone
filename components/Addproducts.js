@@ -121,7 +121,7 @@ function AddProducts() {
           value={name}
           onChangeText={setName}
         />
-
+  
         <TextInput
           style={styles.input}
           placeholder="가격을 입력해주세요."
@@ -129,7 +129,7 @@ function AddProducts() {
           onChangeText={setPrice}
           keyboardType="numeric"
         />
-
+  
         <TextInput
           style={styles.textarea}
           placeholder="상세한 설명"
@@ -137,13 +137,13 @@ function AddProducts() {
           onChangeText={setDescription}
           multiline={true}
         />
-        <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
-          <Text style={styles.buttonText}>작성 완료</Text>
-        </TouchableOpacity>
-
       </View>
+      <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
+        <Text style={styles.buttonText}>작성 완료</Text>
+      </TouchableOpacity>
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
