@@ -1,8 +1,14 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
 import Footer from '../auth/Footer';
+import Swal from 'sweetalert2';
+import swal from 'sweetalert';
+import IconButton from '@mui/material/IconButton';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);
@@ -16,7 +22,7 @@ function ProductManagement() {
   const searchInputRef = useRef(null);
   const [, setShowRecentSearches] = useState(false);
   const [, setFormattedProducts] = useState([]);
-
+  const userId = sessionStorage.getItem('userId');
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -161,6 +167,85 @@ function ProductManagement() {
     setFormattedProducts(formatted);
   }, [products]);
 
+  const handleProductClick = (productId) => {
+    return (e) => {
+      e.preventDefault();
+
+      Swal.fire({
+        title: '어떤 작업을 원하세요?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fas fa-info-circle"></i> 상세 페이지',
+        cancelButtonText: '<i class="fas fa-edit"></i> 수정 페이지',
+        customClass: {
+          title: 'my-custom-font',
+          confirmButton: 'btn btn-success swal-confirm',
+          cancelButton: 'btn btn-warning swal-cancel',
+        },
+        buttonsStyling: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/ProductDetail/${productId}`;
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          window.location.href = `/ProductManagementForm/${productId}`;
+        }
+      });
+    };
+  };
+
+  const handleDeleteClick = async (productId) => {
+    const confirmDeletion = await swal({
+      title: "정말로 삭제하시겠습니까?",
+      text: "삭제된 상품은 복구할 수 없습니다.",
+      icon: "warning",
+      buttons: {
+        confirm: {
+          text: "확인",
+          value: true,
+          visible: true,
+          className: "btn btn-danger", // 기본 버튼 스타일 적용
+          closeModal: true,
+        },
+        cancel: {
+          text: "닫기",
+          value: null,
+          visible: true,
+          className: "btn btn-secondary",
+          closeModal: true,
+        },
+      },
+      customClass: {
+        confirmButton: 'text-white', // 커스텀 클래스 적용
+      },
+      dangerMode: true,
+    });
+
+
+
+    if (confirmDeletion) {
+      try {
+        const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'user_id': userId, // 실제 사용자 ID를 여기에 넣어야 함
+          },
+        });
+
+        if (response.ok) {
+          setProducts(products.filter(product => product.id !== productId));
+          await swal("성공", "상품이 성공적으로 삭제되었습니다.", "success");
+        } else {
+          const errorData = await response.json();
+          swal("오류", `상품 삭제 중 오류가 발생했습니다: ${errorData.error}`, "error");
+        }
+      } catch (error) {
+        console.error('상품 삭제 오류:', error);
+        swal("오류", "상품 삭제 중 오류가 발생했습니다.", "error");
+      }
+    }
+  };
+
 
   return (
     <div className="container-main">
@@ -187,30 +272,53 @@ function ProductManagement() {
       <div className='h2-font'>
         <h2>내가 등록한 상품</h2>
         <div className="cards-wrap1">
-          {products.map((product) => (
-            <article className="card-top" key={product.id}>
-              <a className="card-link-1" href={`/ProductManagementForm/${product.id}`} data-event-label={product.id}>
-                <div className="card-photo">
-                  <img
-                    src={`${serverHost}:4000/uploads/${product.image}`}
-                    alt={product.title}
-                  />
-                </div>
-                <div className="card-desc">
-                  <h2 className="card-title">{product.name}</h2>
-                  <div className="card-price">{product.price}원</div>
+          {products.length === 0 ? (
+            <div className="no-products">
 
-                </div>
-              </a>
-            </article>
-          ))}
+            </div>
+
+          ) : (
+            products.map((product) => (
+              <article className="card-top" key={product.id} style={{ position: 'relative' }}>
+                <a
+                  href="#"
+                  className="card-link-1"
+                  data-event-label={product.id}
+                  onClick={handleProductClick(product.id)}
+                >
+                  <div className="card-photo">
+                    <img
+                      src={`${serverHost}:4000/uploads/${product.image}`}
+                      alt={product.title}
+                    />
+                  </div>
+                  <div className="card-desc">
+                    <h2 className="card-title">{product.name}</h2>
+                    <div className="card-price">{product.price}원</div>
+
+                  </div>
+
+                </a>
+                <IconButton
+                  style={{ position: 'absolute', top: '260px', right: '5px' }}
+                  onClick={() => handleDeleteClick(product.id)}
+                >
+                  <HighlightOffIcon fontSize='medium' color="error" />
+                </IconButton>
+
+              </article>
+            ))
+          )}
         </div>
       </div>
-      {searchError && (
-        <p className="search-error">{searchError}</p>
-      )}
+
+      {
+        searchError && (
+          <p className="search-error">{searchError}</p>
+        )
+      }
       <Footer /> {/* Add Footer component here */}
-    </div>
+    </div >
   );
 }
 

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import ViewsList from '../products/ViewsList';
 import SearchResults from '../header/SearchResults';
@@ -24,6 +24,10 @@ function Main() {
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
   const [, setShowRecentSearches] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleAddProduct = () => {
     navigate('/AddProducts');
@@ -154,14 +158,13 @@ function Main() {
             <span className="cover-description">학생들과 가깝고 따뜻한 거래를<br />지금 경험해보세요.</span>
             <div className="cover-image">
               <span className="fleamarket-cover-image">
-                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp " alt="믿을만한 이웃 간 중고거래" />
+                <img src="https://d1unjqcospf8gs.cloudfront.net/assets/home/main/3x/fleamarket-39d1db152a4769a6071f587fa9320b254085d726a06f61d544728b9ab3bd940a.webp" alt="믿을만한 이웃 간 중고거래" />
               </span>
             </div>
           </div>
         </section>
         <div className="list-container">
-          <ViewsList
-          />
+          <ViewsList/>
         </div>
         <div className="more-list">
           <button className="main-more-button" onClick={handleMoreList}>전체 상품 보기</button>

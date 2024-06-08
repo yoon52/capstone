@@ -228,5 +228,4 @@ const ShowWishlist = () => {
     </div>
   );
 };
-
 export default ShowWishlist;

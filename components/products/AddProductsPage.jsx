@@ -1,5 +1,4 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/product.css';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
@@ -25,6 +24,11 @@ function AddProducts() {
   const searchInputRef = useRef(null);
   const [setShowRecentSearches] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -56,24 +60,38 @@ function AddProducts() {
     }
   };
 
+  // 이미지 변경 이벤트를 처리하는 함수
   const handleImageChange = (event) => {
+    // 사용자가 선택한 첫 번째 파일을 가져옴
     const selectedImage = event.target.files[0];
+
+    // 파일이 선택되었는지 확인
     if (selectedImage) {
+      // 선택한 이미지 파일로 상태를 업데이트
       setImage(selectedImage);
+
+      // 파일을 읽기 위해 새로운 FileReader 객체 생성
       const reader = new FileReader();
+
+      // FileReader의 onload 이벤트 핸들러 정의
       reader.onload = () => {
+        // base64 인코딩된 이미지 미리보기로 상태를 업데이트
         setImagePreview(reader.result);
       };
+
+      // 선택한 이미지 파일을 Data URL(베이스64 인코딩된 문자열)로 읽기
       reader.readAsDataURL(selectedImage);
     } else {
+      // 파일이 선택되지 않은 경우, 이미지와 미리보기에 대한 상태를 초기화
       setImage(null);
       setImagePreview(null);
     }
   };
 
+
   const handleAddProduct = async (event) => {
     event.preventDefault();
-    
+
     if (!name || !description || !price || !image) {
       swal({
         title: "입력 오류",
@@ -90,7 +108,7 @@ function AddProducts() {
         text: "가격 입력을 확인해 주세요.",
         icon: "warning",
       });
-      
+
       return;
     }
     // 상품 추가 요청

@@ -194,7 +194,7 @@ const Payments = () => {
         handleShowWishlist={handleShowWishlist}
         setShowRecentSearches={setShowRecentSearches}
       />
-      <Container className="my-4">
+      <Container className="my-4" style={{ minHeight: '600px' }}>
         <h1 className="mb-4">최근 구매 내역</h1>
         {isLoading ? (
           <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
@@ -202,7 +202,12 @@ const Payments = () => {
               <span className="visually-hidden">Loading...</span>
             </Spinner>
           </div>
-        ) : (
+          ) : payments.length === 0 ? (
+            <div>
+              <h4>결제 내역이 없습니다.</h4>
+            </div>
+          ) : (
+        
           <Row>
             {payments.map((payment) => (
               <Col md={6} lg={3} key={payment.id} className="mb-4">

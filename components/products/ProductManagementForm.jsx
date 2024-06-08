@@ -23,7 +23,7 @@ const ProductManagementForm = () => {
   const [, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [descriptionCharCount, setDescriptionCharCount] = useState(0);
-  const [, setImageFile] = useState(null); // State variable for the selected image file
+  const [imageFile, setImageFile] = useState(null); // State variable for the selected image file
   const [imagePreview, setImagePreview] = useState(null); // State variable for the image preview
 
   useEffect(() => {
@@ -153,14 +153,24 @@ const ProductManagementForm = () => {
   const handleSaveChanges = async () => {
     try {
       setIsSaving(true);
+
+      // FormData 객체를 생성하여 이미지 파일과 다른 폼 데이터를 함께 전송
+      const formData = new FormData();
+      formData.append('name', editedProduct.name);
+      formData.append('description', editedProduct.description);
+      formData.append('price', editedProduct.price);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
       const response = await fetch(`${serverHost}:4000/productsmanage/${editedProduct.id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           'user_id': sessionStorage.getItem('userId')
         },
-        body: JSON.stringify(editedProduct)
+        body: formData
       });
+
       if (response.ok) {
         setProduct(editedProduct);
         swal("성공", "상품이 성공적으로 업데이트되었습니다.", "success").then(() => {
@@ -193,6 +203,7 @@ const ProductManagementForm = () => {
       setEditedProduct({ ...editedProduct, [name]: value });
     }
   };
+
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -247,8 +258,6 @@ const ProductManagementForm = () => {
             style={{ display: 'none' }}
           />
         </div>
-
-
         <div className="form-group">
           <label htmlFor="name" style={{ marginTop: '30px' }}>상품명</label>
           <input type="text"

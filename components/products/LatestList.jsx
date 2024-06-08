@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import serverHost from '../../utils/host';
 import Header from '../header/Header';
+import Footer from '../auth/Footer';
 
 function LatestList() {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -239,6 +240,7 @@ function LatestList() {
       {searchError && (
         <p className="search-error">{searchError}</p>
       )}
+      <Footer /> {/* Add Footer component here */}
     </div>
   );
 }

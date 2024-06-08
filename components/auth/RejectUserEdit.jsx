@@ -71,18 +71,39 @@ function RejectUserEdit() {
     }
   };
 
+  // 함수를 사용하여 이미지 파일 이름을 생성합니다.
+const getImageFileName = (userId, file) => {
+  // 파일 확장자를 가져옵니다.
+  const extension = file.name.split('.').pop();
+  // 파일 이름을 사용자 ID와 확장자를 결합하여 반환합니다.
+  return `${userId}.${extension}`;
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const imageFileName = getImageFileName(formData.id, formData.studentIdImage);
     try {
-      // 서버로 수정된 사용자 정보 전송
+      // FormData 객체 생성
+      const formDataToSend = new FormData();
+
+      // 사용자 정보 추가
+      formDataToSend.append('id', formData.id);
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('password', formData.password);
+      formDataToSend.append('confirmPassword', formData.confirmPassword);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('department', formData.department);
+      formDataToSend.append('grade', formData.grade);
+
+      // 이미지 파일 추가
+      formDataToSend.append('studentIdImage', formData.studentIdImage, imageFileName); // 이미지 추가 및 파일 이름 설정
+
+      // 서버로 수정된 사용자 정보 및 이미지 전송
       const response = await fetch(`${serverHost}:4000/editUserData`, {
         method: 'POST',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        body: formDataToSend,
       });
+
       if (response.ok) {
         // 수정 성공 시 처리
         await swal("수정 완료", "수정이 완료되었습니다. 승인을 기다려주세요!", "success");
@@ -91,13 +112,13 @@ function RejectUserEdit() {
         // 오류 처리
         const errorData = await response.json();
         swal("오류 발생", errorData.error, "error");
-
       }
     } catch (error) {
       console.error('Error editing user data:', error);
       setErrorMessage('서버와의 통신 중 오류가 발생했습니다.');
     }
   };
+
 
   return (
     <div>

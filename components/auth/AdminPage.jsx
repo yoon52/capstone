@@ -22,6 +22,7 @@ import {
   Menu,
   MenuItem
 } from '@mui/material';
+import PendingIcon from '@mui/icons-material/Pending';
 import MenuIcon from '@mui/icons-material/Menu';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PeopleIcon from '@mui/icons-material/People';
@@ -98,14 +99,17 @@ function AdminPage() {
       });
 
       await response.json();
-      fetchUsers();
+      
+      // 배열 업데이트 및 초기화
+      await fetchUsers();
+      await fetchApprovedUsers();
+
       setIsRejectionFormOpen(false);
       setRejectionReason('');
 
       // 사용자 승인 후 알람 표시 및 모달 닫기
       if (newStatus === 'approved') {
-        swal("사용자가 승인되었습니다.", "", "success")
-
+        swal("사용자가 승인되었습니다.", "", "success");
         handleAdminModalClose();
       } else if (newStatus === 'rejected') {
         swal("사용자가 거부되었습니다.", "", "error");
@@ -115,6 +119,7 @@ function AdminPage() {
       console.error('Error updating approval status:', error);
     }
   };
+
 
   const handleAdminModalOpen = (user) => {
     setSelectedUser(user);
@@ -139,18 +144,38 @@ function AdminPage() {
 
       if (result && result.similarity !== undefined && result.ocrResult !== undefined) {
         if (result.similarity >= 70) {
-          swal({
-            title: "학생증 확인",
-            text: `유사도: ${result.similarity.toFixed(2)}%`,
-            content: {
-              element: "div",
-              attributes: {
-                innerHTML: `추출결과: [${result.ocrResult}]`
-              }
-            },
-            icon: "success",
-            buttons: false, // 버튼 비활성화
-          });
+          const extractedText = `[${result.ocrResult}]`;
+          const match = extractedText.match(/\b(\d{7})\b/); // 정규식을 이용하여 7자리 숫자를 추출합니다.
+          if (match) {
+            const studentId = match[1];
+            const highlightedText = extractedText.replace(new RegExp(`(${studentId})`, 'g'), '<span style="color: green; font-weight: bold;">$1</span>');
+
+            swal({
+              title: "학생증 확인",
+              text: `유사도: ${result.similarity.toFixed(2)}%`,
+              content: {
+                element: "div",
+                attributes: {
+                  innerHTML: `추출결과: ${highlightedText}`
+                }
+              },
+              icon: "success",
+              buttons: false, // 버튼 비활성화
+            });
+          } else {
+            swal({
+              title: "학생증 확인",
+              text: `유사도: ${result.similarity.toFixed(2)}%`,
+              content: {
+                element: "div",
+                attributes: {
+                  innerHTML: `추출결과: ${extractedText}`
+                }
+              },
+              icon: "success",
+              buttons: false, // 버튼 비활성화
+            });
+          }
         } else {
           swal({
             title: "학생증 확인",
@@ -172,6 +197,7 @@ function AdminPage() {
           icon: "error",
         });
       }
+
     } catch (error) {
       console.error('Error in OCR verification:', error);
     }
@@ -269,10 +295,11 @@ function AdminPage() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('isAdmin'); // 세션에서 isAdmin 정보 삭제
-    localStorage.removeItem('isAdmin'); // 세션에서 isAdmin 정보 삭제
-    navigate('/Login'); // 로그인 페이지로 이동
+    localStorage.removeItem('isAdmin'); // 로컬 스토리지에서 isAdmin 정보 삭제
+    sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
+    navigate('/login'); // 로그인 페이지로 이동
   };
-
 
   return (
     <div className="admin-container">
@@ -295,8 +322,8 @@ function AdminPage() {
         <Toolbar />
         <List>
           <ListItem button onClick={handleApprovedUsersClick}>
-            <ListItemIcon><PeopleIcon /></ListItemIcon>
-            <ListItemText primary="승인된 사용자 보기" />
+            <ListItemIcon>{showApprovedUsers ? <PendingIcon /> : <PeopleIcon />}</ListItemIcon>
+            <ListItemText primary={showApprovedUsers ? "승인 대기 사용자" : "승인 완료 사용자"} />
           </ListItem>
           <ListItem button onClick={handleLogout}>
             <ListItemIcon><ExitToAppIcon /></ListItemIcon>
@@ -413,7 +440,7 @@ function AdminPage() {
       )}
       <Footer /> {/* Add Footer component here */}
     </div>
-        
+
   );
 }
 

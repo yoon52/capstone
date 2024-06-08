@@ -91,8 +91,6 @@ function ProductList({ filteredProducts }) {
         </article>
       ))}
     </div>
-
-
   );
 }
 
