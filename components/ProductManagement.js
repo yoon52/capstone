@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import serverHost from './host';
@@ -36,6 +36,57 @@ function ProductManagement() {
     navigation.navigate('ProductManagementForm', { productId });
   };
 
+  const handleProductDelete = async (productId) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      Alert.alert(
+        '상품 삭제',
+        '정말로 상품을 삭제하시겠습니까?',
+        [
+          {
+            text: '취소',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: '삭제',
+            onPress: () => deleteProduct(productId),
+            style: 'destructive',
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      Alert.alert('Error', 'Failed to delete product. Please try again later.');
+    }
+  };
+
+  const deleteProduct = async (productId) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await fetch(`${serverHost}:4000/productsmanage/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'user_id': userId
+        },
+      });
+      if (response.ok) {
+        // Update the products state after successful deletion
+        fetchProducts();
+        // Show success alert
+        Alert.alert('삭제 성공', '상품이 삭제되었습니다.');
+      } else {
+        console.error('Error deleting product:', response.status);
+        Alert.alert('Error', 'Failed to delete product. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      Alert.alert('Error', 'Failed to delete product. Please try again later.');
+    }
+  };
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -47,6 +98,7 @@ function ProductManagement() {
             key={product.id}
             style={styles.card}
             onPress={() => handleProductPress(product.id)}
+            onLongPress={() => handleProductDelete(product.id)}
             accessibilityLabel={`Product ${product.name}, priced at ${product.price}원`}
           >
             <Image

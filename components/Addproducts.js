@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -12,8 +12,8 @@ function AddProducts() {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [pickedImage, setPickedImage] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
   const navigation = useNavigation();
+  const [descriptionCharCount, setDescriptionCharCount] = useState(0);
 
   useEffect(() => {
     AsyncStorage.getItem('userId')
@@ -32,6 +32,7 @@ function AddProducts() {
       setDescription('');
       setPrice('');
       setPickedImage(null);
+      setDescriptionCharCount(0); // 글자 수 초기화
 
       return () => {
         // 컴포넌트가 화면에서 벗어날 때 실행할 코드
@@ -105,54 +106,79 @@ function AddProducts() {
     }
   };
 
+  const handleDescriptionChange = (text) => {
+    setDescription(text);
+    setDescriptionCharCount(text.length);
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.formContainer}>
-        <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
-          {pickedImage ? (
-            <Image source={{ uri: pickedImage }} style={styles.image} />
-          ) : (
-            <Icon name="camera" size={40} color="gray" />
-          )}
-        </TouchableOpacity>
-        <TextInput
-          style={styles.input}
-          placeholder="제목"
-          value={name}
-          onChangeText={setName}
-        />
-  
-        <TextInput
-          style={styles.input}
-          placeholder="가격을 입력해주세요."
-          value={price}
-          onChangeText={setPrice}
-          keyboardType="numeric"
-        />
-  
-        <TextInput
-          style={styles.textarea}
-          placeholder="상세한 설명"
-          value={description}
-          onChangeText={setDescription}
-          multiline={true}
+    <View style={styles.flexContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+        contentContainerStyle={styles.scrollContainer}
+      >
+
+        <View style={styles.formContainer}>
+          <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
+            {pickedImage ? (
+              <Image source={{ uri: pickedImage }} style={styles.image} />
+            ) : (
+              <Icon name="camera" size={40} color="gray" />
+            )}
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="상품명"
+            value={name}
+            onChangeText={setName}
+          />
+          <TextInput
+            style={styles.textarea}
+            placeholder={`브랜드, 모델명, 구매시기, 하자 유무 등 상품 상품 설명을 최대한 자세히 적어주세요.\n전화번호, SNS 계정 등 개인정보 입력은 제한될 수 있습니다.`}
+            value={description}
+            onChangeText={handleDescriptionChange}
+            multiline={true}
+          />
+          <Text style={styles.charCount}>{descriptionCharCount} / 1000</Text>
+          <View style={styles.formGroup}>
+            <View style={styles.priceInput}>
+              <TextInput
+                style={styles.input}
+                value={price}
+                onChangeText={setPrice}
+                placeholder="가격을 입력해 주세요."
+                keyboardType="numeric"
+              />
+              <Text style={styles.priceUnit}>원</Text>
+            </View>
+          </View>
+
+
+
+        </View>
+
+      </ScrollView>
+      <View style={[styles.buttonContainer]}>
+        <Button
+          title="상품 등록"
+          onPress={handleAddProduct}
+          color={'#103260'}
         />
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
-        <Text style={styles.buttonText}>작성 완료</Text>
-      </TouchableOpacity>
     </View>
   );
-  
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
+    padding: 16,
+    flexGrow: 1,
+    marginTop: 40
+  },
+
+  flexContainer: {
     flex: 1,
-    paddingTop: 80,
-    paddingRight: 20,
-    paddingLeft: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
   },
   formContainer: {
     backgroundColor: 'white',
@@ -160,8 +186,8 @@ const styles = StyleSheet.create({
   },
   imagePicker: {
     backgroundColor: 'white',
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -188,25 +214,30 @@ const styles = StyleSheet.create({
     color: '#000000',
     padding: 10,
     borderRadius: 5,
-    height: 100,
+    height: 300,
     textAlignVertical: 'top',
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#dcdcdc',
   },
-  button: {
-    backgroundColor: '#103260', // 버튼의 배경색
-    borderRadius: 5, // 버튼의 모서리 반경
-    paddingVertical: 10, // 버튼의 수직 패딩
-    paddingHorizontal: 20, // 버튼의 수평 패딩
+
+  charCount: {
+    textAlign: 'right',
+    fontSize: 12,
+    color: '#888',
+    marginTop: -10,
+    marginBottom: 20
   },
-  buttonText: {
-    color: '#fff', // 버튼 텍스트의 색상
-    fontSize: 16, // 버튼 텍스트의 크기
-    fontWeight: 'bold', // 버튼 텍스트의 굵기
-    textAlign: 'center', // 텍스트를 가운데 정렬
+  priceInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
+  priceUnit: {
+    marginLeft: 5,
+    fontSize: 16,
+    marginBottom: 6
+  },
 });
 
 export default AddProducts;

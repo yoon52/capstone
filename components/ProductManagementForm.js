@@ -14,8 +14,8 @@ const ProductManagementForm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [descriptionCharCount, setDescriptionCharCount] = useState(0);
-  const [imageFile, setImageFile] = useState(null); // State variable for the selected image file
-  const [imagePreview, setImagePreview] = useState(null); // State variable for the image preview
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -31,11 +31,14 @@ const ProductManagementForm = () => {
           setProduct(data);
           setEditedProduct({ ...data });
           setDescriptionCharCount(data.description.length);
+          setImagePreview(`${serverHost}:4000/uploads/${data.image}`);
         } else {
           console.error('Error fetching product details:', response.status);
+          Alert.alert('Error', 'Failed to fetch product details. Please try again later.');
         }
       } catch (error) {
         console.error('Error fetching product details:', error);
+        Alert.alert('Error', 'An error occurred while fetching product details. Please check your network connection and try again.');
       } finally {
         setIsLoading(false);
       }
@@ -44,23 +47,29 @@ const ProductManagementForm = () => {
     fetchProductDetails();
   }, [productId]);
 
+  useEffect(() => {
+    if (imageFile) {
+      setImagePreview(imageFile); // 이미지 파일이 변경될 때 바로 미리보기로 설정
+    }
+  }, [imageFile]); // imageFile 상태가 변경될 때마다 실행
+
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Permission to access media library is required!');
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("사진 접근 권한이 필요합니다!");
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.canceled === true) {
+      return;
+    }
 
-    if (!result.cancelled) {
-      setImageFile(result.uri);
-      setImagePreview(result.uri);
+    if (pickerResult.assets && pickerResult.assets.length > 0 && pickerResult.assets[0].uri) {
+      setImageFile(pickerResult.assets[0].uri);
+    } else {
+      console.error('Selected image URI is undefined');
+      Alert.alert('Error', 'Selected image URI is undefined');
     }
   };
 
@@ -68,56 +77,54 @@ const ProductManagementForm = () => {
     try {
       setIsSaving(true);
       const userId = await AsyncStorage.getItem('userId');
-      let updatedProduct = { ...editedProduct };
+      const formData = new FormData();
 
       if (imageFile) {
-        const formData = new FormData();
         formData.append('image', {
           uri: imageFile,
           name: 'image.jpg',
           type: 'image/jpeg'
         });
-
-        const imageUploadResponse = await fetch(`${serverHost}:4000/upload`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'user_id': userId
-          },
-          body: formData
-        });
-
-        if (imageUploadResponse.ok) {
-          const imageData = await imageUploadResponse.json();
-          updatedProduct.image = imageData.filename;
-        } else {
-          console.error('Error uploading image:', imageUploadResponse.status);
-          Alert.alert('Error', 'Image upload failed.');
-          return;
-        }
       }
 
-      const response = await fetch(`${serverHost}:4000/productsmanage/${updatedProduct.id}`, {
+      formData.append('name', editedProduct.name);
+      formData.append('description', editedProduct.description);
+      formData.append('price', editedProduct.price);
+
+      const response = await sendRequestWithRetry(`${serverHost}:4000/productsmanage/${editedProduct.id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'user_id': userId
+          'user_id': userId,
         },
-        body: JSON.stringify(updatedProduct)
+        body: formData
       });
+
       if (response.ok) {
+        const updatedProduct = await response.json();
         setProduct(updatedProduct);
         Alert.alert('상품 수정 성공!', '수정이 완료되었습니다.');
         navigation.navigate('Main');
       } else {
-        console.error('Error updating product:', response.status);
-        Alert.alert('Error', 'Product update failed.');
+        console.error('Error saving product changes:', response.status);
+        Alert.alert('Error', 'Failed to save product changes. Please try again.');
       }
     } catch (error) {
-      console.error('Error updating product:', error);
-      Alert.alert('Error', 'Product update failed.');
+      console.error('Error saving product changes:', error);
+      Alert.alert('Error', 'An error occurred while saving product changes. Please check your network connection and try again.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const sendRequestWithRetry = async (url, options, retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const response = await fetch(url, options);
+        return response;
+      } catch (error) {
+        console.error(`Attempt ${i + 1} failed: ${error.message}`);
+        if (i === retries - 1) throw error;
+      }
     }
   };
 
@@ -147,18 +154,19 @@ const ProductManagementForm = () => {
   return (
     <View style={styles.flexContainer}>
       <ScrollView
-        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContainer}
       >
         <View style={styles.imageUpload}>
           <TouchableOpacity onPress={pickImage}>
             <Image
               style={styles.image}
-              source={{ uri: imagePreview || `${serverHost}:4000/uploads/${editedProduct.image}` }}
+              source={{ uri: imagePreview }}
             />
           </TouchableOpacity>
           <Text style={styles.imageLabel}>이미지를 수정하려면 이미지를 터치 해주세요!</Text>
         </View>
+
         <View style={styles.formGroup}>
           <Text style={styles.label}>상품명</Text>
           <TextInput
@@ -269,8 +277,6 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     padding: 16,
-  }
-
+  },
 });
-
 export default ProductManagementForm;

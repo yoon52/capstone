@@ -6,6 +6,7 @@ import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatModal from './Chatmodalscreen'; // ChatModal 컴포넌트 import
 import serverHost from './host';
+
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
@@ -47,31 +48,31 @@ const ChatList = () => {
   };
 
   return (
-    <ScrollView 
-    style={styles.container}
-    showsVerticalScrollIndicator={false} // 스크롤바 숨기기
-    >
+    <ScrollView style={styles.container}>
       <View style={styles.chatListContainer}>
         <Text style={styles.heading}>참여중인 채팅</Text>
+        <View style={styles.separator} />
         {chatRooms.length === 0 ? (
           <Text style={styles.loadingText}>채팅방을 로딩하는 중입니다...</Text>
         ) : (
           <View style={styles.chatRoomList}>
-            {chatRooms.map((chatRoom) => (
-              <TouchableOpacity
-                key={chatRoom.id}
-                onPress={() => openChat(chatRoom.id, chatRoom.productId)} // 수정된 부분
-                style={[
-                  styles.chatRoomItem,
-                  { backgroundColor: selectedRoomId === chatRoom.id ? '#EFEFEF' : 'transparent' }
-                ]}
-              >
-                <View style={styles.chatRoomInfo}>
-                  <Text style={styles.chatRoomName}>상품명: {chatRoom.productName}</Text>
-                  {/* 마지막 메시지 추가 */}
-                  <Text style={styles.lastMessage}>{chatRoom.lastMessage}</Text>
-                </View>
-              </TouchableOpacity>
+            {chatRooms.map((chatRoom, index) => (
+              <View key={chatRoom.id}>
+                <TouchableOpacity
+                  onPress={() => openChat(chatRoom.id, chatRoom.productId)} // 수정된 부분
+                  style={[
+                    styles.chatRoomItem,
+                    { backgroundColor: selectedRoomId === chatRoom.id ? '#EFEFEF' : 'transparent' }
+                  ]}
+                >
+                  <View style={styles.chatRoomInfo}>
+                    <Text style={styles.chatRoomName}>상품명: {chatRoom.productName}</Text>
+                    {/* 마지막 메시지 추가 */}
+                    <Text style={styles.lastMessage}>{chatRoom.lastMessage}</Text>
+                  </View>
+                </TouchableOpacity>
+                {index < chatRooms.length - 1 && <View style={styles.itemSeparator} />}
+              </View>
             ))}
           </View>
         )}
@@ -102,6 +103,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
+  separator: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 10,
+  },
   loadingText: {
     fontSize: 16,
     fontStyle: 'italic',
@@ -111,7 +117,6 @@ const styles = StyleSheet.create({
   },
   chatRoomItem: {
     padding: 10,
-    marginBottom: 10,
     borderRadius: 5,
   },
   chatRoomInfo: {
@@ -124,6 +129,11 @@ const styles = StyleSheet.create({
   lastMessage: {
     fontSize: 14,
     color: 'gray',
+  },
+  itemSeparator: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 10,
   },
 });
 

@@ -7,6 +7,8 @@ import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아
 import { Alert } from 'react-native';
 import serverHost from './host';
 import socket from 'socket.io-client';
+import { Ionicons } from '@expo/vector-icons'; // or import from 'react-native-vector-icons'
+
 const ProductDetail = ({ route }) => {
   const { productId } = route.params;
   const [product, setProduct] = useState(null);
@@ -179,15 +181,35 @@ const ProductDetail = ({ route }) => {
     return <View style={styles.container}><Text>Loading...</Text></View>;
   }
 
+  const availability = product.status === 'available' ? '구매 가능' : '판매 완료';
+
+  const calculateTimeAgo = (date) => {
+    const today = new Date();
+    const registrationDate = new Date(date);
+    const diffTime = today.getTime() - registrationDate.getTime();
+    const diffMinutes = Math.floor(diffTime / (1000 * 60)); // milliseconds to minutes
+
+    if (diffMinutes < 30) {
+      return '방금 전';
+    } else if (diffMinutes < 60 * 24) {
+      return `${Math.floor(diffMinutes / 60)}시간 전`;
+    } else if (diffMinutes < 60 * 24 * 7) {
+      return `${Math.floor(diffMinutes / (60 * 24))}일 전`;
+    } else if (diffMinutes < 60 * 24 * 30) {
+      return `${Math.floor(diffMinutes / (60 * 24 * 7))}주 전`;
+    } else {
+      return '한달 ↑';
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
-        showsVerticalScrollIndicator={false} // 스크롤바 숨기기
+        showsVerticalScrollIndicator={false}
         style={styles.contentContainer}>
         <TouchableOpacity onPress={() => { setIsImageModalOpen(!isImageModalOpen); }}>
           <Image style={styles.productImage} source={{ uri: `${serverHost}:4000/uploads/${product.image}` }} />
         </TouchableOpacity>
-
         <View style={styles.userInfoContainer}>
           <Image
             style={styles.profileImage}
@@ -211,9 +233,25 @@ const ProductDetail = ({ route }) => {
         </View>
 
         <View style={styles.productInfoContainer}>
-          <Text style={styles.productTitle}>{product.name}</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.productTitle}>{product.name}</Text>
+            <View style={styles.viewInfo}>
+              <Ionicons name="eye" size={20} style={styles.icon} />
+              <Text style={styles.infoText}>{product.views}</Text>
+            </View>
+          </View>
           <Text style={styles.productDescription}>{product.description}</Text>
-          <Text style={styles.productNote}>{product.note}</Text>
+          <View style={styles.productNote}>
+            <Text>{product.note}</Text>
+            <View style={styles.additionalInfo}>
+              <View style={styles.infoItem}>
+                <Ionicons name={availability === '구매 가능' ? 'checkmark-circle-outline' : 'close-circle-outline'} size={20} style={[styles.icon, { color: availability === '구매 가능' ? '#319e45' : '#de5d06' }]} />
+                <Text style={styles.infoText}>{availability}</Text>
+
+              </View>
+            </View>
+          </View>
+          <Text style={styles.timestamp}>{calculateTimeAgo(product.createdAt)}</Text>
         </View>
 
         {/* Modals */}
@@ -234,8 +272,8 @@ const ProductDetail = ({ route }) => {
           <View style={styles.imagemodalContainer}>
             <Image
               source={{ uri: `${serverHost}:4000/uploads/${product.image}` }}
-              style={{ width: '100%', aspectRatio: 4 / 3 }} // Adjust aspectRatio according to your image's aspect ratio
-              resizeMode="contain" // Ensure the entire image fits within the dimensions specified
+              style={{ width: '100%', aspectRatio: 4 / 3 }}
+              resizeMode="contain"
             />
 
             <TouchableOpacity style={styles.closeButton} onPress={() => { setIsImageModalOpen(false); }}>
@@ -269,7 +307,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 20,
     paddingTop: 60,
-    justifyContent: 'space-between', // footer를 컨테이너의 하단으로 이동
+    justifyContent: 'space-between',
   },
   contentContainer: {
     flex: 1,
@@ -323,13 +361,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
   },
-  meters: {
-    height: 10,
-    backgroundColor: '#DCDCDC',
-    borderRadius: 5,
-    marginTop: 5,
-    width: 100,
-  },
   barContainer: {
     height: 10,
     backgroundColor: '#DCDCDC',
@@ -341,26 +372,28 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 5,
   },
-  face: {
-    marginTop: 5,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#FF4500',
-  },
   productInfoContainer: {
-    backgroundColor: '#F8F8F8', // 배경색을 연한 회색으로 변경
+    backgroundColor: '#F8F8F8',
     padding: 20,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#dcdcdc',
     marginBottom: 20,
+    position: 'relative', // Added for positioning the timestamp
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   productTitle: {
     color: '#000000',
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+  },
+  viewInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   productDescription: {
     color: '#000000',
@@ -374,6 +407,43 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#333',
     paddingTop: 10,
+    position: 'relative', // Added for positioning the availability status
+  },
+  additionalInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  separator: {
+    marginHorizontal: 5,
+    color: '#888',
+  },
+  infoText: {
+    color: '#000',
+    fontSize: 14,
+    marginLeft: 5,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  timestamp: {
+    position: 'absolute',
+    bottom: -20,
+    right: 5,
+    color: '#888',
+    fontSize: 14,
+  },
+  availabilityStatus: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+
   },
   footer: {
     flexDirection: 'row',
@@ -381,7 +451,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 15,
-    backgroundColor: '#fff', // Footer의 배경색
+    backgroundColor: '#fff',
+    borderTopWidth: 2, // 상단 테두리 두께
+    borderTopColor: '#ccc', // 상단 테두리 색상
   },
   heartButton: {
     marginLeft: 5,
@@ -394,7 +466,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333', // 가격 텍스트의 색상
+    color: '#333',
   },
   chatButton: {
     flexDirection: 'row',
@@ -409,9 +481,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
   },
-  icon: {
-    marginRight: 5,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'flex',
@@ -422,7 +491,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Semi-transparent background color
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
   },
   fullImage: {
     width: '100%',
@@ -436,5 +505,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
 export default ProductDetail;

@@ -1,10 +1,9 @@
-// ProductList.js
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import serverHost from './host';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // 아이콘 임포트
 
 function ProductList({ filteredProducts }) {
   const navigation = useNavigation();
@@ -71,13 +70,15 @@ function ProductList({ filteredProducts }) {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false} // 스크롤바 숨기기
-
+      showsVerticalScrollIndicator={false}
     >
-      {formattedProducts.map(product => (
+      {formattedProducts.map((product, index) => (
         <TouchableOpacity
           key={product.id}
-          style={styles.productItem}
+          style={[
+            styles.productItem,
+            index === 0 && { marginTop: 3 },
+          ]}
           onPress={() => handleProductClick(product.id)}
           disabled={loading}
         >
@@ -93,7 +94,13 @@ function ProductList({ filteredProducts }) {
                 {product.name}
               </Text>
               <Text style={styles.productPrice}>{product.price}원</Text>
-              <Text style={styles.productPrice}>{product.formattedCreatedAt}</Text>
+              <View style={styles.infoRow}>
+                <Text style={styles.cardTime}>{product.formattedCreatedAt}</Text>
+                <View style={styles.cardViews}>
+                  <Icon name="visibility" size={12} style={styles.icon} />
+                  <Text>{product.views}</Text>
+                </View>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
@@ -101,59 +108,77 @@ function ProductList({ filteredProducts }) {
       {loading && <ActivityIndicator size="large" color="#000" style={styles.loadingIndicator} />}
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 10,
+    paddingBottom: 10,
+    marginBottom: 10,
   },
   productItem: {
-    width: '100%',
     marginBottom: 10,
   },
   productCard: {
     flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 10,
     backgroundColor: '#fff',
-    padding: 10,
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginBottom: 4,
+
+    borderColor: '#ddd',
+    borderBottomWidth: 2, // 추가된 하단 보더
+
   },
   imageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    overflow: 'hidden',
+    width: 120,
+    height: 120,
+    padding: 4,
+
   },
   productImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+    borderRadius: 10
   },
   infoContainer: {
     flex: 1,
-    marginLeft: 8,
+    padding: 10,
+    justifyContent: 'space-between',
   },
   productName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: -30,
   },
   productPrice: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 17,
+    color: '#888',
+    marginBottom: 5,
+    marginLeft: 1
   },
-  emptyText: {
-    textAlign: 'center',
-    marginTop: 50,
-    fontSize: 14,
+  infoRow: {
+    flexDirection: 'row',
+
+    alignItems: 'center',
+  },
+  cardTime: {
+    fontSize: 12,
+    color: '#aaa',
+    marginRight: 15, // 첫 번째 아이템의 오른쪽 여백 조절
+
+  },
+  cardViews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  icon: {
+    marginRight: 5,
+    color: '#888',
   },
   loadingIndicator: {
-    position: 'absolute',
-    bottom: 20,
-    alignSelf: 'center',
+    marginVertical: 20,
   },
 });
 

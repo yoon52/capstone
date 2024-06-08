@@ -184,15 +184,14 @@ const styles = StyleSheet.create({
   chatHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
-    
-    padding: 10, // 내부 여백 추가
+    marginBottom: 20,
+
+    padding: 8, // 내부 여백 추가
     borderRadius: 10, // 모서리를 둥글게 만듭니다.
-    
-    
-    
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1
   },
-  
+
   productImage: {
     width: 65,
     height: 65,
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 18, // 가격의 폰트 크기 조정
     color: '#666', // 가격 색상 변경
   },
-  
+
 
   messagesContainer: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; // Expo에서 제공하는 아이콘 라이브러리
 import { useNavigation } from '@react-navigation/native';
@@ -37,7 +37,7 @@ const Sidebar = ({ onClose }) => {
       return '#000000'; // 기본 색상
     }
   };
-
+  
 
   useEffect(() => {
     // Fetch user info from the server
@@ -87,22 +87,9 @@ const Sidebar = ({ onClose }) => {
     onClose(); // 사이드바 닫기
     navigation.navigate('Payments'); // ProductManagement 화면으로 이동
   };
-
-  const handleLogout = async () => {
-    onClose(); // Close the sidebar
-
-    try {
-      // Clear AsyncStorage
-      await AsyncStorage.removeItem('userId');
-      await AsyncStorage.removeItem('productId');
-      // Navigate to the login screen or wherever you want to redirect after logout
-      Alert.alert('로그아웃', '로그아웃 되었습니다.');
-      navigation.navigate('Login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-      // Handle any errors
-    }
-  };
+  const handleLogout = () => {
+    navigation.navigate('Login');
+  }
 
   return (
     <View style={styles.sidebar}>
@@ -112,15 +99,15 @@ const Sidebar = ({ onClose }) => {
             <Image source={{ uri: userInfo.profileImage || 'https://d1unjqcospf8gs.cloudfront.net/assets/users/default_profile_80-c649f052a34ebc4eee35048815d8e4f73061bf74552558bb70e07133f25524f9.png' }} style={styles.profileImage} />
             <View style={styles.profileInfo}>
               <Text style={styles.userName}>{userInfo.name}</Text>
-              <Text>{`학번: ${userInfo.id}`}</Text>
-              <Text>{`학과: ${userInfo.department}`}</Text>
-              <Text>{`학년: ${userInfo.grade}`}</Text>
+              <Text>{`학번 : ${userInfo.id}`}</Text>
+              <Text>{`학과 : ${userInfo.department}`}</Text>
+              <Text>{`학년 : ${userInfo.grade}`}</Text>
             </View>
           </View>
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>{`잔액: ${userInfo && parseInt(userInfo.total_sales).toLocaleString()}원`}</Text>
             <Text style={styles.ratingText}>{`매너 학점: ${userInfo.rates}`}</Text>
-
+            
             <View style={styles.barContainer}>
               <View style={[styles.bar, { width: `${barLength}%`, backgroundColor: getBarColor(rates) }]}></View>
             </View>
@@ -131,26 +118,28 @@ const Sidebar = ({ onClose }) => {
       <TouchableOpacity onPress={onClose} style={styles.closeButton}>
         <Ionicons name="close" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleMyinfo} style={styles.menuItem} >
-        <Ionicons name="person-outline" size={20} color="black" />
-        <Text>내 정보</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleWishList}>
-        <FontAwesome name="heart-o" size={20} color="black" />
-        <Text>찜한 상품</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleProductManagement}>
-        <Ionicons name="create-outline" size={20} color="black" />
-        <Text>내 상품 관리</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleSelling}>
-        <Ionicons name="card-outline" size={20} color="black" />
-        <Text>구매 및 판매 내역</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={20} color="black" />
-        <Text>로그아웃</Text>
-      </TouchableOpacity>
+      <ScrollView>
+        <TouchableOpacity onPress={handleMyinfo} style={styles.menuItem}>
+          <Ionicons name="person-outline" size={20} color="black" />
+          <Text>내 정보</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleWishList}>
+          <FontAwesome name="heart-o" size={20} color="black" />
+          <Text>찜한 상품</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleProductManagement}>
+          <Ionicons name="create-outline" size={20} color="black" />
+          <Text>내 상품 관리</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleSelling}>
+          <Ionicons name="card-outline" size={20} color="black" />
+          <Text>구매 및 판매 내역</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={20} color="black" />
+          <Text>로그아웃</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
@@ -167,6 +156,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     paddingTop: 50,
     paddingLeft: 20,
+    borderTopEndRadius: 10,
   },
   closeButton: {
     position: 'absolute',
@@ -183,7 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-
+    
   },
   profileImage: {
     width: 80,
@@ -207,7 +197,7 @@ const styles = StyleSheet.create({
   },
   balanceContainer: {
     width: 250,
-
+    
     padding: 10,
     borderRadius: 5,
     marginTop: 5,

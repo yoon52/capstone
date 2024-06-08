@@ -71,7 +71,7 @@ const SuccessPage = ({ route }) => {
         }
       });
       if (response.ok) {
-        Alert.alert('상품이 판매되었습니다.');
+        
       } else {
         console.error('상품 판매완료 처리 실패:', response.status);
       }
@@ -96,7 +96,7 @@ const SuccessPage = ({ route }) => {
       if (response.ok) {
         // console.log('Seller rating updated successfully.');
         setRatingSubmitted(true);
-        
+
       } else {
         console.error('Failed to update seller rating:', response.status);
       }
@@ -115,23 +115,35 @@ const SuccessPage = ({ route }) => {
   const navigateToMainPage = () => {
     navigation.navigate('Main'); // Replace 'Main' with the name of your main page route
   };
-
   return (
     <View style={styles.container}>
       {isConfirmed ? (
         <View style={styles.confirmContainer}>
           <Text style={styles.title}>결제를 완료했어요</Text>
-          <Text style={styles.label}>결제 금액: {price}</Text>
+          <Text style={styles.label}>결제 금액: {price}원</Text>
           <Text style={styles.label}>주문번호: {paymentData.orderId}</Text>
-          <Text style={styles.label}>결제 ID: {paymentData.paymentKey}</Text>
-          <Button title="메인으로 이동" onPress={navigateToMainPage} color="#103260" />
+          
+          <TouchableOpacity style={styles.fullWidthButtonTest} onPress={() => setIsModalOpen(true)}>
+            <Text style={styles.buttonTextTest}>테스트 결제내역 확인하기</Text>
+          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={confirmPayment}>
+              <Text style={styles.buttonText}>다시 테스트하기</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={confirmPayment}>
+              <Text style={styles.buttonText}>결제 연동 문서가기</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.fullWidthButton} onPress={navigateToMainPage}>
+            <Text style={styles.buttonText}>메인으로 이동</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.confirmContainer}>
-          <Text style={styles.title}>결제 요청까지 성공했어요.</Text>
-          <Text style={styles.label}>결제 승인하고 완료해보세요.</Text>
-          <Button title="결제 승인하기" onPress={confirmPayment} color="#103260" />
-        </View>
+        <Text style={styles.title}>결제 요청까지 성공했어요.</Text>
+        <Text style={styles.label}>결제 승인하고 완료해보세요.</Text>
+        <Button title="결제 승인하기" onPress={confirmPayment} color="#103260" />
+      </View>
       )}
       <Modal visible={isModalOpen} transparent={true} animationType="slide" onRequestClose={closeModal}>
         <View style={styles.modalBackground}>
@@ -139,12 +151,13 @@ const SuccessPage = ({ route }) => {
             {ratingSubmitted ? (
               <View>
                 <Text style={styles.modalTitle}>평점이 제출되었습니다!</Text>
-                <Button title="닫기" onPress={closeModal} color="#6c63ff" />
+                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                  <Text style={styles.closeButtonText}>닫기</Text>
+                </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.centeredContent}>
-              <Text style={styles.modalTitle}>매너 평점 등록</Text>
-              <View style={styles.ratingSection}>
+                <Text style={styles.modalTitle}>사용자 평점 등록</Text>
                 <Slider
                   style={styles.slider}
                   minimumValue={0}
@@ -152,19 +165,15 @@ const SuccessPage = ({ route }) => {
                   step={0.1}
                   value={rating}
                   onValueChange={setRating}
-                  minimumTrackTintColor="#FFD700"
+                  minimumTrackTintColor="#007bff"
                   maximumTrackTintColor="#ddd"
-                  thumbTintColor="#6c63ff"
+                  thumbTintColor="#007bff"
                 />
-
-                  <Text style={styles.ratingValue}>{rating.toFixed(1)}</Text>
-                </View>
+                <Text style={styles.ratingValue}>{rating.toFixed(1)}</Text>
                 <TouchableOpacity style={styles.submitButton} onPress={updateSellerRating}>
                   <Text style={styles.submitButtonText}>평점 등록</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                  <Text style={styles.closeButtonText}>닫기</Text>
-                </TouchableOpacity>
+
               </View>
             )}
           </View>
@@ -193,19 +202,62 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
+    width: '80%',
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
     textAlign: 'center',
   },
   label: {
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 10,
     color: '#555',
     textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#f2f4f6',
+    padding: 6,
+    borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 5,
+    alignItems: 'center',
+    
+  },
+  fullWidthButton: {
+    backgroundColor: '#f2f4f6',
+    padding: 8,
+    borderRadius: 5,
+    marginVertical: 5,
+    alignItems: 'center',
+    width: '100%',
+  },
+  fullWidthButtonTest: {
+    backgroundColor: '#007bff',
+    padding: 8,
+    borderRadius: 5,
+    marginVertical: 5,
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonTextTest: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   modalBackground: {
     flex: 1,
@@ -213,6 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
+
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
@@ -225,31 +278,38 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
+  
   modalTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
     textAlign: 'center',
   },
-  ratingSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
   slider: {
     width: 200,
-    height: 40,
+    height: 60,
+    
   },
   ratingValue: {
-    fontSize: 18,
-    marginLeft: 10,
-    color: '#555',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#007bff',
+  },
+  modalButton: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    width: '100%',
+    alignItems: 'center',
   },
   submitButton: {
     backgroundColor: '#103260',
     padding: 12,
     borderRadius: 5,
+    marginTop: 1,
     marginBottom: 10,
     width: '80%',
     alignItems: 'center',
@@ -263,7 +323,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff4757',
     padding: 12,
     borderRadius: 5,
-    width: '80%',
+
     alignItems: 'center',
   },
   closeButtonText: {
@@ -276,6 +336,5 @@ const styles = StyleSheet.create({
   },
 
 });
-
 
 export default SuccessPage;
