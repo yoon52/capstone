@@ -77,6 +77,48 @@ app.get('/productsmanage', async (req, res) => {
         return res.status(500).json({ error: '상품 목록을 가져오는 중 오류가 발생했습니다.' });
     }
 });
+
+// Assuming you're using Express and have initialized 'app' and 'pool' properly
+// Function to execute queries
+const executeQuery = async (pool, query, values) => {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const [rows] = await connection.query(query, values);
+        return rows;
+    } catch (error) {
+        throw error;
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+};
+
+// Example function to fetch product details by ID
+const getProductById = async (pool, productId) => {
+    try {
+        const query = 'SELECT * FROM products WHERE id = ?';
+        const values = [productId];
+        const products = await executeQuery(pool, query, values);
+        return products[0]; // Assuming there's only one product with the given ID
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Fetch product by ID
+app.get('/productsD/:productId', async (req, res) => {
+    const productId = req.params.productId;
+    try {
+        const product = await getProductById(pool, productId);
+        res.json(product);
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // 상품 삭제 엔드포인트
 app.delete('/productsmanage/:productId', async (req, res) => {
     const productId = req.params.productId;
@@ -91,6 +133,7 @@ app.delete('/productsmanage/:productId', async (req, res) => {
         // 외래 키를 참조하는 다른 테이블의 레코드 삭제
         await pool.query('DELETE FROM favorites WHERE product_id = ?', [productId]);
         await pool.query('DELETE FROM messages WHERE productId = ?', [productId]);
+        await pool.query('DELETE FROM product_ratings WHERE product_id = ?', [productId]); // 추가: product_ratings 테이블에서 관련된 레코드 삭제
 
         // 상품과 사용자의 일치 여부 확인 쿼리
         const [rows] = await pool.query('SELECT * FROM products WHERE id = ? AND user_id = ?', [productId, userId]);
@@ -110,24 +153,22 @@ app.delete('/productsmanage/:productId', async (req, res) => {
     }
 });
 
+
 // AddProduct 엔드포인트에서 이미지 파일의 이름만을 데이터베이스에 저장
 app.post('/addProduct', upload.single('image'), async (req, res) => {
     const userId = req.headers.user_id; // 사용자 ID는 요청 헤더에서 가져옵니다.
     const { name, description, price } = req.body;
-    let imageUrl;
 
     // 요청 본문의 데이터가 올바르게 전달되는지 확인합니다.
     if (!name || !price || isNaN(price)) {
-        return res.status(400).send('상품 이름, 가격을 올바르게 입력해주세요.');
+        return res.status(400).send('상품 이름과 가격을 올바르게 입력해주세요.');
     }
 
     // 이미지 파일이 있는 경우에만 이미지 URL을 생성합니다.
-    if (req.file) {
-        // 이미지 파일의 이름만을 imageUrl로 설정
-        imageUrl = req.file.filename;
-    }
+    let imageUrl = req.file ? req.file.filename : null;
 
     const INSERT_PRODUCT_QUERY = `INSERT INTO products (user_id, name, description, price, image) VALUES (?, ?, ?, ?, ?)`;
+
     try {
         const [result] = await pool.execute(INSERT_PRODUCT_QUERY, [userId, name, description, price, imageUrl]);
         console.log('상품이 성공적으로 추가되었습니다.');
@@ -282,11 +323,62 @@ app.post('/updateViews/:productId', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-// 조회수 기반 아이템 정렬 엔드포인트
+
 app.get('/products/views', async (req, res) => {
     try {
-        // 조회수로 정렬된 상위 15개의 제품 목록을 가져옴
-        const [rows] = await pool.execute('SELECT * FROM products ORDER BY views DESC LIMIT 15');
+        // 상태가 'available'인 상품을 조회수 기준으로 정렬하여 가져옴
+        let [rows] = await pool.execute(`
+            SELECT * FROM products
+            WHERE status = 'available'
+            ORDER BY views DESC
+            LIMIT 15
+        `);
+
+        // 'available' 상태의 상품이 15개보다 적으면 'sold out' 상태의 상품을 추가로 가져옴
+        if (rows.length < 15) {
+            const availableCount = rows.length;
+            const limit = 15 - availableCount;
+            const [additionalRows] = await pool.query(`
+                SELECT * FROM products
+                WHERE status = '판매완료'
+                ORDER BY views DESC
+                LIMIT ${limit}
+            `);
+
+            rows = rows.concat(additionalRows);
+        }
+
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching products sorted by views:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/products/viewsMob', async (req, res) => {
+    try {
+        // 상태가 'available'인 상품을 조회수 기준으로 정렬하여 가져옴
+        let [rows] = await pool.execute(`
+            SELECT * FROM products
+            WHERE status = 'available'
+            ORDER BY views DESC
+            LIMIT 30
+        `);
+
+        // 'available' 상태의 상품이 15개보다 적으면 'sold out' 상태의 상품을 추가로 가져옴
+        if (rows.length < 30) {
+            const availableCount = rows.length;
+            const limit = 30 - availableCount;
+            const [additionalRows] = await pool.query(`
+                SELECT * FROM products
+                WHERE status = '판매완료'
+                ORDER BY views DESC
+                LIMIT ${limit}
+            `);
+
+            rows = rows.concat(additionalRows);
+        }
+
         res.json(rows);
     } catch (error) {
         console.error('Error fetching products sorted by views:', error);
@@ -321,7 +413,7 @@ app.put('/productsmanage/sold/:productId', async (req, res) => {
 });
 
 // 상품 수정 엔드포인트
-app.put('/productsmanage/:productId', async (req, res) => {
+app.put('/productsmanage/:productId', upload.single('image'), async (req, res) => {
     const productId = req.params.productId;
     const userId = req.headers.user_id;
     const { name, description, price } = req.body;
@@ -331,18 +423,35 @@ app.put('/productsmanage/:productId', async (req, res) => {
         return res.status(401).json({ error: '사용자 인증이 필요합니다.' });
     }
 
+    // 입력 값 검증
+    if (!name || !price || isNaN(price) || price < 0) {
+        return res.status(400).json({ error: '상품 이름과 올바른 가격을 입력해주세요.' });
+    }
+
+    // 이미지 파일이 있는 경우에만 이미지 URL을 생성합니다.
+    let imageUrl = req.file ? req.file.filename : null;
+
+    const SELECT_PRODUCT_QUERY = 'SELECT * FROM products WHERE id = ? AND user_id = ?';
+    const UPDATE_PRODUCT_QUERY = `UPDATE products SET name = ?, description = ?, price = ?, image = ? WHERE id = ?`;
+
     try {
         // 상품과 사용자의 일치 여부 확인 쿼리
-        const [rows] = await pool.query('SELECT * FROM products WHERE id = ? AND user_id = ?', [productId, userId]);
+        const [rows] = await pool.query(SELECT_PRODUCT_QUERY, [productId, userId]);
 
         // 상품이 존재하지 않는 경우 또는 권한이 없는 경우
         if (rows.length === 0) {
             return res.status(404).json({ error: '해당 상품을 찾을 수 없거나 수정할 권한이 없습니다.' });
         }
 
-        // 상품 수정 쿼리
-        await pool.query('UPDATE products SET name = ?, description = ?, price = ? WHERE id = ?', [name, description, price, productId]);
+        // 기존 이미지 URL을 유지하기 위해 데이터베이스에 저장된 이미지 URL 가져오기
+        if (!imageUrl) {
+            imageUrl = rows[0].image;
+        }
 
+        // 상품 수정 쿼리
+        await pool.query(UPDATE_PRODUCT_QUERY, [name, description, price, imageUrl, productId]);
+
+        console.log('상품이 성공적으로 수정되었습니다.');
         return res.status(200).json({ message: '상품이 성공적으로 수정되었습니다.' });
     } catch (error) {
         console.error('상품 수정 오류:', error);
@@ -425,21 +534,22 @@ app.put('/products/toggleFavorite/:productId', async (req, res) => {
     }
 });
 
-// 즐겨찾기 목록 조회 API 엔드포인트
 app.get('/favorites', async (req, res) => {
-    try {
-        const userId = req.headers['user_id'];
+    const userId = req.query.userId; // 쿼리 파라미터에서 userId 추출
 
-        // 사용자의 즐겨찾기 목록을 가져오기 위해 favorites 테이블과 products 테이블을 조인
+    if (!userId) {
+        return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    try {
+        // favorites 테이블과 products 테이블을 조인하여 즐겨찾기 목록과 해당 제품 정보를 가져옴
         const [rows] = await pool.query(`
-            SELECT f.id, f.user_id, f.product_id, f.created_at,
-                   p.name AS product_name, p.description, p.price, p.createdAt AS product_created_at,
-                   p.image,
-                   u.name AS user_name, u.email, u.department, u.grade, u.rates
-            FROM favorites f
-            JOIN products p ON f.product_id = p.id
-            JOIN users u ON f.user_id = u.id
-            WHERE f.user_id = ?
+          SELECT f.id, f.user_id, f.product_id, f.created_at,
+                 p.name AS product_name, p.description, p.price, p.createdAt AS product_created_at,
+                 p.image
+          FROM favorites f
+          JOIN products p ON f.product_id = p.id
+          WHERE f.user_id = ?
         `, [userId]);
 
         // 쿼리 결과를 클라이언트에 반환
@@ -518,5 +628,142 @@ app.post('/ratings', async (req, res) => {
     } catch (error) {
         // 오류 응답
         return res.status(500).json({ success: false, error: 'Internal server error.' });
+    }
+});
+
+// 찜 상태를 반환하는 엔드포인트
+app.get('/products/isFavorite/:userId/:productId', async (req, res) => {
+    const userId = req.params.userId;
+    const productId = req.params.productId;
+
+    try {
+        // 데이터베이스에서 해당 사용자와 상품에 대한 찜 정보를 조회합니다.
+        const favoriteQuery = 'SELECT * FROM favorites WHERE user_id = ? AND product_id = ?';
+        const [favoriteRows] = await pool.execute(favoriteQuery, [userId, productId]);
+
+        // 찜 상태가 존재하는 경우 true를 반환합니다.
+        const isFavorite = favoriteRows.length > 0;
+
+        res.json({ isFavorite });
+    } catch (error) {
+        console.error('Error fetching favorite status:', error);
+        res.status(500).json({ error: 'Failed to fetch favorite status' });
+    }
+});
+
+
+// Assuming you're using Express.js for your server
+app.get('/products/morelist', async (req, res) => {
+    const currentProductId = req.query.currentProductId;
+
+    try {
+        const [products] = await pool.execute(
+            'SELECT * FROM products WHERE id != ? ORDER BY views DESC',
+            [currentProductId]
+        );
+        res.json(products);
+    } catch (error) {
+        console.error('Error fetching more products:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// 상품 정보 가져오기 엔드포인트
+app.get('/api/products/:productId', async (req, res) => {
+    const { productId } = req.params;
+
+    try {
+        const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [productId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error fetching product details:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// 가장 많이 검색된 검색어 가져오기 엔드포인트
+app.get('/topSearchKeywords', async (req, res) => {
+    try {
+        const [rows] = await pool.execute(`
+            SELECT search_term, COUNT(search_term) AS search_count
+            FROM search_history
+            GROUP BY search_term
+            ORDER BY search_count DESC
+            LIMIT 10
+        `);
+        res.json(rows);
+    } catch (error) {
+        console.error('가장 많이 검색된 검색어를 가져오는 중 오류가 발생했습니다:', error);
+        res.sendStatus(500);
+    }
+});
+
+// 신고 접수 처리
+app.post('/reports', async (req, res) => {
+    const { productId, userId, reason, details } = req.body;
+
+    if (!productId || !userId || !reason) {
+        return res.status(400).json({ error: '필수 필드가 누락되었습니다.' });
+    }
+
+    try {
+        // MySQL 트랜잭션 시작
+        const connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        // products 테이블에서 seller_id 가져오기
+        const [productRows] = await connection.query(
+            'SELECT `user_id` FROM `products` WHERE `id` = ?',
+            [productId]
+        );
+
+        if (productRows.length === 0) {
+            await connection.rollback();
+            connection.release();
+            return res.status(404).json({ error: '상품을 찾을 수 없습니다.' });
+        }
+
+        const sellerId = productRows[0].user_id;
+
+        // report 테이블에 삽입
+        const [result] = await connection.query(
+            'INSERT INTO `report` (`product_id`, `user_id`, `seller_id`, `reason`, `details`) VALUES (?, ?, ?, ?, ?)',
+            [productId, userId, sellerId, reason, details || null]
+        );
+
+        // 트랜잭션 커밋
+        await connection.commit();
+        connection.release();
+
+        res.status(201).json({ message: '신고가 성공적으로 접수되었습니다.' });
+    } catch (error) {
+        console.error('신고 접수 오류:', error);
+        try {
+            await pool.rollback();
+            pool.release();
+        } catch (rollbackError) {
+            console.error('롤백 오류:', rollbackError);
+        }
+        res.status(500).json({ error: '서버 오류로 신고를 접수할 수 없습니다.' });
+    }
+});
+
+// Fetch all reports
+app.get('/reportsList', async (req, res) => {
+    try {
+        const [reports] = await pool.query(`
+            SELECT r.id, r.product_id, r.user_id, r.reason, r.details, r.created_at, p.user_id AS seller_id
+            FROM report r
+            JOIN products p ON r.product_id = p.id
+        `);
+        res.json(reports);
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+        res.status(500).json({ error: 'Server error' });
     }
 });
